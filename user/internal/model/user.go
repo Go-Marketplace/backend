@@ -14,9 +14,6 @@ type User struct {
 	LastName  string       `json:"last_name"`
 	Password  string       `json:"password"`
 	Email     mail.Address `json:"email"`
-	OrderIDs  []uuid.UUID  `json:"order_ids"`
-	CartID    uuid.UUID    `json:"cart_id"`
 	CreatedAt time.Time    `json:"created_at"`
 	UpdatedAt time.Time    `json:"updated_at"`
-	DeletedAt time.Time    `json:"deleted_at"`
 }
