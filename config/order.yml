@@ -1,0 +1,14 @@
+app:
+  name: 'order_service'
+  version: '0.1.0'
+
+grpc:
+  port: 50051
+
+postgres:
+  dialect: 'postgres'
+  pool_max: 10
+  pg_url: 'postgres://postgres:root@order_postgres:5432/postgres?sslmode=disable'
+
+logger:
+  log_level: 'debug'

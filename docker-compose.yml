@@ -1,0 +1,37 @@
+version: '3.5'
+
+services:
+  order:
+    build:
+      context: .
+      dockerfile: ./order/Dockerfile
+    container_name: order
+    image: order
+    environment:
+      PG_URL: 'postgres://postgres:root@order_postgres:5432/postgres?sslmode=disable'
+    ports:
+      - 50051:50051
+    depends_on:
+      order_postgres:
+        condition: service_healthy
+
+  order_postgres:
+    container_name: order_pg_db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - order-pg-data:/var/lib/postgresql/data
+    image: postgres:15-alpine
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  order-pg-data: 
+    name: order-pg-data
