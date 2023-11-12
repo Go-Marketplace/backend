@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/signal"
 	"syscall"
@@ -13,7 +14,8 @@ import (
 	"github.com/Go-Marketplace/backend/pkg/grpcserver"
 	"github.com/Go-Marketplace/backend/pkg/logger"
 	"github.com/Go-Marketplace/backend/pkg/postgres"
-	pbOrder "github.com/Go-Marketplace/backend/proto/order/gen/proto"
+	pbOrder "github.com/Go-Marketplace/backend/proto/gen/order"
+	"google.golang.org/grpc/reflection"
 )
 
 func Run(cfg *config.Config) {
@@ -21,7 +23,7 @@ func Run(cfg *config.Config) {
 
 	pg, err := postgres.New(cfg.OrderConfig.PG.URL)
 	if err != nil {
-		logger.Fatal(fmt.Errorf("failed to run postgres.New: %w", err))
+		log.Fatalf("failed to run postgres.New: %s", err)
 	}
 	defer pg.Close()
 
@@ -31,14 +33,16 @@ func Run(cfg *config.Config) {
 
 	grpcServer, err := grpcserver.New(cfg.OrderConfig.GRPC.Port)
 	if err != nil {
-		logger.Fatal(fmt.Errorf("failed to create new grcp server: %w", err))
+		log.Fatalf("failed to create new grcp server: %s", err)
 	}
 	pbOrder.RegisterOrderServer(grpcServer.Server, orderHandler)
+	reflection.Register(grpcServer.Server)
 
 	if err = grpcServer.Start(); err != nil {
-		logger.Fatal(fmt.Errorf("failed to start grpcServer: %w", err))
+		log.Fatalf("failed to start grpcServer: %s", err)
 	}
 	defer grpcServer.Shutdown()
+	logger.Info("GRPC server started")
 
 	// Waiting signal
 	interrupt := make(chan os.Signal, 1)
@@ -48,6 +52,6 @@ func Run(cfg *config.Config) {
 	case s := <-interrupt:
 		logger.Info("app - Run - signal: " + s.String())
 	case err = <-grpcServer.Notify():
-		logger.Error(fmt.Errorf("app - Run - httpServer.Notify: %w", err))
+		logger.Error(fmt.Errorf("app - Run - grpcServer.Notify: %w", err))
 	}
 }

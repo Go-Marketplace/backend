@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+import "order.proto";
+import "google/api/annotations.proto";
+
+option go_package = "github.com/Go-Marketplace/backend/proto/gen/gateway;gateway";
+
+package gateway;
+
+service Gateway {
+   rpc GetOrder(order.GetOrderRequest) returns (order.GetOrderResponse) {
+    option (google.api.http) = {
+        get: "/order/{id}"
+    };
+   };
+}

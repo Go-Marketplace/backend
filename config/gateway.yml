@@ -1,0 +1,14 @@
+app:
+  name: 'gateway_service'
+  version: '0.1.0'
+
+grpc:
+  host: gateway
+  port: 50052
+
+http:
+  host: localhost
+  port: 8080
+
+logger:
+  log_level: 'debug'

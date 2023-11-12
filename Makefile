@@ -57,12 +57,28 @@ install-protoc: bindir
 .PHONY: install-protoc
 
 protoc-order:
-	mkdir -p proto/order/gen
-	protoc --go_out proto/order/gen \
-		--go-grpc_out proto/order/gen \
-		proto/order/*.proto
+	mkdir -p proto/gen/order
+	protoc -I proto \
+		--go_out proto/gen/order \
+		--go_opt paths=source_relative \
+		--go-grpc_out proto/gen/order \
+		--go-grpc_opt paths=source_relative \
+		proto/order.proto
 .PHONY: protoc-order
 
-protoc-all: protoc-order
+protoc-gateway:
+	mkdir -p proto/gen/gateway
+	protoc -I proto \
+		--go_out proto/gen/gateway \
+		--go_opt paths=source_relative \
+		--go-grpc_out proto/gen/gateway \
+		--go-grpc_opt paths=source_relative \
+		--grpc-gateway_out proto/gen/gateway \
+    	--grpc-gateway_opt paths=source_relative \
+		--openapiv2_out docs \
+		proto/gateway.proto
+.PHONY: protoc-gateway
+
+protoc-all: protoc-order protoc-gateway
 	@echo All Protobufs Generated
 .PHONY: protoc-all

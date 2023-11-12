@@ -6,7 +6,7 @@ import (
 	"github.com/Go-Marketplace/backend/order/internal/api/grpc/controller"
 	"github.com/Go-Marketplace/backend/order/internal/usecase"
 	"github.com/Go-Marketplace/backend/pkg/logger"
-	pbOrder "github.com/Go-Marketplace/backend/proto/order/gen/proto"
+	pbOrder "github.com/Go-Marketplace/backend/proto/gen/order"
 )
 
 type orderRoutes struct {

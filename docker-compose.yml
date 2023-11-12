@@ -1,6 +1,18 @@
 version: '3.5'
 
 services:
+  gateway:
+    build:
+      context: .
+      dockerfile: ./gateway/Dockerfile
+    container_name: gateway
+    image: gateway
+    ports:
+      - 50052:50052
+      - 8080:8080
+    depends_on: 
+     - order
+
   order:
     build:
       context: .
@@ -18,7 +30,7 @@ services:
   order_postgres:
     container_name: order_pg_db
     ports:
-      - "5432:5432"
+      - 5432:5432
     environment:
       - POSTGRES_PASSWORD=root
       - POSTGRES_USER=postgres

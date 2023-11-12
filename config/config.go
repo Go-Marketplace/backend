@@ -8,7 +8,8 @@ import (
 
 type (
 	Config struct {
-		OrderConfig *OrderConfig
+		OrderConfig   *OrderConfig
+		GatewayConfig *GatewayConfig
 	}
 
 	OrderConfig struct {
@@ -25,6 +26,7 @@ type (
 
 	GRPC struct {
 		Port uint32 `env-required:"true" yaml:"port" env:"GRPC_PORT"`
+		Host string `env-required:"true" yaml:"host" env:"HOST"`
 	}
 
 	PG struct {
@@ -35,6 +37,18 @@ type (
 
 	Log struct {
 		Level string `env-required:"true" yaml:"log_level" env:"LOG_LEVEL"`
+	}
+
+	HTTP struct {
+		Port uint32 `env-required:"true" yaml:"port" env:"HTTP_PORT"`
+		Host string `env-required:"true" yaml:"host" env:"HOST"`
+	}
+
+	GatewayConfig struct {
+		App  `yaml:"app"`
+		GRPC `yaml:"grpc"`
+		HTTP `yaml:"http"`
+		Log  `yaml:"logger"`
 	}
 )
 
@@ -53,8 +67,21 @@ func NewConfig() (*Config, error) {
 		return nil, err
 	}
 
+	gatewayConfig := &GatewayConfig{}
+
+	err = cleanenv.ReadConfig("./config/gateway.yml", gatewayConfig)
+	if err != nil {
+		return nil, fmt.Errorf("config error: %w", err)
+	}
+
+	err = cleanenv.ReadEnv(gatewayConfig)
+	if err != nil {
+		return nil, err
+	}
+
 	cfg := &Config{
-		OrderConfig: orderConfig,
+		OrderConfig:   orderConfig,
+		GatewayConfig: gatewayConfig,
 	}
 
 	return cfg, nil

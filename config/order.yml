@@ -3,6 +3,7 @@ app:
   version: '0.1.0'
 
 grpc:
+  host: order
   port: 50051
 
 postgres:

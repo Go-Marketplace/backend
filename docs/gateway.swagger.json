@@ -1,0 +1,178 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "gateway.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "Gateway"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/order/{id}": {
+      "get": {
+        "operationId": "Gateway_GetOrder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/orderGetOrderResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Gateway"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "orderCartline": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "orderId": {
+          "type": "string"
+        },
+        "product": {
+          "$ref": "#/definitions/orderProduct"
+        },
+        "quantity": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "orderGetOrderResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "cartlines": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/orderCartline"
+          }
+        },
+        "status": {
+          "$ref": "#/definitions/orderOrderStatus"
+        },
+        "totalPrice": {
+          "type": "string",
+          "format": "int64"
+        },
+        "shippingCost": {
+          "type": "string",
+          "format": "int64"
+        },
+        "deliveryAddress": {
+          "type": "string"
+        },
+        "deliveryType": {
+          "$ref": "#/definitions/orderOrderDeliveryType"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "orderOrderDeliveryType": {
+      "type": "string",
+      "enum": [
+        "SELF_DELIVERY",
+        "COURIER_DELIVERY"
+      ],
+      "default": "SELF_DELIVERY"
+    },
+    "orderOrderStatus": {
+      "type": "string",
+      "enum": [
+        "WAITING_FOR_PAYMENT_STATUS",
+        "WAITING_FOR_DELIVERY_STATUS",
+        "DELIVERY_STATUS",
+        "WAITING_FOR_RECIEVE_STATUS",
+        "RECIEVED_STATUS"
+      ],
+      "default": "WAITING_FOR_PAYMENT_STATUS"
+    },
+    "orderProduct": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "price": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

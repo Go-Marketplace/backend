@@ -3,7 +3,7 @@ package model
 import (
 	"time"
 
-	pbOrder "github.com/Go-Marketplace/backend/proto/order/gen/proto"
+	pbOrder "github.com/Go-Marketplace/backend/proto/gen/order"
 	"github.com/google/uuid"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
