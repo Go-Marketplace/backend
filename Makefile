@@ -66,6 +66,16 @@ protoc-order:
 		proto/order.proto
 .PHONY: protoc-order
 
+protoc-user:
+	mkdir -p proto/gen/user
+	protoc -I proto \
+		--go_out proto/gen/user \
+		--go_opt paths=source_relative \
+		--go-grpc_out proto/gen/user \
+		--go-grpc_opt paths=source_relative \
+		proto/user.proto
+.PHONY: protoc-user
+
 protoc-gateway:
 	mkdir -p proto/gen/gateway
 	protoc -I proto \
@@ -79,6 +89,6 @@ protoc-gateway:
 		proto/gateway.proto
 .PHONY: protoc-gateway
 
-protoc-all: protoc-order protoc-gateway
+protoc-all: protoc-order protoc-gateway protoc-user
 	@echo All Protobufs Generated
 .PHONY: protoc-all

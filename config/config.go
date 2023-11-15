@@ -10,6 +10,7 @@ type (
 	Config struct {
 		OrderConfig   *OrderConfig
 		GatewayConfig *GatewayConfig
+		UserConfig    *UserConfig
 	}
 
 	OrderConfig struct {
@@ -50,6 +51,13 @@ type (
 		HTTP `yaml:"http"`
 		Log  `yaml:"logger"`
 	}
+
+	UserConfig struct {
+		App  `yaml:"app"`
+		GRPC `yaml:"grpc"`
+		PG   `yaml:"postgres"`
+		Log  `yaml:"logger"`
+	}
 )
 
 // Creates a new config entity after reading the configuration values
@@ -79,9 +87,22 @@ func NewConfig() (*Config, error) {
 		return nil, err
 	}
 
+	userConfig := &UserConfig{}
+
+	err = cleanenv.ReadConfig("./config/user.yml", userConfig)
+	if err != nil {
+		return nil, fmt.Errorf("config error: %w", err)
+	}
+
+	err = cleanenv.ReadEnv(userConfig)
+	if err != nil {
+		return nil, err
+	}
+
 	cfg := &Config{
 		OrderConfig:   orderConfig,
 		GatewayConfig: gatewayConfig,
+		UserConfig:    userConfig,
 	}
 
 	return cfg, nil

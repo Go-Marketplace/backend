@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/Go-Marketplace/backend/proto/gen/user;user";
+
+package user;
+
+service User {
+    rpc GetUser(GetUserRequest) returns (UserResponse);
+    rpc GetAllUsers(GetAllUsersRequest) returns (GetAllUsersResponse);
+    rpc CreateUser(UserRequest) returns (UserResponse);
+    rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
+}
+
+message GetUserRequest {
+    string id = 1;
+}
+
+message UserResponse {
+    string id = 1;
+    string first_name = 2;
+    string last_name = 3;
+    string email = 4;
+    google.protobuf.Timestamp created_at = 5;
+    google.protobuf.Timestamp updated_at = 6;
+}
+
+message UserRequest {
+    string first_name = 2;
+    string last_name = 3;
+    string email = 4;
+}
+
+message GetAllUsersRequest {}
+
+message GetAllUsersResponse {
+    repeated UserResponse users = 1;
+}
+
+message DeleteUserRequest {
+    string id = 1;
+}
+
+message DeleteUserResponse {}

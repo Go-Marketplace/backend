@@ -1,0 +1,15 @@
+app:
+  name: 'user_service'
+  version: '0.1.0'
+
+grpc:
+  host: user
+  port: 50053
+
+postgres:
+  dialect: 'postgres'
+  pool_max: 10
+  pg_url: 'postgres://postgres:root@user_postgres:5432/postgres?sslmode=disable'
+
+logger:
+  log_level: 'debug'
