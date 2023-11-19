@@ -122,7 +122,7 @@ func (repo *OrderRepo) GetAllUserOrders(ctx context.Context, userID uuid.UUID) (
 
 	rows, err := tx.Query(ctx, getAllUserOrders, userID)
 	if err != nil {
-		return nil, fmt.Errorf("failed to Query getFullOrderByID: %w", err)
+		return nil, fmt.Errorf("failed to Query getAllUserOrders: %w", err)
 	}
 	defer rows.Close()
 

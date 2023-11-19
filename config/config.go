@@ -11,13 +11,7 @@ type (
 		OrderConfig   *OrderConfig
 		GatewayConfig *GatewayConfig
 		UserConfig    *UserConfig
-	}
-
-	OrderConfig struct {
-		App  `yaml:"app"`
-		GRPC `yaml:"grpc"`
-		PG   `yaml:"postgres"`
-		Log  `yaml:"logger"`
+		CartConfig    *CartConfig
 	}
 
 	App struct {
@@ -45,6 +39,10 @@ type (
 		Host string `env-required:"true" yaml:"host" env:"HOST"`
 	}
 
+	Redis struct {
+		Url string `env-required:"true" yaml:"redis_url" env:"REDIS_URL"`
+	}
+
 	GatewayConfig struct {
 		App  `yaml:"app"`
 		GRPC `yaml:"grpc"`
@@ -58,51 +56,65 @@ type (
 		PG   `yaml:"postgres"`
 		Log  `yaml:"logger"`
 	}
+
+	OrderConfig struct {
+		App  `yaml:"app"`
+		GRPC `yaml:"grpc"`
+		PG   `yaml:"postgres"`
+		Log  `yaml:"logger"`
+	}
+
+	CartConfig struct {
+		App   `yaml:"app"`
+		GRPC  `yaml:"grpc"`
+		Redis `yaml:"redis"`
+		PG    `yaml:"postgres"`
+		Log   `yaml:"logger"`
+	}
 )
+
+func getServiceFromConfig(path string, service interface{}) error {
+	err := cleanenv.ReadConfig(path, service)
+	if err != nil {
+		return fmt.Errorf("config error: %w", err)
+	}
+
+	err = cleanenv.ReadEnv(service)
+	if err != nil {
+		return fmt.Errorf("read env error: %w", err)
+	}
+
+	return nil
+}
 
 // Creates a new config entity after reading the configuration values
 // from the YAML file and environment variables.
 func NewConfig() (*Config, error) {
 	orderConfig := &OrderConfig{}
-
-	err := cleanenv.ReadConfig("./config/order.yml", orderConfig)
-	if err != nil {
+	if err := getServiceFromConfig("./config/order.yml", orderConfig); err != nil {
 		return nil, fmt.Errorf("config error: %w", err)
-	}
-
-	err = cleanenv.ReadEnv(orderConfig)
-	if err != nil {
-		return nil, err
 	}
 
 	gatewayConfig := &GatewayConfig{}
-
-	err = cleanenv.ReadConfig("./config/gateway.yml", gatewayConfig)
-	if err != nil {
+	if err := getServiceFromConfig("./config/gateway.yml", gatewayConfig); err != nil {
 		return nil, fmt.Errorf("config error: %w", err)
-	}
-
-	err = cleanenv.ReadEnv(gatewayConfig)
-	if err != nil {
-		return nil, err
 	}
 
 	userConfig := &UserConfig{}
-
-	err = cleanenv.ReadConfig("./config/user.yml", userConfig)
-	if err != nil {
+	if err := getServiceFromConfig("./config/user.yml", userConfig); err != nil {
 		return nil, fmt.Errorf("config error: %w", err)
 	}
 
-	err = cleanenv.ReadEnv(userConfig)
-	if err != nil {
-		return nil, err
+	cartConfig := &CartConfig{}
+	if err := getServiceFromConfig("./config/cart.yml", cartConfig); err != nil {
+		return nil, fmt.Errorf("config error: %w", err)
 	}
 
 	cfg := &Config{
 		OrderConfig:   orderConfig,
 		GatewayConfig: gatewayConfig,
 		UserConfig:    userConfig,
+		CartConfig:    cartConfig,
 	}
 
 	return cfg, nil

@@ -13,6 +13,7 @@ services:
     depends_on: 
       - order
       - user
+      - cart
 
   order:
     build:
@@ -41,6 +42,21 @@ services:
     depends_on:
       user_postgres:
         condition: service_healthy
+
+  cart:
+    build:
+      context: .
+      dockerfile: ./cart/Dockerfile
+    container_name: cart
+    image: cart
+    environment:
+      REDIS_URL: 'redis://cart_redis:6379/0'
+      PG_URL: 'postgres://postgres:root@cart_postgres:5432/postgres?sslmode=disable'
+    ports:
+      - 50054:50054
+    depends_on:
+      - cart_redis
+      - cart_postgres
 
   order_postgres:
     container_name: order_pg_db
@@ -76,9 +92,41 @@ services:
       timeout: 1s
       retries: 10
 
+  cart_postgres:
+    container_name: cart_pg_db
+    ports:
+      - 5434:5432
+    environment:
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - cart-pg-data:/var/lib/postgresql/data
+    image: postgres:15-alpine
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 1s
+      timeout: 1s
+      retries: 10
+    
+  cart_redis:
+    container_name: cart_redis_db
+    image: redis:7.2.3-alpine3.18
+    volumes:
+      - cart-redis-data:/data
+    ports:
+      - 6379:6379
+    restart: always
+
 volumes:
   order-pg-data: 
     name: order-pg-data
   
   user-pg-data: 
     name: user-pg-data
+
+  cart-redis-data:
+    name: cart-redis-data
+
+  cart-pg-data:
+    name: cart-pg-data
