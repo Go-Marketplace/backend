@@ -1,0 +1,82 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/Go-Marketplace/backend/proto/gen/cart;cart";
+
+package cart;
+
+service Cart {
+    rpc GetCart(GetCartRequest) returns (CartModel);
+    rpc GetUserCart(GetUserCartRequest) returns (CartModel);
+    rpc CreateCart(CreateCartRequest) returns (CreateCartResponse);
+    rpc CreateCartline(CreateCartlineRequest) returns (CreateCartlineResponse);
+    rpc UpdateCartline(UpdateCartlineRequest) returns (CartModel);
+    rpc DeleteCartline(DeleteCartlineRequest) returns (DeleteCartlineResponse);
+    rpc DeleteCart(DeleteCartRequest) returns (DeleteCartResponse);
+    rpc DeleteCartCartlines(DeleteCartCartlinesRequest) returns (DeleteCartCartlinesResponse);
+}
+
+message GetCartRequest {
+    string id = 1;
+}
+
+message GetUserCartRequest {
+    string user_id = 1;
+}
+
+message CreateCartRequest {
+    string user_id = 1;
+}
+
+message CreateCartlineRequest {
+    string cart_id = 1;
+    string product_id = 2;
+    string name = 3;
+}
+
+message UpdateCartlineRequest {
+    string cart_id = 1;
+    string name = 2;
+    int64 quantity = 3;
+}
+
+message DeleteCartlineRequest {
+    string id = 1;
+}
+
+message DeleteCartRequest {
+    string id = 1;
+}
+
+message DeleteCartCartlinesRequest {
+    string cart_id = 1;
+}
+
+message CartModel {
+    string id = 1;
+    string user_id = 2;
+    repeated CartlineModel cartlines = 3;
+    google.protobuf.Timestamp created_at = 4;
+    google.protobuf.Timestamp updated_at = 5;
+}
+
+message CartlineModel {
+    string id = 1;
+    string cart_id = 2;
+    string product_id = 3;
+    string name = 4;
+    int64 quantity = 5;
+    google.protobuf.Timestamp created_at = 6;
+    google.protobuf.Timestamp updated_at = 7;
+}
+
+message DeleteCartlineResponse {}
+
+message DeleteCartResponse {}
+
+message CreateCartResponse {}
+
+message CreateCartlineResponse {}
+
+message DeleteCartCartlinesResponse {}
