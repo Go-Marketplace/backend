@@ -86,6 +86,16 @@ protoc-cart:
 		proto/cart.proto
 .PHONY: protoc-cart
 
+protoc-product:
+	mkdir -p proto/gen/product
+	protoc -I proto \
+		--go_out proto/gen/product \
+		--go_opt paths=source_relative \
+		--go-grpc_out proto/gen/product \
+		--go-grpc_opt paths=source_relative \
+		proto/product.proto
+.PHONY: protoc-product
+
 protoc-gateway:
 	mkdir -p proto/gen/gateway
 	protoc -I proto \

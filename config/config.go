@@ -12,6 +12,7 @@ type (
 		GatewayConfig *GatewayConfig
 		UserConfig    *UserConfig
 		CartConfig    *CartConfig
+		ProductConfig *ProductConfig
 	}
 
 	App struct {
@@ -71,6 +72,14 @@ type (
 		PG    `yaml:"postgres"`
 		Log   `yaml:"logger"`
 	}
+
+	ProductConfig struct {
+		App   `yaml:"app"`
+		GRPC  `yaml:"grpc"`
+		Redis `yaml:"redis"`
+		PG    `yaml:"postgres"`
+		Log   `yaml:"logger"`
+	}
 )
 
 func getServiceFromConfig(path string, service interface{}) error {
@@ -110,11 +119,17 @@ func NewConfig() (*Config, error) {
 		return nil, fmt.Errorf("config error: %w", err)
 	}
 
+	productConfig := &ProductConfig{}
+	if err := getServiceFromConfig("./config/product.yml", productConfig); err != nil {
+		return nil, fmt.Errorf("config error: %w", err)
+	}
+
 	cfg := &Config{
 		OrderConfig:   orderConfig,
 		GatewayConfig: gatewayConfig,
 		UserConfig:    userConfig,
 		CartConfig:    cartConfig,
+		ProductConfig: productConfig,
 	}
 
 	return cfg, nil

@@ -1,0 +1,114 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/Go-Marketplace/backend/proto/gen/product;product";
+
+package product;
+
+service Product {
+    rpc GetProduct(GetProductRequest) returns (ProductModel);
+    rpc GetAllProducts(GetAllProductsRequest) returns (GetProductsResponse);
+    rpc GetAllUserProducts(GetAllUserProductsRequest) returns (GetProductsResponse);
+    rpc GetAllCategoryProducts(GetAllCategoryProductsRequest) returns (GetProductsResponse);
+    rpc CreateProduct(CreateProductRequest) returns (ProductModel);
+    rpc UpdateProduct(UpdateProductRequest) returns (ProductModel);
+    rpc DeleteProduct(DeleteProductRequest) returns (DeleteProductResponse);
+
+    rpc GetCategory(GetCategoryRequest) returns (CategoryModel);
+    rpc GetAllCategories(GetAllCategoriesRequest) returns (GetCategoriesResponse);
+
+    rpc CreateDiscount(CreateDiscountRequest) returns (CreateDiscountResponse);
+    rpc DeleteDiscount(DeleteDiscountRequest) returns (DeleteDiscountResponse);
+}
+
+message GetProductRequest {
+    string id = 1;
+}
+
+message GetAllProductsRequest {}
+
+message GetAllUserProductsRequest {
+    string user_id = 1;
+}
+
+message GetAllCategoryProductsRequest {
+    int32 category_id = 1;
+}
+
+message CreateProductRequest {
+    string user_id = 1;
+    int32 category_id = 2;
+    string name = 3;
+    string description = 4;
+    int64 price = 5;
+    int64 weight = 6;
+}
+
+message UpdateProductRequest {
+    int32 category_id = 1;
+    string name = 2;
+    string description = 3;
+    int64 price = 4;
+    int64 weight = 5;
+}
+
+message DeleteProductRequest {
+    string id = 1;
+}
+
+message GetCategoryRequest {
+    int32 id = 1;
+}
+
+message GetAllCategoriesRequest {}
+
+message CreateDiscountRequest {
+    string product_id = 1;
+    float percent = 2;
+    google.protobuf.Timestamp ended_at = 3;
+}
+
+message DeleteDiscountRequest {
+    string product_id = 1;
+}
+
+message ProductModel {
+    string id = 1;
+    string user_id = 2;
+    int32 category_id = 3;
+    string name = 4;
+    string description = 5;
+    int64 price = 6;
+    int64 weight = 7;
+    DiscountModel discount = 8;
+    google.protobuf.Timestamp created_at = 9;
+    google.protobuf.Timestamp updated_at = 10;
+}
+
+message DiscountModel {
+    string product_id = 1;
+    float percent = 2;
+    google.protobuf.Timestamp created_at = 3;
+    google.protobuf.Timestamp ended_at = 4;
+}
+
+message GetProductsResponse {
+    repeated ProductModel products = 1;
+}
+
+message CategoryModel {
+    int32 id = 1;
+    string name = 2;
+    string description = 3;
+}
+
+message DeleteProductResponse {}
+
+message GetCategoriesResponse {
+    repeated CategoryModel categories = 1;
+}
+
+message CreateDiscountResponse {}
+
+message DeleteDiscountResponse {}

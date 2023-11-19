@@ -14,6 +14,7 @@ services:
       - order
       - user
       - cart
+      - product
 
   order:
     build:
@@ -55,8 +56,27 @@ services:
     ports:
       - 50054:50054
     depends_on:
-      - cart_redis
-      - cart_postgres
+      cart_postgres:
+        condition: service_healthy
+      cart_redis:
+        condition: service_healthy
+
+  product:
+    build:
+      context: .
+      dockerfile: ./product/Dockerfile
+    container_name: product
+    image: product
+    environment:
+      REDIS_URL: 'redis://product_redis:6379/0'
+      PG_URL: 'postgres://postgres:root@product_postgres:5432/postgres?sslmode=disable'
+    ports:
+      - 50055:50055
+    depends_on:
+      product_postgres:
+        condition: service_healthy
+      product_redis:
+        condition: service_healthy
 
   order_postgres:
     container_name: order_pg_db
@@ -108,7 +128,7 @@ services:
       interval: 1s
       timeout: 1s
       retries: 10
-    
+
   cart_redis:
     container_name: cart_redis_db
     image: redis:7.2.3-alpine3.18
@@ -117,11 +137,47 @@ services:
     ports:
       - 6379:6379
     restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 1s
+      retries: 10
+
+  product_postgres:
+    container_name: product_pg_db
+    ports:
+      - 5435:5432
+    environment:
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - product-pg-data:/var/lib/postgresql/data
+    image: postgres:15-alpine
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 1s
+      timeout: 1s
+      retries: 10
+
+  product_redis:
+    container_name: product_redis_db
+    image: redis:7.2.3-alpine3.18
+    volumes:
+      - product-redis-data:/data
+    ports:
+      - 6380:6379
+    restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 1s
+      retries: 10
 
 volumes:
   order-pg-data: 
     name: order-pg-data
-  
+
   user-pg-data: 
     name: user-pg-data
 
@@ -130,3 +186,9 @@ volumes:
 
   cart-pg-data:
     name: cart-pg-data
+
+  product-pg-data:
+    name: product-pg-data
+
+  product-redis-data:
+    name: product-redis-data
