@@ -3,18 +3,21 @@ package usecase
 import (
 	"context"
 
+	"github.com/Go-Marketplace/backend/pkg/logger"
 	"github.com/Go-Marketplace/backend/user/internal/infrastructure/interfaces"
 	"github.com/Go-Marketplace/backend/user/internal/model"
 	"github.com/google/uuid"
 )
 
 type UserUsecase struct {
-	repo interfaces.UserRepo
+	repo   interfaces.UserRepo
+	logger *logger.Logger
 }
 
-func NewUserUsecase(repo interfaces.UserRepo) UserUsecase {
+func NewUserUsecase(repo interfaces.UserRepo, logger *logger.Logger) UserUsecase {
 	return UserUsecase{
-		repo: repo,
+		repo:   repo,
+		logger: logger,
 	}
 }
 

@@ -28,7 +28,7 @@ func Run(cfg *config.Config) {
 	defer pg.Close()
 
 	userRepo := repository.NewUserRepo(pg, logger)
-	userUsecase := usecase.NewUserUsecase(userRepo)
+	userUsecase := usecase.NewUserUsecase(userRepo, logger)
 	userHandler := handler.NewUserRoutes(userUsecase, logger)
 
 	grpcServer, err := grpcserver.New(cfg.UserConfig.GRPC.Port)
