@@ -79,7 +79,7 @@ Go
 
 ## Схема базы данных
 ## PostgreSQL
-![[Marketplace.png]]
+![Marketplace.png]
 
 ## Redis
 1. В сервисе для работы с корзиной используется для объектов `CartTask`
