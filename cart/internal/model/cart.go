@@ -25,7 +25,7 @@ func (cart *Cart) ToProto() *pbCart.CartModel {
 	}
 
 	return &pbCart.CartModel{
-		Id:        cart.ID.String(),
+		CartId:    cart.ID.String(),
 		UserId:    cart.UserID.String(),
 		Cartlines: protoCartlines,
 		CreatedAt: timestamppb.New(cart.CreatedAt),
@@ -46,12 +46,11 @@ type CartLine struct {
 
 func (cartline *CartLine) ToProto() *pbCart.CartlineModel {
 	return &pbCart.CartlineModel{
-		Id:        cartline.ID.String(),
-		CartId:    cartline.CartID.String(),
-		ProductId: cartline.ProductID.String(),
-		Name:      cartline.Name,
-		Quantity:  cartline.Quantity,
-		CreatedAt: timestamppb.New(cartline.CreatedAt),
-		UpdatedAt: timestamppb.New(cartline.UpdatedAt),
+		CartlineId: cartline.ID.String(),
+		CartId:     cartline.CartID.String(),
+		ProductId:  cartline.ProductID.String(),
+		Quantity:   cartline.Quantity,
+		CreatedAt:  timestamppb.New(cartline.CreatedAt),
+		UpdatedAt:  timestamppb.New(cartline.UpdatedAt),
 	}
 }

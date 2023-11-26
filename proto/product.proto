@@ -13,17 +13,18 @@ service Product {
     rpc GetAllCategoryProducts(GetAllCategoryProductsRequest) returns (GetProductsResponse);
     rpc CreateProduct(CreateProductRequest) returns (ProductModel);
     rpc UpdateProduct(UpdateProductRequest) returns (ProductModel);
+    rpc ModerateProduct(ModerateProductRequest) returns (ProductModel);
     rpc DeleteProduct(DeleteProductRequest) returns (DeleteProductResponse);
 
     rpc GetCategory(GetCategoryRequest) returns (CategoryModel);
-    rpc GetAllCategories(GetAllCategoriesRequest) returns (GetCategoriesResponse);
+    rpc GetAllCategories(GetAllCategoriesRequest) returns (GetAllCategoriesResponse);
 
-    rpc CreateDiscount(CreateDiscountRequest) returns (CreateDiscountResponse);
+    rpc CreateDiscount(CreateDiscountRequest) returns (ProductModel);
     rpc DeleteDiscount(DeleteDiscountRequest) returns (DeleteDiscountResponse);
 }
 
 message GetProductRequest {
-    string id = 1;
+    string product_id = 1;
 }
 
 message GetAllProductsRequest {}
@@ -42,23 +43,29 @@ message CreateProductRequest {
     string name = 3;
     string description = 4;
     int64 price = 5;
-    int64 weight = 6;
+    int64 quantity = 6;
 }
 
 message UpdateProductRequest {
-    int32 category_id = 1;
-    string name = 2;
-    string description = 3;
-    int64 price = 4;
-    int64 weight = 5;
+    string product_id = 1;
+    int32 category_id = 2;
+    string name = 3;
+    string description = 4;
+    int64 price = 5;
+    int64 quantity = 6;
+}
+
+message ModerateProductRequest {
+    string product_id = 1;
+    bool moderated = 2;
 }
 
 message DeleteProductRequest {
-    string id = 1;
+    string product_id = 1;
 }
 
 message GetCategoryRequest {
-    int32 id = 1;
+    int32 category_id = 1;
 }
 
 message GetAllCategoriesRequest {}
@@ -74,16 +81,17 @@ message DeleteDiscountRequest {
 }
 
 message ProductModel {
-    string id = 1;
+    string product_id = 1;
     string user_id = 2;
     int32 category_id = 3;
     string name = 4;
     string description = 5;
     int64 price = 6;
-    int64 weight = 7;
+    int64 quantity = 7;
     DiscountModel discount = 8;
-    google.protobuf.Timestamp created_at = 9;
-    google.protobuf.Timestamp updated_at = 10;
+    bool moderated = 9;
+    google.protobuf.Timestamp created_at = 10;
+    google.protobuf.Timestamp updated_at = 11;
 }
 
 message DiscountModel {
@@ -98,17 +106,15 @@ message GetProductsResponse {
 }
 
 message CategoryModel {
-    int32 id = 1;
+    int32 category_id = 1;
     string name = 2;
     string description = 3;
 }
 
 message DeleteProductResponse {}
 
-message GetCategoriesResponse {
+message GetAllCategoriesResponse {
     repeated CategoryModel categories = 1;
 }
-
-message CreateDiscountResponse {}
 
 message DeleteDiscountResponse {}

@@ -23,32 +23,31 @@ func NewOrderRepo(pg *postgres.Postgres, logger *logger.Logger) *OrderRepo {
 	}
 }
 
-func scanFullOrder(rows pgx.Rows, order *model.Order, cartline *model.Cartline, product *model.Product) error {
+func scanFullOrder(rows pgx.Rows, order *model.Order, orderline *model.Orderline) error {
 	return rows.Scan(
 		&order.ID,
 		&order.UserID,
-		&order.Status,
 		&order.TotalPrice,
-		&order.ShippingCost,
-		&order.DeliveryAddress,
-		&order.DeliveryType,
 		&order.CreatedAt,
 		&order.UpdatedAt,
-		&cartline.ID,
-		&cartline.Quantity,
-		&product.ID,
-		&product.Name,
-		&product.Description,
-		&product.Price,
+		&orderline.ID,
+		&orderline.OrderID,
+		&orderline.ProductID,
+		&orderline.Name,
+		&orderline.Price,
+		&orderline.Quantity,
+		&orderline.Status,
+		&orderline.CreatedAt,
+		&orderline.UpdatedAt,
 	)
 }
 
 func (repo *OrderRepo) GetOrder(ctx context.Context, id uuid.UUID) (*model.Order, error) {
 	conn, err := repo.pg.Pool.Acquire(ctx)
-    if err != nil {
-        return nil, fmt.Errorf("failed to Acquire in GetOrder: %w", err)
-    }
-    defer conn.Release()
+	if err != nil {
+		return nil, fmt.Errorf("failed to Acquire in GetOrder: %w", err)
+	}
+	defer conn.Release()
 
 	tx, err := conn.BeginTx(ctx, pgx.TxOptions{})
 	if err != nil {
@@ -75,10 +74,9 @@ func (repo *OrderRepo) GetOrder(ctx context.Context, id uuid.UUID) (*model.Order
 	orderMap := make(map[string]*model.Order)
 	for rows.Next() {
 		order := &model.Order{}
-		cartline := &model.Cartline{}
-		product := &model.Product{}
+		orderline := &model.Orderline{}
 
-		err := scanFullOrder(rows, order, cartline, product)
+		err := scanFullOrder(rows, order, orderline)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan full order: %w", err)
 		}
@@ -86,11 +84,10 @@ func (repo *OrderRepo) GetOrder(ctx context.Context, id uuid.UUID) (*model.Order
 		if oldOrder, ok := orderMap[order.ID.String()]; ok {
 			order = oldOrder
 		} else {
-			order.Cartlines = make([]*model.Cartline, 0)
+			order.Orderlines = make([]*model.Orderline, 0)
 		}
 
-		cartline.Product = product
-		order.Cartlines = append(order.Cartlines, cartline)
+		order.Orderlines = append(order.Orderlines, orderline)
 		orderMap[order.ID.String()] = order
 	}
 
@@ -99,10 +96,10 @@ func (repo *OrderRepo) GetOrder(ctx context.Context, id uuid.UUID) (*model.Order
 
 func (repo *OrderRepo) GetAllUserOrders(ctx context.Context, userID uuid.UUID) ([]*model.Order, error) {
 	conn, err := repo.pg.Pool.Acquire(ctx)
-    if err != nil {
-        return nil, fmt.Errorf("failed to Acquire in GetOrder: %w", err)
-    }
-    defer conn.Release()
+	if err != nil {
+		return nil, fmt.Errorf("failed to Acquire in GetOrder: %w", err)
+	}
+	defer conn.Release()
 
 	tx, err := conn.BeginTx(ctx, pgx.TxOptions{})
 	if err != nil {
@@ -129,10 +126,9 @@ func (repo *OrderRepo) GetAllUserOrders(ctx context.Context, userID uuid.UUID) (
 	ordersMap := make(map[string]*model.Order)
 	for rows.Next() {
 		order := &model.Order{}
-		cartline := &model.Cartline{}
-		product := &model.Product{}
+		orderline := &model.Orderline{}
 
-		err := scanFullOrder(rows, order, cartline, product)
+		err := scanFullOrder(rows, order, orderline)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan full order: %w", err)
 		}
@@ -140,11 +136,10 @@ func (repo *OrderRepo) GetAllUserOrders(ctx context.Context, userID uuid.UUID) (
 		if oldOrder, ok := ordersMap[order.ID.String()]; ok {
 			order = oldOrder
 		} else {
-			order.Cartlines = make([]*model.Cartline, 0)
+			order.Orderlines = make([]*model.Orderline, 0)
 		}
 
-		cartline.Product = product
-		order.Cartlines = append(order.Cartlines, cartline)
+		order.Orderlines = append(order.Orderlines, orderline)
 		ordersMap[order.ID.String()] = order
 	}
 
@@ -162,11 +157,7 @@ func (repo *OrderRepo) CreateOrder(ctx context.Context, order model.Order) error
 		createOrder,
 		order.ID,
 		order.UserID,
-		order.Status,
 		order.TotalPrice,
-		order.ShippingCost,
-		order.DeliveryAddress,
-		order.DeliveryType,
 		order.CreatedAt,
 		order.UpdatedAt,
 	)
@@ -174,39 +165,32 @@ func (repo *OrderRepo) CreateOrder(ctx context.Context, order model.Order) error
 		return fmt.Errorf("failed to Exec createOrder: %w", err)
 	}
 
-	for _, cartline := range order.Cartlines {
+	for _, orderline := range order.Orderlines {
 		_, err := repo.pg.Pool.Exec(
 			ctx,
-			createCartline,
-			cartline.ID,
-			cartline.OrderID,
-			cartline.Quantity,
+			createOrderline,
+			orderline.ID,
+			orderline.OrderID,
+			orderline.ProductID,
+			orderline.Name,
+			orderline.Price,
+			orderline.Quantity,
+			orderline.Status,
+			orderline.CreatedAt,
+			orderline.UpdatedAt,
 		)
 		if err != nil {
-			return fmt.Errorf("failed to Exec createCartline: %w", err)
-		}
-
-		_, err = repo.pg.Pool.Exec(
-			ctx,
-			createProduct,
-			cartline.Product.ID,
-			cartline.Product.CartlineID,
-			cartline.Product.Name,
-			cartline.Product.Description,
-			cartline.Product.Price,
-		)
-		if err != nil {
-			return fmt.Errorf("failed to Exec createProduct: %w", err)
+			return fmt.Errorf("failed to Exec createOrderline: %w", err)
 		}
 	}
 
 	return nil
 }
 
-func (repo *OrderRepo) CancelOrder(ctx context.Context, id uuid.UUID) error {
-	_, err := repo.pg.Pool.Exec(ctx, cancelOrder, id)
+func (repo *OrderRepo) DeleteOrder(ctx context.Context, id uuid.UUID) error {
+	_, err := repo.pg.Pool.Exec(ctx, deleteOrder, id)
 	if err != nil {
-		return fmt.Errorf("failed to Exec cancelOrder: %w", err)
+		return fmt.Errorf("failed to Exec deleteOrder: %w", err)
 	}
 
 	return nil

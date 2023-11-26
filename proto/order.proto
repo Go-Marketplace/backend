@@ -7,65 +7,66 @@ option go_package = "github.com/Go-Marketplace/backend/proto/gen/order;order";
 package order;
 
 service Order {
-    rpc GetOrder(GetOrderRequest) returns (GetOrderResponse);
+    rpc CreateOrder(CreateOrderRequest) returns (OrderResponse);
+    rpc GetOrder(GetOrderRequest) returns (OrderResponse);
     rpc GetAllUserOrders(GetAllUserOrdersRequest) returns (GetAllUserOrdersResponse);
-    rpc CancelOrder(CancelOrderRequest) returns (CancelOrderResponse);
+    rpc DeleteOrder(DeleteOrderRequest) returns (DeleteOrderResponse);
+
+    rpc UpdateOrderline(UpdateOrderlineRequest) returns (OrderResponse);
+}
+
+message CreateOrderRequest {
+    string cart_id = 1;
 }
 
 message GetOrderRequest {
-    string id = 1;
+    string order_id = 1;
 }
 
-message GetOrderResponse {
-    string id = 1;
-    string user_id = 2;
-    repeated Cartline cartlines = 3;
-    OrderStatus status = 4;
-    int64 total_price = 5;
-    int64 shipping_cost = 6;
-    string delivery_address = 7;
-    OrderDeliveryType delivery_type = 8;
-    google.protobuf.Timestamp created_at = 9;
-    google.protobuf.Timestamp updated_at = 10;
-}
-
-message Cartline {
-    string id = 1;
-    string order_id = 2;
-    Product product = 3;
-    int64 quantity = 4;
-}
-
-message Product {
-    string id = 1;
-    string name = 2;
-    string description = 3;
-    int64 price = 4;
-}
-
-enum OrderStatus {
-    WAITING_FOR_PAYMENT_STATUS = 0;
-    WAITING_FOR_DELIVERY_STATUS = 1;
-    DELIVERY_STATUS = 2;
-    WAITING_FOR_RECIEVE_STATUS = 3;
-    RECIEVED_STATUS = 4;
-}
-
-enum OrderDeliveryType {
-    SELF_DELIVERY = 0;
-    COURIER_DELIVERY = 1;
+message DeleteOrderRequest {
+    string order_id = 1;
 }
 
 message GetAllUserOrdersRequest {
     string user_id = 1;
 }
 
+message UpdateOrderlineRequest {
+    string order_id = 1;
+    string orderline_id = 2;
+    OrderlineStatus status = 3;
+}
+
+message OrderResponse {
+    string order_id = 1;
+    string user_id = 2;
+    repeated Orderline orderlines = 3;
+    int64 total_price = 4;
+    google.protobuf.Timestamp created_at = 5;
+    google.protobuf.Timestamp updated_at = 6;
+}
+
+message Orderline {
+    string orderline_id = 1;
+    string order_id = 2;
+    string product_id = 3;
+    string name = 4;
+    int64 price = 5;
+    int64 quantity = 6;
+    OrderlineStatus status = 7;
+    google.protobuf.Timestamp created_at = 8;
+    google.protobuf.Timestamp updated_at = 9;
+}
+
+enum OrderlineStatus {
+    CANCELED = 0;
+    PENDING_PAYMENT = 1;
+    DELIVERY = 2;
+    RECIEVED = 3;
+}
+
 message GetAllUserOrdersResponse {
-    repeated GetOrderResponse orders = 1;
+    repeated OrderResponse orders = 1;
 }
 
-message CancelOrderRequest {
-    string id = 1;
-}
-
-message CancelOrderResponse {}
+message DeleteOrderResponse {}

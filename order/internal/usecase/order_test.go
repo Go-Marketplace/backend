@@ -230,7 +230,7 @@ func TestCancelOrder(t *testing.T) {
 				id:  id,
 			},
 			mock: func(repo *mocks.MockOrderRepo) {
-				repo.EXPECT().CancelOrder(ctx, id).Return(nil).Times(1)
+				repo.EXPECT().DeleteOrder(ctx, id).Return(nil).Times(1)
 			},
 			expectedErr: nil,
 		},
@@ -241,7 +241,7 @@ func TestCancelOrder(t *testing.T) {
 				id:  id,
 			},
 			mock: func(repo *mocks.MockOrderRepo) {
-				repo.EXPECT().CancelOrder(ctx, id).Return(expectedErr).Times(1)
+				repo.EXPECT().DeleteOrder(ctx, id).Return(expectedErr).Times(1)
 			},
 			expectedErr: expectedErr,
 		},
@@ -256,7 +256,7 @@ func TestCancelOrder(t *testing.T) {
 			orderUseCase, orderRepo := orderHelper(t)
 			testcase.mock(orderRepo)
 
-			actualErr := orderUseCase.CancelOrder(testcase.args.ctx, testcase.args.id)
+			actualErr := orderUseCase.DeleteOrder(testcase.args.ctx, testcase.args.id)
 			assert.Equal(t, actualErr, testcase.expectedErr)
 		})
 	}

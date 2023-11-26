@@ -30,39 +30,19 @@ func scanUser(rows pgx.Rows, user *model.User) error {
 		&user.LastName,
 		&user.Password,
 		&user.Email,
+		&user.Address,
+		&user.Phone,
+		&user.Role,
 		&user.CreatedAt,
 		&user.UpdatedAt,
 	)
 }
 
 func (repo *UserRepo) GetUser(ctx context.Context, id uuid.UUID) (*model.User, error) {
-	conn, err := repo.pg.Pool.Acquire(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("failed to Acquire in GetUser: %w", err)
-	}
-	defer conn.Release()
-
-	tx, err := conn.BeginTx(ctx, pgx.TxOptions{})
-	if err != nil {
-		return nil, fmt.Errorf("failed to begin GetUser transaction: %w", err)
-	}
-	defer func() {
-		if err != nil {
-			if err := tx.Rollback(ctx); err != nil {
-				repo.logger.Error("failed to rollback transaction", err)
-			}
-		} else {
-			if err := tx.Commit(ctx); err != nil {
-				repo.logger.Error("failed to commit transaction", err)
-			}
-		}
-	}()
-
-	rows, err := tx.Query(ctx, getUserByID, id)
+	rows, err := repo.pg.Pool.Query(ctx, getUserByID, id)
 	if err != nil {
 		return nil, fmt.Errorf("failed to Query getUserByID: %w", err)
 	}
-	defer rows.Close()
 
 	user := &model.User{}
 	found := false
@@ -75,7 +55,30 @@ func (repo *UserRepo) GetUser(ctx context.Context, id uuid.UUID) (*model.User, e
 	}
 
 	if !found {
-		return nil, fmt.Errorf("not found user with id: %s", id.String())
+		return nil, nil
+	}
+
+	return user, nil
+}
+
+func (repo *UserRepo) GetUserByEmail(ctx context.Context, email string) (*model.User, error) {
+	rows, err := repo.pg.Pool.Query(ctx, getUserByEmail, email)
+	if err != nil {
+		return nil, fmt.Errorf("failed to Query getUserByEmail: %w", err)
+	}
+
+	user := &model.User{}
+	found := false
+	for rows.Next() {
+		err := scanUser(rows, user)
+		if err != nil {
+			return nil, fmt.Errorf("failed to scan user: %w", err)
+		}
+		found = true
+	}
+
+	if !found {
+		return nil, nil
 	}
 
 	return user, nil
@@ -132,11 +135,32 @@ func (repo *UserRepo) CreateUser(ctx context.Context, user model.User) error {
 		user.LastName,
 		user.Password,
 		user.Email,
+		user.Address,
+		user.Phone,
+		user.Role,
 		user.CreatedAt,
 		user.UpdatedAt,
 	)
 	if err != nil {
 		return fmt.Errorf("failed to Exec createUser: %w", err)
+	}
+
+	return nil
+}
+
+func (repo *UserRepo) UpdateUser(ctx context.Context, user model.User) error {
+	_, err := repo.pg.Pool.Query(
+		ctx,
+		updateUser,
+		user.FirstName,
+		user.LastName,
+		user.Address,
+		user.Phone,
+		user.UpdatedAt,
+		user.ID,
+	)
+	if err != nil {
+		return fmt.Errorf("failed to Exec updateUser: %w", err)
 	}
 
 	return nil

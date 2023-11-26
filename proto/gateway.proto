@@ -1,16 +1,386 @@
 syntax = "proto3";
 
 import "order.proto";
+import "user.proto";
+import "cart.proto";
+import "product.proto";
 import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
 
 option go_package = "github.com/Go-Marketplace/backend/proto/gen/gateway;gateway";
 
 package gateway;
 
-service Gateway {
-   rpc GetOrder(order.GetOrderRequest) returns (order.GetOrderResponse) {
-    option (google.api.http) = {
-        get: "/order/{id}"
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+    info: {
+      title: "Go-Marketplace";
+      version: "0.1.0";
+      contact: {
+        name: "almostinf";
+        url: "https://github.com/almostinf";
+        email: "almostinf@mail.ru";
+      };
+      license: {
+        name: "MIT";
+        url: "https://github.com/Go-Marketplace/backend/blob/main/LICENSE";
+      };
     };
-   };
+    schemes: HTTP;
+    consumes: "application/json";
+    produces: "application/json";
+    security_definitions: {
+        security: {
+          key: "bearer"
+          value: {
+            type: TYPE_API_KEY
+            in: IN_HEADER
+            name: "Authorization"
+            description: "Authentication token, prefixed by Bearer: Bearer <token>"
+          }
+        }
+    }
+    security: {
+        security_requirement: {
+          key: "bearer"
+        }
+    }
+};
+
+service Gateway {
+    // Auth
+    rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse) {
+        option (google.api.http) = {
+            post: "/v1/auth/register"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Register user";
+            operation_id: "registerUser";
+            tags: "auth";
+            security: {};
+        };
+    }
+
+    rpc Login(LoginRequest) returns (LoginResponse) {
+        option (google.api.http) = {
+            post: "/v1/auth/login"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Login user";
+            operation_id: "loginUser";
+            tags: "auth";
+            security: {};
+        };
+    }
+
+    // User
+    rpc GetUser(user.GetUserRequest) returns (user.UserResponse) {
+        option (google.api.http) = {
+            get: "/v1/user/{user_id}"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Get user";
+            operation_id: "getUser";
+            tags: "user";
+        };
+    }
+
+    rpc GetAllUsers(user.GetAllUsersRequest) returns (user.GetAllUsersResponse) {
+        option (google.api.http) = {
+            get: "/v1/user"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Get all users";
+            operation_id: "getAllUsers";
+            tags: "user";
+        };
+    }
+
+    rpc UpdateUser(user.UpdateUserRequest) returns (user.UserResponse) {
+        option (google.api.http) = {
+            patch: "/v1/user/{user_id}"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Update user";
+            operation_id: "updateUser";
+            tags: "user";
+        };
+    }
+
+    rpc DeleteUser(user.DeleteUserRequest) returns (user.DeleteUserResponse) {
+        option (google.api.http) = {
+            delete: "/v1/user/{user_id}"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Delete user";
+            operation_id: "deleteUser";
+            tags: "user";
+        };
+    }
+
+    // Order
+    rpc CreateOrder(order.CreateOrderRequest) returns (order.OrderResponse) {
+        option (google.api.http) = {
+            post: "/v1/order"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Create order";
+            operation_id: "createOrder";
+            tags: "order";
+        };
+    }
+
+    rpc GetOrder(order.GetOrderRequest) returns (order.OrderResponse) {
+        option (google.api.http) = {
+            get: "/v1/order/{order_id}"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Get order";
+            operation_id: "getOrder";
+            tags: "order";
+        };
+    }
+
+    rpc GetAllUserOrders(order.GetAllUserOrdersRequest) returns (order.GetAllUserOrdersResponse) {
+        option (google.api.http) = {
+            get: "/v1/user/{user_id}/orders"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Get all user orders";
+            operation_id: "getUserOrders";
+            tags: "user";
+        };
+    }
+
+    rpc DeleteOrder(order.DeleteOrderRequest) returns (order.DeleteOrderResponse) {
+        option (google.api.http) = {
+            delete: "/v1/order/{order_id}"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Delete order";
+            operation_id: "deleteOrder";
+            tags: "order";
+        };
+    }
+
+    rpc UpdateOrderline(order.UpdateOrderlineRequest) returns (order.OrderResponse) {
+        option (google.api.http) = {
+            patch: "/v1/order/{order_id}/orderline/{orderline_id}"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Update orderline";
+            operation_id: "updateOrderline";
+            tags: "order";
+        };
+    }
+
+    // Cart
+    rpc GetCart(cart.GetCartRequest) returns (cart.CartModel) {
+        option (google.api.http) = {
+            get: "/v1/cart/{cart_id}"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Get cart";
+            operation_id: "getCart";
+            tags: "cart";
+        };
+    }
+
+    rpc GetUserCart(cart.GetUserCartRequest) returns (cart.CartModel) {
+        option (google.api.http) = {
+            get: "/v1/user/{user_id}/cart"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Get user cart";
+            operation_id: "getUserCart";
+            tags: "user";
+        };
+    }
+
+    rpc CreateCartline(cart.CreateCartlineRequest) returns (cart.CreateCartlineResponse) {
+        option (google.api.http) = {
+            post: "/v1/cart/{cart_id}/cartline"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Create cartline";
+            operation_id: "createCartline";
+            tags: "cart";
+        };
+    }
+
+    rpc UpdateCartline(cart.UpdateCartlineRequest) returns (cart.CartModel) {
+        option (google.api.http) = {
+            patch: "/v1/cart/{cart_id}/cartline/{cartline_id}"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Update cartline";
+            operation_id: "updateCartline";
+            tags: "cart";
+        };
+    }
+
+    rpc DeleteCartline(cart.DeleteCartlineRequest) returns (cart.DeleteCartlineResponse) {
+        option (google.api.http) = {
+            delete: "/v1/cart/{cart_id}/cartline/{cartline_id}"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Delete cartline";
+            operation_id: "deleteCartline";
+            tags: "cart";
+        };
+    }
+
+    // Product
+    rpc GetProduct(product.GetProductRequest) returns (product.ProductModel) {
+        option (google.api.http) = {
+            get: "/v1/product/{product_id}"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Get product";
+            operation_id: "getProduct";
+            tags: "product";
+            security: {};
+        };
+    }
+
+    rpc GetAllProducts(product.GetAllProductsRequest) returns (product.GetProductsResponse) {
+        option (google.api.http) = {
+            get: "/v1/product"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Get all product";
+            operation_id: "getAllProducts";
+            tags: "product";
+            security: {};
+        };
+    }
+
+    rpc GetAllUserProducts(product.GetAllUserProductsRequest) returns (product.GetProductsResponse) {
+        option (google.api.http) = {
+            get: "/v1/user/{user_id}/products"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Get all user product";
+            operation_id: "getAllUserProducts";
+            tags: "user";
+        };
+    }
+
+    rpc CreateProduct(product.CreateProductRequest) returns (product.ProductModel) {
+        option (google.api.http) = {
+            post: "/v1/product"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Create product";
+            operation_id: "createProduct";
+            tags: "product";
+        };
+    }
+
+    rpc UpdateProduct(product.UpdateProductRequest) returns (product.ProductModel) {
+        option (google.api.http) = {
+            patch: "/v1/product"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Update product";
+            operation_id: "updateProduct";
+            tags: "product";
+        };
+    }
+
+    rpc ModerateProduct(product.ModerateProductRequest) returns (product.ProductModel) {
+        option (google.api.http) = {
+            patch: "/v1/product/moderate"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Moderate product";
+            operation_id: "moderateProduct";
+            tags: "product";
+        };
+    }
+
+    rpc DeleteProduct(product.DeleteProductRequest) returns (product.DeleteProductResponse) {
+        option (google.api.http) = {
+            delete: "/v1/product/{product_id}"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Delete product";
+            operation_id: "deleteProduct";
+            tags: "product";
+        };
+    }
+
+    rpc GetCategory(product.GetCategoryRequest) returns (product.CategoryModel) {
+        option (google.api.http) = {
+            get: "/v1/category/{category_id}"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Get category";
+            operation_id: "getCategory";
+            tags: "category";
+            security: {};
+        };
+    }
+
+    rpc GetAllCategories(product.GetAllCategoriesRequest) returns (product.GetAllCategoriesResponse) {
+        option (google.api.http) = {
+            get: "/v1/category"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Get all categories";
+            operation_id: "getAllCategories";
+            tags: "category";
+            security: {};
+        };
+    }
+
+    rpc CreateDiscount(product.CreateDiscountRequest) returns (product.ProductModel) {
+        option (google.api.http) = {
+            post: "/v1/product/{product_id}/discount"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Create product's discount";
+            operation_id: "createProductDiscount";
+            tags: "product";
+        };
+    }
+
+    rpc DeleteDiscount(product.DeleteDiscountRequest) returns (product.DeleteDiscountResponse) {
+        option (google.api.http) = {
+            delete: "/v1/product/{product_id}/discount"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Delete product's discount";
+            operation_id: "deleteProductDiscount";
+            tags: "product";
+        };
+    } 
+}
+
+message RegisterUserRequest {
+    string first_name = 1;
+    string last_name = 2;
+    string email = 3;
+    string password = 4;
+}
+
+message RegisterUserResponse {
+    string user_id = 1;
+    string access_token = 2;
+}
+
+message LoginRequest {
+    string email = 1;
+    string password = 2;
+}
+
+message LoginResponse {
+    string access_token = 1;
 }

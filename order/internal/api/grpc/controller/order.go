@@ -8,10 +8,11 @@ import (
 	"github.com/google/uuid"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	pbOrder "github.com/Go-Marketplace/backend/proto/gen/order"
 )
 
-func GetOrder(ctx context.Context, orderUseCase usecase.OrderUseCase, id string) (*model.Order, error) {
-	orderID, err := uuid.Parse(id)
+func GetOrder(ctx context.Context, orderUseCase usecase.OrderUseCase, req *pbOrder.GetOrderRequest) (*model.Order, error) {
+	orderID, err := uuid.Parse(req.OrderId)
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid id: %s", err)
 	}
@@ -28,8 +29,8 @@ func GetOrder(ctx context.Context, orderUseCase usecase.OrderUseCase, id string)
 	return order, nil
 }
 
-func GetAllUserOrders(ctx context.Context, orderUseCase usecase.OrderUseCase, id string) ([]*model.Order, error) {
-	userID, err := uuid.Parse(id)
+func GetAllUserOrders(ctx context.Context, orderUseCase usecase.OrderUseCase, req *pbOrder.GetAllUserOrdersRequest) ([]*model.Order, error) {
+	userID, err := uuid.Parse(req.UserId)
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid id: %s", err)
 	}
@@ -42,13 +43,13 @@ func GetAllUserOrders(ctx context.Context, orderUseCase usecase.OrderUseCase, id
 	return userOrders, nil
 }
 
-func CancelOrder(ctx context.Context, orderUseCase usecase.OrderUseCase, id string) error {
-	orderID, err := uuid.Parse(id)
+func DeleteOrder(ctx context.Context, orderUseCase usecase.OrderUseCase, req *pbOrder.DeleteOrderRequest) error {
+	orderID, err := uuid.Parse(req.OrderId)
 	if err != nil {
 		return status.Errorf(codes.InvalidArgument, "Invalid id: %s", err)
 	}
 
-	err = orderUseCase.CancelOrder(ctx, orderID)
+	err = orderUseCase.DeleteOrder(ctx, orderID)
 	if err != nil {
 		return status.Errorf(codes.Internal, "Internal error: %s", err)
 	}

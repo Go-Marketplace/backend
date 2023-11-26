@@ -1,13 +1,25 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "gateway.proto",
-    "version": "version not set"
+    "title": "Go-Marketplace",
+    "version": "0.1.0",
+    "contact": {
+      "name": "almostinf",
+      "url": "https://github.com/almostinf",
+      "email": "almostinf@mail.ru"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://github.com/Go-Marketplace/backend/blob/main/LICENSE"
+    }
   },
   "tags": [
     {
       "name": "Gateway"
     }
+  ],
+  "schemes": [
+    "http"
   ],
   "consumes": [
     "application/json"
@@ -16,14 +28,15 @@
     "application/json"
   ],
   "paths": {
-    "/order/{id}": {
-      "get": {
-        "operationId": "Gateway_GetOrder",
+    "/v1/auth/login": {
+      "post": {
+        "summary": "Login user",
+        "operationId": "loginUser",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/orderGetOrderResponse"
+              "$ref": "#/definitions/gatewayLoginResponse"
             }
           },
           "default": {
@@ -35,41 +48,900 @@
         },
         "parameters": [
           {
-            "name": "id",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/gatewayLoginRequest"
+            }
+          }
+        ],
+        "tags": [
+          "auth"
+        ],
+        "security": []
+      }
+    },
+    "/v1/auth/register": {
+      "post": {
+        "summary": "Register user",
+        "operationId": "registerUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/gatewayRegisterUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/gatewayRegisterUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "auth"
+        ],
+        "security": []
+      }
+    },
+    "/v1/cart/{cartId}": {
+      "get": {
+        "summary": "Get cart",
+        "operationId": "getCart",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/cartCartModel"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "cartId",
             "in": "path",
             "required": true,
             "type": "string"
           }
         ],
         "tags": [
-          "Gateway"
+          "cart"
+        ]
+      }
+    },
+    "/v1/cart/{cartId}/cartline": {
+      "post": {
+        "summary": "Create cartline",
+        "operationId": "createCartline",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/cartCreateCartlineResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "cartId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "productId": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "tags": [
+          "cart"
+        ]
+      }
+    },
+    "/v1/cart/{cartId}/cartline/{cartlineId}": {
+      "delete": {
+        "summary": "Delete cartline",
+        "operationId": "deleteCartline",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/cartDeleteCartlineResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "cartId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "cartlineId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "cart"
+        ]
+      },
+      "patch": {
+        "summary": "Update cartline",
+        "operationId": "updateCartline",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/cartCartModel"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "cartId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "cartlineId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "quantity": {
+                  "type": "string",
+                  "format": "int64"
+                }
+              }
+            }
+          }
+        ],
+        "tags": [
+          "cart"
+        ]
+      }
+    },
+    "/v1/category": {
+      "get": {
+        "summary": "Get all categories",
+        "operationId": "getAllCategories",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/productGetAllCategoriesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "category"
+        ],
+        "security": []
+      }
+    },
+    "/v1/category/{categoryId}": {
+      "get": {
+        "summary": "Get category",
+        "operationId": "getCategory",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/productCategoryModel"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "category"
+        ],
+        "security": []
+      }
+    },
+    "/v1/order": {
+      "post": {
+        "summary": "Create order",
+        "operationId": "createOrder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/orderOrderResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "cartId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "order"
+        ]
+      }
+    },
+    "/v1/order/{orderId}": {
+      "get": {
+        "summary": "Get order",
+        "operationId": "getOrder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/orderOrderResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "order"
+        ]
+      },
+      "delete": {
+        "summary": "Delete order",
+        "operationId": "deleteOrder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/orderDeleteOrderResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "order"
+        ]
+      }
+    },
+    "/v1/order/{orderId}/orderline/{orderlineId}": {
+      "patch": {
+        "summary": "Update orderline",
+        "operationId": "updateOrderline",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/orderOrderResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "orderlineId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "CANCELED",
+              "PENDING_PAYMENT",
+              "DELIVERY",
+              "RECIEVED"
+            ],
+            "default": "CANCELED"
+          }
+        ],
+        "tags": [
+          "order"
+        ]
+      }
+    },
+    "/v1/product": {
+      "get": {
+        "summary": "Get all product",
+        "operationId": "getAllProducts",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/productGetProductsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "product"
+        ],
+        "security": []
+      },
+      "post": {
+        "summary": "Create product",
+        "operationId": "createProduct",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/productProductModel"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/productCreateProductRequest"
+            }
+          }
+        ],
+        "tags": [
+          "product"
+        ]
+      },
+      "patch": {
+        "summary": "Update product",
+        "operationId": "updateProduct",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/productProductModel"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/productUpdateProductRequest"
+            }
+          }
+        ],
+        "tags": [
+          "product"
+        ]
+      }
+    },
+    "/v1/product/moderate": {
+      "patch": {
+        "summary": "Moderate product",
+        "operationId": "moderateProduct",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/productProductModel"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/productModerateProductRequest"
+            }
+          }
+        ],
+        "tags": [
+          "product"
+        ]
+      }
+    },
+    "/v1/product/{productId}": {
+      "get": {
+        "summary": "Get product",
+        "operationId": "getProduct",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/productProductModel"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "product"
+        ],
+        "security": []
+      },
+      "delete": {
+        "summary": "Delete product",
+        "operationId": "deleteProduct",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/productDeleteProductResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "product"
+        ]
+      }
+    },
+    "/v1/product/{productId}/discount": {
+      "delete": {
+        "summary": "Delete product's discount",
+        "operationId": "deleteProductDiscount",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/productDeleteDiscountResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "product"
+        ]
+      },
+      "post": {
+        "summary": "Create product's discount",
+        "operationId": "createProductDiscount",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/productProductModel"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "percent",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "float"
+          },
+          {
+            "name": "endedAt",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
+        "tags": [
+          "product"
+        ]
+      }
+    },
+    "/v1/user": {
+      "get": {
+        "summary": "Get all users",
+        "operationId": "getAllUsers",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/userGetAllUsersResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "user"
+        ]
+      }
+    },
+    "/v1/user/{userId}": {
+      "get": {
+        "summary": "Get user",
+        "operationId": "getUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/userUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "user"
+        ]
+      },
+      "delete": {
+        "summary": "Delete user",
+        "operationId": "deleteUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/userDeleteUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "user"
+        ]
+      },
+      "patch": {
+        "summary": "Update user",
+        "operationId": "updateUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/userUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "firstName": {
+                  "type": "string"
+                },
+                "lastName": {
+                  "type": "string"
+                },
+                "address": {
+                  "type": "string"
+                },
+                "phone": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "tags": [
+          "user"
+        ]
+      }
+    },
+    "/v1/user/{userId}/cart": {
+      "get": {
+        "summary": "Get user cart",
+        "operationId": "getUserCart",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/cartCartModel"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "user"
+        ]
+      }
+    },
+    "/v1/user/{userId}/orders": {
+      "get": {
+        "summary": "Get all user orders",
+        "operationId": "getUserOrders",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/orderGetAllUserOrdersResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "user"
+        ]
+      }
+    },
+    "/v1/user/{userId}/products": {
+      "get": {
+        "summary": "Get all user product",
+        "operationId": "getAllUserProducts",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/productGetProductsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "user"
         ]
       }
     }
   },
   "definitions": {
-    "orderCartline": {
+    "cartCartModel": {
       "type": "object",
       "properties": {
-        "id": {
-          "type": "string"
-        },
-        "orderId": {
-          "type": "string"
-        },
-        "product": {
-          "$ref": "#/definitions/orderProduct"
-        },
-        "quantity": {
-          "type": "string",
-          "format": "int64"
-        }
-      }
-    },
-    "orderGetOrderResponse": {
-      "type": "object",
-      "properties": {
-        "id": {
+        "cartId": {
           "type": "string"
         },
         "userId": {
@@ -79,25 +951,8 @@
           "type": "array",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/orderCartline"
+            "$ref": "#/definitions/cartCartlineModel"
           }
-        },
-        "status": {
-          "$ref": "#/definitions/orderOrderStatus"
-        },
-        "totalPrice": {
-          "type": "string",
-          "format": "int64"
-        },
-        "shippingCost": {
-          "type": "string",
-          "format": "int64"
-        },
-        "deliveryAddress": {
-          "type": "string"
-        },
-        "deliveryType": {
-          "$ref": "#/definitions/orderOrderDeliveryType"
         },
         "createdAt": {
           "type": "string",
@@ -109,30 +964,204 @@
         }
       }
     },
-    "orderOrderDeliveryType": {
-      "type": "string",
-      "enum": [
-        "SELF_DELIVERY",
-        "COURIER_DELIVERY"
-      ],
-      "default": "SELF_DELIVERY"
-    },
-    "orderOrderStatus": {
-      "type": "string",
-      "enum": [
-        "WAITING_FOR_PAYMENT_STATUS",
-        "WAITING_FOR_DELIVERY_STATUS",
-        "DELIVERY_STATUS",
-        "WAITING_FOR_RECIEVE_STATUS",
-        "RECIEVED_STATUS"
-      ],
-      "default": "WAITING_FOR_PAYMENT_STATUS"
-    },
-    "orderProduct": {
+    "cartCartlineModel": {
       "type": "object",
       "properties": {
-        "id": {
+        "cartlineId": {
           "type": "string"
+        },
+        "cartId": {
+          "type": "string"
+        },
+        "productId": {
+          "type": "string"
+        },
+        "quantity": {
+          "type": "string",
+          "format": "int64"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "cartCreateCartlineResponse": {
+      "type": "object",
+      "properties": {
+        "cartlineId": {
+          "type": "string"
+        }
+      }
+    },
+    "cartDeleteCartlineResponse": {
+      "type": "object"
+    },
+    "gatewayLoginRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "gatewayLoginResponse": {
+      "type": "object",
+      "properties": {
+        "accessToken": {
+          "type": "string"
+        }
+      }
+    },
+    "gatewayRegisterUserRequest": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "gatewayRegisterUserResponse": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "accessToken": {
+          "type": "string"
+        }
+      }
+    },
+    "orderDeleteOrderResponse": {
+      "type": "object"
+    },
+    "orderGetAllUserOrdersResponse": {
+      "type": "object",
+      "properties": {
+        "orders": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/orderOrderResponse"
+          }
+        }
+      }
+    },
+    "orderOrderResponse": {
+      "type": "object",
+      "properties": {
+        "orderId": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "orderlines": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/orderOrderline"
+          }
+        },
+        "totalPrice": {
+          "type": "string",
+          "format": "int64"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "orderOrderline": {
+      "type": "object",
+      "properties": {
+        "orderlineId": {
+          "type": "string"
+        },
+        "orderId": {
+          "type": "string"
+        },
+        "productId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "price": {
+          "type": "string"
+        },
+        "quantity": {
+          "type": "string",
+          "format": "int64"
+        },
+        "status": {
+          "$ref": "#/definitions/orderOrderlineStatus"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "orderOrderlineStatus": {
+      "type": "string",
+      "enum": [
+        "CANCELED",
+        "PENDING_PAYMENT",
+        "DELIVERY",
+        "RECIEVED"
+      ],
+      "default": "CANCELED"
+    },
+    "productCategoryModel": {
+      "type": "object",
+      "properties": {
+        "categoryId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "productCreateProductRequest": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "categoryId": {
+          "type": "integer",
+          "format": "int32"
         },
         "name": {
           "type": "string"
@@ -141,6 +1170,140 @@
           "type": "string"
         },
         "price": {
+          "type": "string",
+          "format": "int64"
+        },
+        "quantity": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "productDeleteDiscountResponse": {
+      "type": "object"
+    },
+    "productDeleteProductResponse": {
+      "type": "object"
+    },
+    "productDiscountModel": {
+      "type": "object",
+      "properties": {
+        "productId": {
+          "type": "string"
+        },
+        "percent": {
+          "type": "number",
+          "format": "float"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "endedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "productGetAllCategoriesResponse": {
+      "type": "object",
+      "properties": {
+        "categories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/productCategoryModel"
+          }
+        }
+      }
+    },
+    "productGetProductsResponse": {
+      "type": "object",
+      "properties": {
+        "products": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/productProductModel"
+          }
+        }
+      }
+    },
+    "productModerateProductRequest": {
+      "type": "object",
+      "properties": {
+        "productId": {
+          "type": "string"
+        },
+        "moderated": {
+          "type": "boolean"
+        }
+      }
+    },
+    "productProductModel": {
+      "type": "object",
+      "properties": {
+        "productId": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "categoryId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "price": {
+          "type": "string",
+          "format": "int64"
+        },
+        "quantity": {
+          "type": "string",
+          "format": "int64"
+        },
+        "discount": {
+          "$ref": "#/definitions/productDiscountModel"
+        },
+        "moderated": {
+          "type": "boolean"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "productUpdateProductRequest": {
+      "type": "object",
+      "properties": {
+        "productId": {
+          "type": "string"
+        },
+        "categoryId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "price": {
+          "type": "string",
+          "format": "int64"
+        },
+        "quantity": {
           "type": "string",
           "format": "int64"
         }
@@ -173,6 +1336,81 @@
           }
         }
       }
+    },
+    "userDeleteUserResponse": {
+      "type": "object"
+    },
+    "userGetAllUsersResponse": {
+      "type": "object",
+      "properties": {
+        "users": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/userUserResponse"
+          }
+        }
+      }
+    },
+    "userUserResponse": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "role": {
+          "$ref": "#/definitions/userUserRole"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "userUserRole": {
+      "type": "string",
+      "enum": [
+        "GUEST",
+        "USER",
+        "ADMIN",
+        "SUPERADMIN"
+      ],
+      "default": "GUEST"
     }
-  }
+  },
+  "securityDefinitions": {
+    "bearer": {
+      "type": "apiKey",
+      "description": "Authentication token, prefixed by Bearer: Bearer \u003ctoken\u003e",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "security": [
+    {
+      "bearer": []
+    }
+  ]
 }

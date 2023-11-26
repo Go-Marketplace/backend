@@ -23,8 +23,8 @@ func NewOrderRoutes(orderUseCase usecase.OrderUseCase, logger *logger.Logger) *o
 	}
 }
 
-func (router *orderRoutes) GetOrder(ctx context.Context, req *pbOrder.GetOrderRequest) (*pbOrder.GetOrderResponse, error) {
-	order, err := controller.GetOrder(ctx, router.orderUseCase, req.Id)
+func (router *orderRoutes) GetOrder(ctx context.Context, req *pbOrder.GetOrderRequest) (*pbOrder.OrderResponse, error) {
+	order, err := controller.GetOrder(ctx, router.orderUseCase, req)
 	if err != nil {
 		return nil, err
 	}
@@ -33,27 +33,27 @@ func (router *orderRoutes) GetOrder(ctx context.Context, req *pbOrder.GetOrderRe
 }
 
 func (router *orderRoutes) GetAllUserOrders(ctx context.Context, req *pbOrder.GetAllUserOrdersRequest) (*pbOrder.GetAllUserOrdersResponse, error) {
-	userOrders, err := controller.GetAllUserOrders(ctx, router.orderUseCase, req.UserId)
+	userOrders, err := controller.GetAllUserOrders(ctx, router.orderUseCase, req)
 	if err != nil {
 		return nil, err
 	}
 
-	userOrdersPb := make([]*pbOrder.GetOrderResponse, 0, len(userOrders))
+	protoUserOrders := make([]*pbOrder.OrderResponse, 0, len(userOrders))
 	for _, userOrder := range userOrders {
 		if userOrder != nil {
-			userOrdersPb = append(userOrdersPb, userOrder.ToProto())
+			protoUserOrders = append(protoUserOrders, userOrder.ToProto())
 		}
 	}
 
 	return &pbOrder.GetAllUserOrdersResponse{
-		Orders: userOrdersPb,
+		Orders: protoUserOrders,
 	}, nil
 }
 
-func (router *orderRoutes) CancelOrder(ctx context.Context, req *pbOrder.CancelOrderRequest) (*pbOrder.CancelOrderResponse, error) {
-	if err := controller.CancelOrder(ctx, router.orderUseCase, req.Id); err != nil {
+func (router *orderRoutes) CancelOrder(ctx context.Context, req *pbOrder.DeleteOrderRequest) (*pbOrder.DeleteOrderResponse, error) {
+	if err := controller.DeleteOrder(ctx, router.orderUseCase, req); err != nil {
 		return nil, err
 	}
 
-	return &pbOrder.CancelOrderResponse{}, nil
+	return &pbOrder.DeleteOrderResponse{}, nil
 }

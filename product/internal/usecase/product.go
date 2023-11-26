@@ -111,8 +111,12 @@ func (usecase *ProductUsecase) GetAllCategories(ctx context.Context) ([]*model.C
 	return usecase.productRepo.GetAllCategories(ctx)
 }
 
-func (usecase *ProductUsecase) CreateDiscount(ctx context.Context, discount model.Discount) error {
-	return usecase.discountRepo.CreateDiscount(ctx, discount)
+func (usecase *ProductUsecase) CreateDiscount(ctx context.Context, discount model.Discount) (*model.Product, error) {
+	if err := usecase.discountRepo.CreateDiscount(ctx, discount); err != nil {
+		return nil, err
+	}
+
+	return usecase.productRepo.GetProduct(ctx, discount.ProductID)
 }
 
 func (usecase *ProductUsecase) DeleteDiscount(ctx context.Context, productID uuid.UUID) error {

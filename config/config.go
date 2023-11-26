@@ -44,10 +44,17 @@ type (
 		Url string `env-required:"true" yaml:"redis_url" env:"REDIS_URL"`
 	}
 
+	Auth struct {
+		AccessTokenPrivateKey string `env-required:"false" yaml:"access_token_private_key" env:"ACCESS_TOKEN_PRIVATE_KEY"`
+		AccessTokenPublicKey  string `env-required:"false" yaml:"access_token_public_key" env:"ACCESS_TOKEN_PUBLIC_KEY"`
+		AccessTokenMaxAge     string `env-required:"false" yaml:"access_token_max_age" env:"ACCESS_TOKEN_MAX_AGE"`
+	}
+
 	GatewayConfig struct {
 		App  `yaml:"app"`
 		GRPC `yaml:"grpc"`
 		HTTP `yaml:"http"`
+		Auth `yaml:"auth"`
 		Log  `yaml:"logger"`
 	}
 

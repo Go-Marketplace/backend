@@ -7,6 +7,12 @@ const (
 		WHERE user_id = $1;
 	`
 
+	getUserByEmail = `
+		SELECT *
+		FROM users
+		WHERE email = $1;
+	`
+
 	getAllUsers = `
 		SELECT *
 		FROM users;
@@ -19,6 +25,9 @@ const (
 			last_name,
 			password,
 			email,
+			address,
+			phone,
+			role,
 			created_at,
 			updated_at
 		) VALUES (
@@ -28,8 +37,22 @@ const (
 			$4,
 			$5,
 			$6,
-			$7
+			$7,
+			$8,
+			$9,
+			$10
 		);
+	`
+
+	updateUser = `
+		UPDATE users
+		SET
+			first_name = $1,
+			last_name = $2,
+			address = $3,
+			phone = $4,
+			updated_at = $5
+		WHERE user_id = $6;
 	`
 
 	deleteUser = `

@@ -16,7 +16,8 @@ type Product struct {
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	Price       int64     `json:"price"`
-	Weight      int64     `json:"weight"`
+	Quantity    int64     `json:"quantity"`
+	Moderated   bool      `json:"moderated"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
 
@@ -30,13 +31,14 @@ func (product *Product) ToProto() *pbProduct.ProductModel {
 	}
 
 	return &pbProduct.ProductModel{
-		Id:          product.ID.String(),
+		ProductId:   product.ID.String(),
 		UserId:      product.UserID.String(),
 		CategoryId:  product.CategoryID,
 		Name:        product.Name,
 		Description: product.Description,
 		Price:       product.Price,
-		Weight:      product.Weight,
+		Quantity:    product.Quantity,
+		Moderated:   product.Moderated,
 		Discount:    discount,
 		CreatedAt:   timestamppb.New(product.CreatedAt),
 		UpdatedAt:   timestamppb.New(product.UpdatedAt),
@@ -51,7 +53,7 @@ type Category struct {
 
 func (category *Category) ToProto() *pbProduct.CategoryModel {
 	return &pbProduct.CategoryModel{
-		Id:          category.ID,
+		CategoryId:  category.ID,
 		Name:        category.Name,
 		Description: category.Description,
 	}

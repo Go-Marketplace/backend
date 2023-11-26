@@ -4,7 +4,10 @@ CREATE TABLE IF NOT EXISTS users (
     first_name TEXT NOT NULL,
     last_name TEXT NOT NULL,
     password TEXT NOT NULL,
-    email TEXT,
+    email TEXT UNIQUE NOT NULL,
+    address TEXT,
+    phone TEXT,
+    role INTEGER NOT NULL,
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL
 );
@@ -15,6 +18,9 @@ INSERT INTO users (
     last_name,
     password,
     email,
+    address,
+    phone,
+    role,
     created_at,
     updated_at
 ) VALUES (
@@ -23,6 +29,9 @@ INSERT INTO users (
     'test_surname',
     'password',
     'test@mail.ru',
+    'test address',
+    '+1234',
+    1,
     'now()',
     'now()'
 ), (
@@ -31,6 +40,9 @@ INSERT INTO users (
     'test_surname_2',
     'password_2',
     'test2@mail.ru',
+    'test address 2',
+    '+5678',
+    2,
     'now()',
     'now()'
 );

@@ -30,6 +30,6 @@ func (usecase *OrderUseCase) CreateOrder(ctx context.Context, order model.Order)
 	return usecase.repo.CreateOrder(ctx, order)
 }
 
-func (usecase *OrderUseCase) CancelOrder(ctx context.Context, id uuid.UUID) error {
-	return usecase.repo.CancelOrder(ctx, id)
+func (usecase *OrderUseCase) DeleteOrder(ctx context.Context, id uuid.UUID) error {
+	return usecase.repo.DeleteOrder(ctx, id)
 }

@@ -13,8 +13,10 @@ import (
 	"github.com/Go-Marketplace/backend/pkg/postgres"
 	pbUser "github.com/Go-Marketplace/backend/proto/gen/user"
 	"github.com/Go-Marketplace/backend/user/internal/api/grpc/handler"
+	"github.com/Go-Marketplace/backend/user/internal/api/grpc/interceptors"
 	"github.com/Go-Marketplace/backend/user/internal/infrastructure/repository"
 	"github.com/Go-Marketplace/backend/user/internal/usecase"
+	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
 
@@ -31,7 +33,13 @@ func Run(cfg *config.Config) {
 	userUsecase := usecase.NewUserUsecase(userRepo, logger)
 	userHandler := handler.NewUserRoutes(userUsecase, logger)
 
-	grpcServer, err := grpcserver.New(cfg.UserConfig.GRPC.Port)
+	interceptor := interceptors.NewInterceptorManager(logger)
+	grpcServer, err := grpcserver.New(
+		cfg.UserConfig.GRPC.Port,
+		grpc.UnaryInterceptor(
+			interceptor.LogRequest,
+		),
+	)
 	if err != nil {
 		log.Fatalf("failed to create new grcp server: %s", err)
 	}

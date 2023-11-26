@@ -36,20 +36,6 @@ func (m *MockOrderRepo) EXPECT() *MockOrderRepoMockRecorder {
 	return m.recorder
 }
 
-// CancelOrder mocks base method.
-func (m *MockOrderRepo) CancelOrder(ctx context.Context, id uuid.UUID) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CancelOrder", ctx, id)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// CancelOrder indicates an expected call of CancelOrder.
-func (mr *MockOrderRepoMockRecorder) CancelOrder(ctx, id interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CancelOrder", reflect.TypeOf((*MockOrderRepo)(nil).CancelOrder), ctx, id)
-}
-
 // CreateOrder mocks base method.
 func (m *MockOrderRepo) CreateOrder(ctx context.Context, order model.Order) error {
 	m.ctrl.T.Helper()
@@ -62,6 +48,20 @@ func (m *MockOrderRepo) CreateOrder(ctx context.Context, order model.Order) erro
 func (mr *MockOrderRepoMockRecorder) CreateOrder(ctx, order interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateOrder", reflect.TypeOf((*MockOrderRepo)(nil).CreateOrder), ctx, order)
+}
+
+// DeleteOrder mocks base method.
+func (m *MockOrderRepo) DeleteOrder(ctx context.Context, id uuid.UUID) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteOrder", ctx, id)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteOrder indicates an expected call of DeleteOrder.
+func (mr *MockOrderRepoMockRecorder) DeleteOrder(ctx, id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteOrder", reflect.TypeOf((*MockOrderRepo)(nil).DeleteOrder), ctx, id)
 }
 
 // GetAllUserOrders mocks base method.

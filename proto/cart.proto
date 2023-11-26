@@ -10,15 +10,16 @@ service Cart {
     rpc GetCart(GetCartRequest) returns (CartModel);
     rpc GetUserCart(GetUserCartRequest) returns (CartModel);
     rpc CreateCart(CreateCartRequest) returns (CreateCartResponse);
+    rpc DeleteCart(DeleteCartRequest) returns (DeleteCartResponse);
+    rpc DeleteCartCartlines(DeleteCartCartlinesRequest) returns (DeleteCartCartlinesResponse);
+
     rpc CreateCartline(CreateCartlineRequest) returns (CreateCartlineResponse);
     rpc UpdateCartline(UpdateCartlineRequest) returns (CartModel);
     rpc DeleteCartline(DeleteCartlineRequest) returns (DeleteCartlineResponse);
-    rpc DeleteCart(DeleteCartRequest) returns (DeleteCartResponse);
-    rpc DeleteCartCartlines(DeleteCartCartlinesRequest) returns (DeleteCartCartlinesResponse);
 }
 
 message GetCartRequest {
-    string id = 1;
+    string cart_id = 1;
 }
 
 message GetUserCartRequest {
@@ -32,21 +33,21 @@ message CreateCartRequest {
 message CreateCartlineRequest {
     string cart_id = 1;
     string product_id = 2;
-    string name = 3;
 }
 
 message UpdateCartlineRequest {
     string cart_id = 1;
-    string name = 2;
+    string cartline_id = 2;
     int64 quantity = 3;
 }
 
 message DeleteCartlineRequest {
-    string id = 1;
+    string cart_id = 1;
+    string cartline_id = 2;
 }
 
 message DeleteCartRequest {
-    string id = 1;
+    string cart_id = 1;
 }
 
 message DeleteCartCartlinesRequest {
@@ -54,7 +55,7 @@ message DeleteCartCartlinesRequest {
 }
 
 message CartModel {
-    string id = 1;
+    string cart_id = 1;
     string user_id = 2;
     repeated CartlineModel cartlines = 3;
     google.protobuf.Timestamp created_at = 4;
@@ -62,21 +63,24 @@ message CartModel {
 }
 
 message CartlineModel {
-    string id = 1;
+    string cartline_id = 1;
     string cart_id = 2;
     string product_id = 3;
-    string name = 4;
-    int64 quantity = 5;
-    google.protobuf.Timestamp created_at = 6;
-    google.protobuf.Timestamp updated_at = 7;
+    int64 quantity = 4;
+    google.protobuf.Timestamp created_at = 5;
+    google.protobuf.Timestamp updated_at = 6;
 }
 
 message DeleteCartlineResponse {}
 
 message DeleteCartResponse {}
 
-message CreateCartResponse {}
+message CreateCartResponse {
+    string cart_id = 1;
+}
 
-message CreateCartlineResponse {}
+message CreateCartlineResponse {
+    string cartline_id = 1;
+}
 
 message DeleteCartCartlinesResponse {}

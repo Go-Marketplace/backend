@@ -31,7 +31,8 @@ func scanProduct(rows pgx.Rows, product *model.Product) error {
 		&product.Name,
 		&product.Description,
 		&product.Price,
-		&product.Weight,
+		&product.Quantity,
+		&product.Moderated,
 		&product.CreatedAt,
 		&product.UpdatedAt,
 	)
@@ -124,7 +125,8 @@ func (repo *ProductRepo) CreateProduct(ctx context.Context, product model.Produc
 		product.Name,
 		product.Description,
 		product.Price,
-		product.Weight,
+		product.Quantity,
+		product.Moderated,
 		product.CreatedAt,
 		product.UpdatedAt,
 	)
@@ -143,7 +145,7 @@ func (repo *ProductRepo) UpdateProduct(ctx context.Context, product model.Produc
 		product.Name,
 		product.Description,
 		product.Price,
-		product.Weight,
+		product.Quantity,
 		product.UpdatedAt,
 	)
 	if err != nil {

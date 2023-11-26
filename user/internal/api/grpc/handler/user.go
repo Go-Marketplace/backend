@@ -6,11 +6,7 @@ import (
 	"github.com/Go-Marketplace/backend/pkg/logger"
 	pbUser "github.com/Go-Marketplace/backend/proto/gen/user"
 	"github.com/Go-Marketplace/backend/user/internal/api/grpc/controller"
-	"github.com/Go-Marketplace/backend/user/internal/model"
 	"github.com/Go-Marketplace/backend/user/internal/usecase"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type userRoutes struct {
@@ -28,7 +24,16 @@ func NewUserRoutes(userUsecase usecase.UserUsecase, logger *logger.Logger) *user
 }
 
 func (router *userRoutes) GetUser(ctx context.Context, req *pbUser.GetUserRequest) (*pbUser.UserResponse, error) {
-	user, err := controller.GetUser(ctx, router.userUsecase, req.Id)
+	user, err := controller.GetUser(ctx, router.userUsecase, req)
+	if err != nil {
+		return nil, err
+	}
+
+	return user.ToProto(), nil
+}
+
+func (router *userRoutes) GetUserByEmail(ctx context.Context, req *pbUser.GetUserByEmailRequest) (*pbUser.UserResponse, error) {
+	user, err := controller.GetUserByEmail(ctx, router.userUsecase, req)
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +42,7 @@ func (router *userRoutes) GetUser(ctx context.Context, req *pbUser.GetUserReques
 }
 
 func (router *userRoutes) GetAllUsers(ctx context.Context, req *pbUser.GetAllUsersRequest) (*pbUser.GetAllUsersResponse, error) {
-	users, err := controller.GetAllUsers(ctx, router.userUsecase)
+	users, err := controller.GetAllUsers(ctx, router.userUsecase, req)
 	if err != nil {
 		return nil, err
 	}
@@ -52,29 +57,25 @@ func (router *userRoutes) GetAllUsers(ctx context.Context, req *pbUser.GetAllUse
 	}, nil
 }
 
-func (router *userRoutes) CreateUser(ctx context.Context, req *pbUser.UserRequest) (*pbUser.UserResponse, error) {
-	user, err := model.FromProtoToUser(req)
-	if err != nil || user == nil {
-		return nil, status.Errorf(codes.InvalidArgument, "invalid user: %s", err)
+func (router *userRoutes) CreateUser(ctx context.Context, req *pbUser.CreateUserRequest) (*pbUser.CreateUserResponse, error) {
+	if err := controller.CreateUser(ctx, router.userUsecase, req); err != nil {
+		return nil, err
 	}
 
-	err = controller.CreateUser(ctx, router.userUsecase, *user)
+	return &pbUser.CreateUserResponse{}, nil
+}
+
+func (router *userRoutes) UpdateUser(ctx context.Context, req *pbUser.UpdateUserRequest) (*pbUser.UserResponse, error) {
+	user, err := controller.UpdateUser(ctx, router.userUsecase, req)
 	if err != nil {
 		return nil, err
 	}
 
-	return &pbUser.UserResponse{
-		Id:        user.ID.String(),
-		FirstName: user.FirstName,
-		LastName:  user.LastName,
-		Email:     user.Email,
-		CreatedAt: timestamppb.New(user.CreatedAt),
-		UpdatedAt: timestamppb.New(user.UpdatedAt),
-	}, nil
+	return user.ToProto(), nil
 }
 
 func (router *userRoutes) DeleteUser(ctx context.Context, req *pbUser.DeleteUserRequest) (*pbUser.DeleteUserResponse, error) {
-	err := controller.DeleteUser(ctx, router.userUsecase, req.Id)
+	err := controller.DeleteUser(ctx, router.userUsecase, req)
 	if err != nil {
 		return nil, err
 	}

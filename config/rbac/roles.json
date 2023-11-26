@@ -1,0 +1,45 @@
+{
+    "GUEST": [
+        "RegisterUser",
+        "Login",
+
+        "GetAllProducts",
+        "GetProduct",
+        "GetAllCategoryProducts",
+
+        "GetAllCategories",
+        "GetCategory"
+    ],
+    "USER": [
+        "GetAllUserProducts",
+        "CreateProduct",
+        "UpdateProduct",
+        "DeleteProduct",
+
+        "CreateDiscount",
+        "DeleteDiscount",
+
+        "GetUser",
+        "UpdateUser",
+        "DeleteUser",
+
+        "GetOrder",
+        "GetAllUserOrders",
+        "CancelOrder",
+
+        "GetUserCart",
+
+        "CreateCartline",
+        "UpdateCartline",
+        "DeleteCartline"
+    ],
+    "ADMIN": [
+        "GetCart",
+        "DeleteCart",
+        "DeleteCartCartlines",
+
+        "GetUserByEmail",
+        "GetAllUsers"
+    ],
+    "SUPERADMIN": []
+}

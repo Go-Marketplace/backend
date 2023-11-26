@@ -5,50 +5,44 @@ const (
 		SELECT
 			orders.order_id,
 			orders.user_id,
-			orders.status,
 			orders.total_price,
-			orders.shipping_cost,
-			orders.delivery_address,
-			orders.delivery_type,
 			orders.created_at,
 			orders.updated_at,
-			cartlines.cartline_id,
-			cartlines.quantity,
-			products.product_id,
-			products.name,
-			products.description,
-			products.price
+			orderlines.orderline_id,
+			orderlines.order_id,
+			orderlines.product_id,
+			orderlines.name,
+			orderlines.price,
+			orderlines.quantity,
+			orderlines.status,
+			orderlines.created_at,
+			orderlines.updated_at
 		FROM
 			orders
 		JOIN
-			cartlines ON $1 = cartlines.order_id
-		JOIN
-			products ON cartlines.cartline_id = products.cartline_id;
+			orderlines ON $1 = orderlines.order_id;
 	`
 
 	getAllUserOrders = `
 		SELECT
 			orders.order_id,
 			orders.user_id,
-			orders.status,
 			orders.total_price,
-			orders.shipping_cost,
-			orders.delivery_address,
-			orders.delivery_type,
 			orders.created_at,
 			orders.updated_at,
-			cartlines.cartline_id,
-			cartlines.quantity,
-			products.product_id,
-			products.name,
-			products.description,
-			products.price
+			orderlines.orderline_id,
+			orderlines.order_id,
+			orderlines.product_id,
+			orderlines.name,
+			orderlines.price,
+			orderlines.quantity,
+			orderlines.status,
+			orderlines.created_at,
+			orderlines.updated_at
 		FROM
 			orders
 		JOIN
-			cartlines ON orders.order_id = cartlines.order_id
-		JOIN
-			products ON cartlines.cartline_id = products.cartline_id
+			orderlines ON orders.order_id = orderlines.order_id
 		WHERE orders.user_id = $1;
 	`
 
@@ -56,11 +50,27 @@ const (
 		INSERT INTO orders (
 			order_id,
 			user_id,
-			status,
 			total_price,
-			shipping_cost,
-			delivery_address,
-			delivery_type,
+			created_at,
+			updated_at
+		) VALUES (
+			$1,
+			$2,
+			$3,
+			$4,
+			$5
+		);
+	`
+
+	createOrderline = `
+		INSERT INTO orderlines (
+			orderline_id,
+			order_id,
+			product_id,
+			name,
+			price,
+			quantity,
+			status,
 			created_at,
 			updated_at
 		) VALUES (
@@ -76,35 +86,7 @@ const (
 		);
 	`
 
-	createCartline = `
-		INSERT INTO cartlines (
-			cartline_id,
-			order_id,
-			quantity
-		) VALUES (
-			$1,
-			$2,
-			$3
-		);
-	`
-
-	createProduct = `
-		INSERT INTO cartlines (
-			product_id,
-			cartline_id,
-			name,
-			description,
-			price
-		) VALUES (
-			$1,
-			$2,
-			$3,
-			$4,
-			$5
-		);
-	`
-
-	cancelOrder = `
+	deleteOrder = `
 		DELETE FROM orders
 		WHERE order_id = $1;
 	`

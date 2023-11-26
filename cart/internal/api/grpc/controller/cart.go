@@ -17,7 +17,7 @@ func GetCart(ctx context.Context, cartUsecase *usecase.CartUsecase, req *pbCart.
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid request")
 	}
 
-	id, err := uuid.Parse(req.Id)
+	id, err := uuid.Parse(req.CartId)
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid id: %s", err)
 	}
@@ -99,7 +99,6 @@ func CreateCartline(ctx context.Context, cartUsecase *usecase.CartUsecase, req *
 		ID:        uuid.New(),
 		CartID:    cartID,
 		ProductID: productID,
-		Name:      req.Name,
 		Quantity:  1,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
@@ -124,7 +123,6 @@ func UpdateCartline(ctx context.Context, cartUsecase *usecase.CartUsecase, req *
 
 	cartline := model.CartLine{
 		CartID:    cartID,
-		Name:      req.Name,
 		Quantity:  req.Quantity,
 		UpdatedAt: time.Now(),
 	}
@@ -142,7 +140,7 @@ func DeleteCart(ctx context.Context, cartUsecase *usecase.CartUsecase, req *pbCa
 		return status.Errorf(codes.InvalidArgument, "Invalid request")
 	}
 
-	id, err := uuid.Parse(req.Id)
+	id, err := uuid.Parse(req.CartId)
 	if err != nil {
 		return status.Errorf(codes.InvalidArgument, "Invalid id: %s", err)
 	}
@@ -159,9 +157,9 @@ func DeleteCartline(ctx context.Context, cartUsecase *usecase.CartUsecase, req *
 		return status.Errorf(codes.InvalidArgument, "Invalid request")
 	}
 
-	id, err := uuid.Parse(req.Id)
+	id, err := uuid.Parse(req.CartlineId)
 	if err != nil {
-		return status.Errorf(codes.InvalidArgument, "Invalid user id: %s", err)
+		return status.Errorf(codes.InvalidArgument, "Invalid cartline id: %s", err)
 	}
 
 	if err := cartUsecase.DeleteCartline(ctx, id); err != nil {

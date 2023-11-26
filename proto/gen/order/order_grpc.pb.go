@@ -19,18 +19,22 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
+	Order_CreateOrder_FullMethodName      = "/order.Order/CreateOrder"
 	Order_GetOrder_FullMethodName         = "/order.Order/GetOrder"
 	Order_GetAllUserOrders_FullMethodName = "/order.Order/GetAllUserOrders"
-	Order_CancelOrder_FullMethodName      = "/order.Order/CancelOrder"
+	Order_DeleteOrder_FullMethodName      = "/order.Order/DeleteOrder"
+	Order_UpdateOrderline_FullMethodName  = "/order.Order/UpdateOrderline"
 )
 
 // OrderClient is the client API for Order service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type OrderClient interface {
-	GetOrder(ctx context.Context, in *GetOrderRequest, opts ...grpc.CallOption) (*GetOrderResponse, error)
+	CreateOrder(ctx context.Context, in *CreateOrderRequest, opts ...grpc.CallOption) (*OrderResponse, error)
+	GetOrder(ctx context.Context, in *GetOrderRequest, opts ...grpc.CallOption) (*OrderResponse, error)
 	GetAllUserOrders(ctx context.Context, in *GetAllUserOrdersRequest, opts ...grpc.CallOption) (*GetAllUserOrdersResponse, error)
-	CancelOrder(ctx context.Context, in *CancelOrderRequest, opts ...grpc.CallOption) (*CancelOrderResponse, error)
+	DeleteOrder(ctx context.Context, in *DeleteOrderRequest, opts ...grpc.CallOption) (*DeleteOrderResponse, error)
+	UpdateOrderline(ctx context.Context, in *UpdateOrderlineRequest, opts ...grpc.CallOption) (*OrderResponse, error)
 }
 
 type orderClient struct {
@@ -41,8 +45,17 @@ func NewOrderClient(cc grpc.ClientConnInterface) OrderClient {
 	return &orderClient{cc}
 }
 
-func (c *orderClient) GetOrder(ctx context.Context, in *GetOrderRequest, opts ...grpc.CallOption) (*GetOrderResponse, error) {
-	out := new(GetOrderResponse)
+func (c *orderClient) CreateOrder(ctx context.Context, in *CreateOrderRequest, opts ...grpc.CallOption) (*OrderResponse, error) {
+	out := new(OrderResponse)
+	err := c.cc.Invoke(ctx, Order_CreateOrder_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *orderClient) GetOrder(ctx context.Context, in *GetOrderRequest, opts ...grpc.CallOption) (*OrderResponse, error) {
+	out := new(OrderResponse)
 	err := c.cc.Invoke(ctx, Order_GetOrder_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -59,9 +72,18 @@ func (c *orderClient) GetAllUserOrders(ctx context.Context, in *GetAllUserOrders
 	return out, nil
 }
 
-func (c *orderClient) CancelOrder(ctx context.Context, in *CancelOrderRequest, opts ...grpc.CallOption) (*CancelOrderResponse, error) {
-	out := new(CancelOrderResponse)
-	err := c.cc.Invoke(ctx, Order_CancelOrder_FullMethodName, in, out, opts...)
+func (c *orderClient) DeleteOrder(ctx context.Context, in *DeleteOrderRequest, opts ...grpc.CallOption) (*DeleteOrderResponse, error) {
+	out := new(DeleteOrderResponse)
+	err := c.cc.Invoke(ctx, Order_DeleteOrder_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *orderClient) UpdateOrderline(ctx context.Context, in *UpdateOrderlineRequest, opts ...grpc.CallOption) (*OrderResponse, error) {
+	out := new(OrderResponse)
+	err := c.cc.Invoke(ctx, Order_UpdateOrderline_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -72,9 +94,11 @@ func (c *orderClient) CancelOrder(ctx context.Context, in *CancelOrderRequest, o
 // All implementations must embed UnimplementedOrderServer
 // for forward compatibility
 type OrderServer interface {
-	GetOrder(context.Context, *GetOrderRequest) (*GetOrderResponse, error)
+	CreateOrder(context.Context, *CreateOrderRequest) (*OrderResponse, error)
+	GetOrder(context.Context, *GetOrderRequest) (*OrderResponse, error)
 	GetAllUserOrders(context.Context, *GetAllUserOrdersRequest) (*GetAllUserOrdersResponse, error)
-	CancelOrder(context.Context, *CancelOrderRequest) (*CancelOrderResponse, error)
+	DeleteOrder(context.Context, *DeleteOrderRequest) (*DeleteOrderResponse, error)
+	UpdateOrderline(context.Context, *UpdateOrderlineRequest) (*OrderResponse, error)
 	mustEmbedUnimplementedOrderServer()
 }
 
@@ -82,14 +106,20 @@ type OrderServer interface {
 type UnimplementedOrderServer struct {
 }
 
-func (UnimplementedOrderServer) GetOrder(context.Context, *GetOrderRequest) (*GetOrderResponse, error) {
+func (UnimplementedOrderServer) CreateOrder(context.Context, *CreateOrderRequest) (*OrderResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateOrder not implemented")
+}
+func (UnimplementedOrderServer) GetOrder(context.Context, *GetOrderRequest) (*OrderResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetOrder not implemented")
 }
 func (UnimplementedOrderServer) GetAllUserOrders(context.Context, *GetAllUserOrdersRequest) (*GetAllUserOrdersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllUserOrders not implemented")
 }
-func (UnimplementedOrderServer) CancelOrder(context.Context, *CancelOrderRequest) (*CancelOrderResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CancelOrder not implemented")
+func (UnimplementedOrderServer) DeleteOrder(context.Context, *DeleteOrderRequest) (*DeleteOrderResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteOrder not implemented")
+}
+func (UnimplementedOrderServer) UpdateOrderline(context.Context, *UpdateOrderlineRequest) (*OrderResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateOrderline not implemented")
 }
 func (UnimplementedOrderServer) mustEmbedUnimplementedOrderServer() {}
 
@@ -102,6 +132,24 @@ type UnsafeOrderServer interface {
 
 func RegisterOrderServer(s grpc.ServiceRegistrar, srv OrderServer) {
 	s.RegisterService(&Order_ServiceDesc, srv)
+}
+
+func _Order_CreateOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateOrderRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrderServer).CreateOrder(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Order_CreateOrder_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrderServer).CreateOrder(ctx, req.(*CreateOrderRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Order_GetOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -140,20 +188,38 @@ func _Order_GetAllUserOrders_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Order_CancelOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CancelOrderRequest)
+func _Order_DeleteOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteOrderRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(OrderServer).CancelOrder(ctx, in)
+		return srv.(OrderServer).DeleteOrder(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Order_CancelOrder_FullMethodName,
+		FullMethod: Order_DeleteOrder_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OrderServer).CancelOrder(ctx, req.(*CancelOrderRequest))
+		return srv.(OrderServer).DeleteOrder(ctx, req.(*DeleteOrderRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Order_UpdateOrderline_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateOrderlineRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrderServer).UpdateOrderline(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Order_UpdateOrderline_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrderServer).UpdateOrderline(ctx, req.(*UpdateOrderlineRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -166,6 +232,10 @@ var Order_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*OrderServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "CreateOrder",
+			Handler:    _Order_CreateOrder_Handler,
+		},
+		{
 			MethodName: "GetOrder",
 			Handler:    _Order_GetOrder_Handler,
 		},
@@ -174,8 +244,12 @@ var Order_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Order_GetAllUserOrders_Handler,
 		},
 		{
-			MethodName: "CancelOrder",
-			Handler:    _Order_CancelOrder_Handler,
+			MethodName: "DeleteOrder",
+			Handler:    _Order_DeleteOrder_Handler,
+		},
+		{
+			MethodName: "UpdateOrderline",
+			Handler:    _Order_UpdateOrderline_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

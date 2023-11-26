@@ -9,7 +9,8 @@ const (
 			products.name,
 			products.description,
 			products.price,
-			products.weight,
+			products.quantity,
+			products.moderated,
 			products.created_at,
 			products.updated_at
 		FROM products
@@ -23,7 +24,8 @@ const (
 			products.name,
 			products.description,
 			products.price,
-			products.weight,
+			products.quantity,
+			products.moderated,
 			products.created_at,
 			products.updated_at
 		FROM products
@@ -38,7 +40,8 @@ const (
 			products.name,
 			products.description,
 			products.price,
-			products.weight,
+			products.quantity,
+			products.moderated,
 			products.created_at,
 			products.updated_at
 		FROM products
@@ -53,7 +56,8 @@ const (
 			products.name,
 			products.description,
 			products.price,
-			products.weight,
+			products.quantity,
+			products.moderated,
 			products.created_at,
 			products.updated_at
 		FROM products
@@ -68,7 +72,8 @@ const (
 			name,
 			description,
 			price,
-			weight,
+			quantity,
+			moderated,
 			created_at,
 			updated_at
 		) VALUES (
@@ -80,7 +85,8 @@ const (
 			$6,
 			$7,
 			$8,
-			$9
+			$9,
+			$10
 		);
 	`
 
@@ -91,7 +97,7 @@ const (
 			name = $2,
 			description = $3,
 			price = $4,
-			weight = $5,
+			quantity = $5,
 			updated_at = $6
 		WHERE product_id = $7;
 	`

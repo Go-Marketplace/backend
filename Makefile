@@ -109,6 +109,6 @@ protoc-gateway:
 		proto/gateway.proto
 .PHONY: protoc-gateway
 
-protoc-all: protoc-order protoc-gateway protoc-user
+protoc-all: protoc-order protoc-gateway protoc-user protoc-cart protoc-product
 	@echo All Protobufs Generated
 .PHONY: protoc-all

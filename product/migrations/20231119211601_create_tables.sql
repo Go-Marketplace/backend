@@ -20,7 +20,8 @@ CREATE TABLE IF NOT EXISTS products (
     name TEXT NOT NULL,
     description TEXT NOT NULL,
     price BIGINT NOT NULL,
-    weight BIGINT NOT NULL,
+    quantity BIGINT NOT NULL,
+    moderated BOOL NOT NULL,
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL,
 
@@ -34,7 +35,8 @@ INSERT INTO products (
     name,
     description,
     price,
-    weight,
+    quantity,
+    moderated,
     created_at,
     updated_at
 ) VALUES (
@@ -45,6 +47,7 @@ INSERT INTO products (
     'Cool smartphone',
     100,
     1000,
+    false,
     'now()',
     'now()'
 ), (
@@ -55,6 +58,7 @@ INSERT INTO products (
     'Red T-Shirt',
     120,
     200,
+    true,
     'now()',
     'now()'
 );

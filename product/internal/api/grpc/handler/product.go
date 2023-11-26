@@ -132,7 +132,7 @@ func (routes *productRoutes) GetCategory(ctx context.Context, req *pbProduct.Get
 	return category.ToProto(), nil
 }
 
-func (routes *productRoutes) GetAllCategories(ctx context.Context, req *pbProduct.GetAllCategoriesRequest) (*pbProduct.GetCategoriesResponse, error) {
+func (routes *productRoutes) GetAllCategories(ctx context.Context, req *pbProduct.GetAllCategoriesRequest) (*pbProduct.GetAllCategoriesResponse, error) {
 	categories, err := controller.GetAllCategories(ctx, routes.productUsecase, req)
 	if err != nil {
 		return nil, err
@@ -143,18 +143,18 @@ func (routes *productRoutes) GetAllCategories(ctx context.Context, req *pbProduc
 		protoCategories = append(protoCategories, category.ToProto())
 	}
 
-	return &pbProduct.GetCategoriesResponse{
+	return &pbProduct.GetAllCategoriesResponse{
 		Categories: protoCategories,
 	}, nil
 }
 
-func (routes *productRoutes) CreateDiscount(ctx context.Context, req *pbProduct.CreateDiscountRequest) (*pbProduct.CreateDiscountResponse, error) {
-	err := controller.CreateDiscount(ctx, routes.productUsecase, req)
+func (routes *productRoutes) CreateDiscount(ctx context.Context, req *pbProduct.CreateDiscountRequest) (*pbProduct.ProductModel, error) {
+	product, err := controller.CreateDiscount(ctx, routes.productUsecase, req)
 	if err != nil {
 		return nil, err
 	}
 
-	return &pbProduct.CreateDiscountResponse{}, nil
+	return product.ToProto(), nil
 }
 
 func (routes *productRoutes) DeleteDiscount(ctx context.Context, req *pbProduct.DeleteDiscountRequest) (*pbProduct.DeleteDiscountResponse, error) {
