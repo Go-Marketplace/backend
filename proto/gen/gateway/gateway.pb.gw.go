@@ -1389,7 +1389,7 @@ func RegisterGatewayHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/RegisterUser", runtime.WithHTTPPathPattern("/v1/auth/register"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/RegisterUser", runtime.WithHTTPPathPattern("/api/v1/auth/register"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1414,7 +1414,7 @@ func RegisterGatewayHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/Login", runtime.WithHTTPPathPattern("/v1/auth/login"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/Login", runtime.WithHTTPPathPattern("/api/v1/auth/login"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1439,7 +1439,7 @@ func RegisterGatewayHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/GetUser", runtime.WithHTTPPathPattern("/v1/user/{user_id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/GetUser", runtime.WithHTTPPathPattern("/api/v1/user/{user_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1464,7 +1464,7 @@ func RegisterGatewayHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/GetAllUsers", runtime.WithHTTPPathPattern("/v1/user"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/GetAllUsers", runtime.WithHTTPPathPattern("/api/v1/user"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1489,7 +1489,7 @@ func RegisterGatewayHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/UpdateUser", runtime.WithHTTPPathPattern("/v1/user/{user_id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/UpdateUser", runtime.WithHTTPPathPattern("/api/v1/user/{user_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1514,7 +1514,7 @@ func RegisterGatewayHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/DeleteUser", runtime.WithHTTPPathPattern("/v1/user/{user_id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/DeleteUser", runtime.WithHTTPPathPattern("/api/v1/user/{user_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1539,7 +1539,7 @@ func RegisterGatewayHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/CreateOrder", runtime.WithHTTPPathPattern("/v1/order"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/CreateOrder", runtime.WithHTTPPathPattern("/api/v1/order"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1564,7 +1564,7 @@ func RegisterGatewayHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/GetOrder", runtime.WithHTTPPathPattern("/v1/order/{order_id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/GetOrder", runtime.WithHTTPPathPattern("/api/v1/order/{order_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1589,7 +1589,7 @@ func RegisterGatewayHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/GetAllUserOrders", runtime.WithHTTPPathPattern("/v1/user/{user_id}/orders"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/GetAllUserOrders", runtime.WithHTTPPathPattern("/api/v1/user/{user_id}/orders"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1614,7 +1614,7 @@ func RegisterGatewayHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/DeleteOrder", runtime.WithHTTPPathPattern("/v1/order/{order_id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/DeleteOrder", runtime.WithHTTPPathPattern("/api/v1/order/{order_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1639,7 +1639,7 @@ func RegisterGatewayHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/UpdateOrderline", runtime.WithHTTPPathPattern("/v1/order/{order_id}/orderline/{orderline_id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/UpdateOrderline", runtime.WithHTTPPathPattern("/api/v1/order/{order_id}/orderline/{orderline_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1664,7 +1664,7 @@ func RegisterGatewayHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/GetCart", runtime.WithHTTPPathPattern("/v1/cart/{cart_id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/GetCart", runtime.WithHTTPPathPattern("/api/v1/cart/{cart_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1689,7 +1689,7 @@ func RegisterGatewayHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/GetUserCart", runtime.WithHTTPPathPattern("/v1/user/{user_id}/cart"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/GetUserCart", runtime.WithHTTPPathPattern("/api/v1/user/{user_id}/cart"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1714,7 +1714,7 @@ func RegisterGatewayHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/CreateCartline", runtime.WithHTTPPathPattern("/v1/cart/{cart_id}/cartline"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/CreateCartline", runtime.WithHTTPPathPattern("/api/v1/cart/{cart_id}/cartline"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1739,7 +1739,7 @@ func RegisterGatewayHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/UpdateCartline", runtime.WithHTTPPathPattern("/v1/cart/{cart_id}/cartline/{cartline_id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/UpdateCartline", runtime.WithHTTPPathPattern("/api/v1/cart/{cart_id}/cartline/{cartline_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1764,7 +1764,7 @@ func RegisterGatewayHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/DeleteCartline", runtime.WithHTTPPathPattern("/v1/cart/{cart_id}/cartline/{cartline_id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/DeleteCartline", runtime.WithHTTPPathPattern("/api/v1/cart/{cart_id}/cartline/{cartline_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1789,7 +1789,7 @@ func RegisterGatewayHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/GetProduct", runtime.WithHTTPPathPattern("/v1/product/{product_id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/GetProduct", runtime.WithHTTPPathPattern("/api/v1/product/{product_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1814,7 +1814,7 @@ func RegisterGatewayHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/GetAllProducts", runtime.WithHTTPPathPattern("/v1/product"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/GetAllProducts", runtime.WithHTTPPathPattern("/api/v1/product"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1839,7 +1839,7 @@ func RegisterGatewayHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/GetAllUserProducts", runtime.WithHTTPPathPattern("/v1/user/{user_id}/products"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/GetAllUserProducts", runtime.WithHTTPPathPattern("/api/v1/user/{user_id}/products"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1864,7 +1864,7 @@ func RegisterGatewayHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/CreateProduct", runtime.WithHTTPPathPattern("/v1/product"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/CreateProduct", runtime.WithHTTPPathPattern("/api/v1/product"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1889,7 +1889,7 @@ func RegisterGatewayHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/UpdateProduct", runtime.WithHTTPPathPattern("/v1/product"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/UpdateProduct", runtime.WithHTTPPathPattern("/api/v1/product"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1914,7 +1914,7 @@ func RegisterGatewayHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/ModerateProduct", runtime.WithHTTPPathPattern("/v1/product/moderate"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/ModerateProduct", runtime.WithHTTPPathPattern("/api/v1/product/moderate"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1939,7 +1939,7 @@ func RegisterGatewayHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/DeleteProduct", runtime.WithHTTPPathPattern("/v1/product/{product_id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/DeleteProduct", runtime.WithHTTPPathPattern("/api/v1/product/{product_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1964,7 +1964,7 @@ func RegisterGatewayHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/GetCategory", runtime.WithHTTPPathPattern("/v1/category/{category_id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/GetCategory", runtime.WithHTTPPathPattern("/api/v1/category/{category_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1989,7 +1989,7 @@ func RegisterGatewayHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/GetAllCategories", runtime.WithHTTPPathPattern("/v1/category"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/GetAllCategories", runtime.WithHTTPPathPattern("/api/v1/category"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2014,7 +2014,7 @@ func RegisterGatewayHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/CreateDiscount", runtime.WithHTTPPathPattern("/v1/product/{product_id}/discount"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/CreateDiscount", runtime.WithHTTPPathPattern("/api/v1/product/{product_id}/discount"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2039,7 +2039,7 @@ func RegisterGatewayHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/DeleteDiscount", runtime.WithHTTPPathPattern("/v1/product/{product_id}/discount"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/DeleteDiscount", runtime.WithHTTPPathPattern("/api/v1/product/{product_id}/discount"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2103,7 +2103,7 @@ func RegisterGatewayHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/RegisterUser", runtime.WithHTTPPathPattern("/v1/auth/register"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/RegisterUser", runtime.WithHTTPPathPattern("/api/v1/auth/register"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2125,7 +2125,7 @@ func RegisterGatewayHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/Login", runtime.WithHTTPPathPattern("/v1/auth/login"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/Login", runtime.WithHTTPPathPattern("/api/v1/auth/login"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2147,7 +2147,7 @@ func RegisterGatewayHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/GetUser", runtime.WithHTTPPathPattern("/v1/user/{user_id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/GetUser", runtime.WithHTTPPathPattern("/api/v1/user/{user_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2169,7 +2169,7 @@ func RegisterGatewayHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/GetAllUsers", runtime.WithHTTPPathPattern("/v1/user"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/GetAllUsers", runtime.WithHTTPPathPattern("/api/v1/user"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2191,7 +2191,7 @@ func RegisterGatewayHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/UpdateUser", runtime.WithHTTPPathPattern("/v1/user/{user_id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/UpdateUser", runtime.WithHTTPPathPattern("/api/v1/user/{user_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2213,7 +2213,7 @@ func RegisterGatewayHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/DeleteUser", runtime.WithHTTPPathPattern("/v1/user/{user_id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/DeleteUser", runtime.WithHTTPPathPattern("/api/v1/user/{user_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2235,7 +2235,7 @@ func RegisterGatewayHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/CreateOrder", runtime.WithHTTPPathPattern("/v1/order"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/CreateOrder", runtime.WithHTTPPathPattern("/api/v1/order"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2257,7 +2257,7 @@ func RegisterGatewayHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/GetOrder", runtime.WithHTTPPathPattern("/v1/order/{order_id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/GetOrder", runtime.WithHTTPPathPattern("/api/v1/order/{order_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2279,7 +2279,7 @@ func RegisterGatewayHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/GetAllUserOrders", runtime.WithHTTPPathPattern("/v1/user/{user_id}/orders"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/GetAllUserOrders", runtime.WithHTTPPathPattern("/api/v1/user/{user_id}/orders"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2301,7 +2301,7 @@ func RegisterGatewayHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/DeleteOrder", runtime.WithHTTPPathPattern("/v1/order/{order_id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/DeleteOrder", runtime.WithHTTPPathPattern("/api/v1/order/{order_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2323,7 +2323,7 @@ func RegisterGatewayHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/UpdateOrderline", runtime.WithHTTPPathPattern("/v1/order/{order_id}/orderline/{orderline_id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/UpdateOrderline", runtime.WithHTTPPathPattern("/api/v1/order/{order_id}/orderline/{orderline_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2345,7 +2345,7 @@ func RegisterGatewayHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/GetCart", runtime.WithHTTPPathPattern("/v1/cart/{cart_id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/GetCart", runtime.WithHTTPPathPattern("/api/v1/cart/{cart_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2367,7 +2367,7 @@ func RegisterGatewayHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/GetUserCart", runtime.WithHTTPPathPattern("/v1/user/{user_id}/cart"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/GetUserCart", runtime.WithHTTPPathPattern("/api/v1/user/{user_id}/cart"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2389,7 +2389,7 @@ func RegisterGatewayHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/CreateCartline", runtime.WithHTTPPathPattern("/v1/cart/{cart_id}/cartline"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/CreateCartline", runtime.WithHTTPPathPattern("/api/v1/cart/{cart_id}/cartline"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2411,7 +2411,7 @@ func RegisterGatewayHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/UpdateCartline", runtime.WithHTTPPathPattern("/v1/cart/{cart_id}/cartline/{cartline_id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/UpdateCartline", runtime.WithHTTPPathPattern("/api/v1/cart/{cart_id}/cartline/{cartline_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2433,7 +2433,7 @@ func RegisterGatewayHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/DeleteCartline", runtime.WithHTTPPathPattern("/v1/cart/{cart_id}/cartline/{cartline_id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/DeleteCartline", runtime.WithHTTPPathPattern("/api/v1/cart/{cart_id}/cartline/{cartline_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2455,7 +2455,7 @@ func RegisterGatewayHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/GetProduct", runtime.WithHTTPPathPattern("/v1/product/{product_id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/GetProduct", runtime.WithHTTPPathPattern("/api/v1/product/{product_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2477,7 +2477,7 @@ func RegisterGatewayHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/GetAllProducts", runtime.WithHTTPPathPattern("/v1/product"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/GetAllProducts", runtime.WithHTTPPathPattern("/api/v1/product"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2499,7 +2499,7 @@ func RegisterGatewayHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/GetAllUserProducts", runtime.WithHTTPPathPattern("/v1/user/{user_id}/products"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/GetAllUserProducts", runtime.WithHTTPPathPattern("/api/v1/user/{user_id}/products"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2521,7 +2521,7 @@ func RegisterGatewayHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/CreateProduct", runtime.WithHTTPPathPattern("/v1/product"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/CreateProduct", runtime.WithHTTPPathPattern("/api/v1/product"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2543,7 +2543,7 @@ func RegisterGatewayHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/UpdateProduct", runtime.WithHTTPPathPattern("/v1/product"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/UpdateProduct", runtime.WithHTTPPathPattern("/api/v1/product"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2565,7 +2565,7 @@ func RegisterGatewayHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/ModerateProduct", runtime.WithHTTPPathPattern("/v1/product/moderate"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/ModerateProduct", runtime.WithHTTPPathPattern("/api/v1/product/moderate"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2587,7 +2587,7 @@ func RegisterGatewayHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/DeleteProduct", runtime.WithHTTPPathPattern("/v1/product/{product_id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/DeleteProduct", runtime.WithHTTPPathPattern("/api/v1/product/{product_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2609,7 +2609,7 @@ func RegisterGatewayHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/GetCategory", runtime.WithHTTPPathPattern("/v1/category/{category_id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/GetCategory", runtime.WithHTTPPathPattern("/api/v1/category/{category_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2631,7 +2631,7 @@ func RegisterGatewayHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/GetAllCategories", runtime.WithHTTPPathPattern("/v1/category"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/GetAllCategories", runtime.WithHTTPPathPattern("/api/v1/category"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2653,7 +2653,7 @@ func RegisterGatewayHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/CreateDiscount", runtime.WithHTTPPathPattern("/v1/product/{product_id}/discount"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/CreateDiscount", runtime.WithHTTPPathPattern("/api/v1/product/{product_id}/discount"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2675,7 +2675,7 @@ func RegisterGatewayHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/DeleteDiscount", runtime.WithHTTPPathPattern("/v1/product/{product_id}/discount"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/DeleteDiscount", runtime.WithHTTPPathPattern("/api/v1/product/{product_id}/discount"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2695,59 +2695,59 @@ func RegisterGatewayHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 }
 
 var (
-	pattern_Gateway_RegisterUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "auth", "register"}, ""))
+	pattern_Gateway_RegisterUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "v1", "auth", "register"}, ""))
 
-	pattern_Gateway_Login_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "auth", "login"}, ""))
+	pattern_Gateway_Login_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "v1", "auth", "login"}, ""))
 
-	pattern_Gateway_GetUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "user", "user_id"}, ""))
+	pattern_Gateway_GetUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "user", "user_id"}, ""))
 
-	pattern_Gateway_GetAllUsers_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "user"}, ""))
+	pattern_Gateway_GetAllUsers_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "v1", "user"}, ""))
 
-	pattern_Gateway_UpdateUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "user", "user_id"}, ""))
+	pattern_Gateway_UpdateUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "user", "user_id"}, ""))
 
-	pattern_Gateway_DeleteUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "user", "user_id"}, ""))
+	pattern_Gateway_DeleteUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "user", "user_id"}, ""))
 
-	pattern_Gateway_CreateOrder_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "order"}, ""))
+	pattern_Gateway_CreateOrder_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "v1", "order"}, ""))
 
-	pattern_Gateway_GetOrder_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "order", "order_id"}, ""))
+	pattern_Gateway_GetOrder_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "order", "order_id"}, ""))
 
-	pattern_Gateway_GetAllUserOrders_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"v1", "user", "user_id", "orders"}, ""))
+	pattern_Gateway_GetAllUserOrders_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"api", "v1", "user", "user_id", "orders"}, ""))
 
-	pattern_Gateway_DeleteOrder_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "order", "order_id"}, ""))
+	pattern_Gateway_DeleteOrder_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "order", "order_id"}, ""))
 
-	pattern_Gateway_UpdateOrderline_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"v1", "order", "order_id", "orderline", "orderline_id"}, ""))
+	pattern_Gateway_UpdateOrderline_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"api", "v1", "order", "order_id", "orderline", "orderline_id"}, ""))
 
-	pattern_Gateway_GetCart_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "cart", "cart_id"}, ""))
+	pattern_Gateway_GetCart_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "cart", "cart_id"}, ""))
 
-	pattern_Gateway_GetUserCart_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"v1", "user", "user_id", "cart"}, ""))
+	pattern_Gateway_GetUserCart_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"api", "v1", "user", "user_id", "cart"}, ""))
 
-	pattern_Gateway_CreateCartline_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"v1", "cart", "cart_id", "cartline"}, ""))
+	pattern_Gateway_CreateCartline_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"api", "v1", "cart", "cart_id", "cartline"}, ""))
 
-	pattern_Gateway_UpdateCartline_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"v1", "cart", "cart_id", "cartline", "cartline_id"}, ""))
+	pattern_Gateway_UpdateCartline_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"api", "v1", "cart", "cart_id", "cartline", "cartline_id"}, ""))
 
-	pattern_Gateway_DeleteCartline_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"v1", "cart", "cart_id", "cartline", "cartline_id"}, ""))
+	pattern_Gateway_DeleteCartline_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"api", "v1", "cart", "cart_id", "cartline", "cartline_id"}, ""))
 
-	pattern_Gateway_GetProduct_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "product", "product_id"}, ""))
+	pattern_Gateway_GetProduct_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "product", "product_id"}, ""))
 
-	pattern_Gateway_GetAllProducts_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "product"}, ""))
+	pattern_Gateway_GetAllProducts_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "v1", "product"}, ""))
 
-	pattern_Gateway_GetAllUserProducts_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"v1", "user", "user_id", "products"}, ""))
+	pattern_Gateway_GetAllUserProducts_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"api", "v1", "user", "user_id", "products"}, ""))
 
-	pattern_Gateway_CreateProduct_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "product"}, ""))
+	pattern_Gateway_CreateProduct_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "v1", "product"}, ""))
 
-	pattern_Gateway_UpdateProduct_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "product"}, ""))
+	pattern_Gateway_UpdateProduct_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "v1", "product"}, ""))
 
-	pattern_Gateway_ModerateProduct_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "product", "moderate"}, ""))
+	pattern_Gateway_ModerateProduct_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "v1", "product", "moderate"}, ""))
 
-	pattern_Gateway_DeleteProduct_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "product", "product_id"}, ""))
+	pattern_Gateway_DeleteProduct_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "product", "product_id"}, ""))
 
-	pattern_Gateway_GetCategory_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "category", "category_id"}, ""))
+	pattern_Gateway_GetCategory_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "category", "category_id"}, ""))
 
-	pattern_Gateway_GetAllCategories_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "category"}, ""))
+	pattern_Gateway_GetAllCategories_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "v1", "category"}, ""))
 
-	pattern_Gateway_CreateDiscount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"v1", "product", "product_id", "discount"}, ""))
+	pattern_Gateway_CreateDiscount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"api", "v1", "product", "product_id", "discount"}, ""))
 
-	pattern_Gateway_DeleteDiscount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"v1", "product", "product_id", "discount"}, ""))
+	pattern_Gateway_DeleteDiscount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"api", "v1", "product", "product_id", "discount"}, ""))
 )
 
 var (

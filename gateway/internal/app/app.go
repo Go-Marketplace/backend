@@ -2,9 +2,11 @@ package app
 
 import (
 	"context"
+	_ "embed"
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -21,14 +23,20 @@ import (
 	"github.com/Go-Marketplace/backend/pkg/grpcserver"
 	"github.com/Go-Marketplace/backend/pkg/httpserver"
 	"github.com/Go-Marketplace/backend/pkg/logger"
+	pbCart "github.com/Go-Marketplace/backend/proto/gen/cart"
 	pbGateway "github.com/Go-Marketplace/backend/proto/gen/gateway"
 	pbOrder "github.com/Go-Marketplace/backend/proto/gen/order"
+	pbProduct "github.com/Go-Marketplace/backend/proto/gen/product"
 	pbUser "github.com/Go-Marketplace/backend/proto/gen/user"
+	"github.com/flowchartsman/swaggerui"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
 )
+
+//go:embed gateway.swagger.json
+var spec []byte
 
 func getRBAC(rolesPath string, inheritancePath string) (*model.RBACManager, error) {
 	rolesFile, err := os.Open(rolesPath)
@@ -90,6 +98,7 @@ func Run(cfg *config.Config) {
 		log.Fatalf("failed to create jwtManager: %s", err)
 	}
 
+	// Create order client
 	orderConn, err := grpc.Dial(
 		fmt.Sprintf("%s:%v", cfg.OrderConfig.GRPC.Host, cfg.OrderConfig.GRPC.Port),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
@@ -101,6 +110,7 @@ func Run(cfg *config.Config) {
 
 	orderClient := pbOrder.NewOrderClient(orderConn)
 
+	// Create user client
 	userConn, err := grpc.Dial(
 		fmt.Sprintf("%s:%v", cfg.UserConfig.GRPC.Host, cfg.UserConfig.GRPC.Port),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
@@ -112,7 +122,40 @@ func Run(cfg *config.Config) {
 
 	userClient := pbUser.NewUserClient(userConn)
 
-	gatewayHandler := handler.NewGatewayRoutes(orderClient, userClient, jwtManager, logger)
+	// Create cart client
+	cartConn, err := grpc.Dial(
+		fmt.Sprintf("%s:%v", cfg.CartConfig.GRPC.Host, cfg.CartConfig.GRPC.Port),
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
+	if err != nil {
+		log.Fatalf("failed to create cartConn: %v", err)
+	}
+	defer cartConn.Close()
+
+	cartClient := pbCart.NewCartClient(cartConn)
+
+	// Create product client
+	productConn, err := grpc.Dial(
+		fmt.Sprintf("%s:%v", cfg.ProductConfig.GRPC.Host, cfg.ProductConfig.GRPC.Port),
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
+	if err != nil {
+		log.Fatalf("failed to create productConn: %v", err)
+	}
+	defer productConn.Close()
+
+	productClient := pbProduct.NewProductClient(productConn)
+
+	// Create gateway handler
+
+	gatewayHandler := handler.NewGatewayRoutes(
+		orderClient,
+		userClient,
+		cartClient,
+		productClient,
+		jwtManager,
+		logger,
+	)
 
 	curDir, err := os.Getwd()
 	if err != nil {
@@ -150,10 +193,11 @@ func Run(cfg *config.Config) {
 	logger.Info("GRPC server started")
 
 	// Start HTTP Server
-	mux := runtime.NewServeMux()
+	httpMux := http.NewServeMux()
+	gwmux := runtime.NewServeMux()
 	err = pbGateway.RegisterGatewayHandlerFromEndpoint(
 		context.Background(),
-		mux,
+		gwmux,
 		fmt.Sprintf("localhost:%v", cfg.GatewayConfig.GRPC.Port),
 		[]grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())},
 	)
@@ -161,7 +205,10 @@ func Run(cfg *config.Config) {
 		log.Fatalf("failed to register api gateway handler from endpoint: %s", err)
 	}
 
-	httpServer := httpserver.New(mux)
+	httpMux.Handle("/", gwmux)
+	httpMux.Handle("/api/v1/swagger/", http.StripPrefix("/api/v1/swagger", swaggerui.Handler(spec)))
+
+	httpServer := httpserver.New(httpMux)
 	httpServer.Start()
 	defer httpServer.Shutdown()
 	logger.Info("HTTP server started")

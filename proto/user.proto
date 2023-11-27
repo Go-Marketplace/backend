@@ -12,6 +12,7 @@ service User {
     rpc GetAllUsers(GetAllUsersRequest) returns (GetAllUsersResponse);
     rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
     rpc UpdateUser(UpdateUserRequest) returns (UserResponse);
+    rpc ChangeUserRole(ChangeUserRoleRequest) returns (UserResponse);
     rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
 }
 
@@ -21,6 +22,11 @@ message GetUserRequest {
 
 message GetUserByEmailRequest {
     string email = 1;
+}
+
+message ChangeUserRoleRequest {
+    string user_id = 1;
+    UserRole role = 2;
 }
 
 message UserResponse {

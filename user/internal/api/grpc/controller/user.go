@@ -117,3 +117,19 @@ func DeleteUser(ctx context.Context, userUsecase usecase.UserUsecase, req *pbUse
 
 	return nil
 }
+
+func ChangeUserRole(ctx context.Context, userUsecase usecase.UserUsecase, req *pbUser.ChangeUserRoleRequest) (*model.User, error) {
+	userID, err := uuid.Parse(req.UserId)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid user id: %s", err)
+	}
+
+	role := model.UserRoles(req.Role)
+
+	user, err := userUsecase.ChangeUserRole(ctx, userID, role)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Internal error: %s", err)
+	}
+
+	return user, nil
+}

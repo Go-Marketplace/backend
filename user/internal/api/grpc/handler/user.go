@@ -82,3 +82,12 @@ func (router *userRoutes) DeleteUser(ctx context.Context, req *pbUser.DeleteUser
 
 	return &pbUser.DeleteUserResponse{}, nil
 }
+
+func (router *userRoutes) ChangeUserRole(ctx context.Context, req *pbUser.ChangeUserRoleRequest) (*pbUser.UserResponse, error) {
+	user, err := controller.ChangeUserRole(ctx, router.userUsecase, req)
+	if err != nil {
+		return nil, err
+	}
+
+	return user.ToProto(), nil
+}

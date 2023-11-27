@@ -106,6 +106,7 @@ protoc-gateway:
 		--grpc-gateway_out proto/gen/gateway \
     	--grpc-gateway_opt paths=source_relative \
 		--openapiv2_out docs \
+		--openapiv2_out gateway/internal/app \
 		proto/gateway.proto
 .PHONY: protoc-gateway
 

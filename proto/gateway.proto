@@ -50,7 +50,7 @@ service Gateway {
     // Auth
     rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse) {
         option (google.api.http) = {
-            post: "/v1/auth/register"
+            post: "/api/v1/auth/register"
             body: "*"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -63,7 +63,7 @@ service Gateway {
 
     rpc Login(LoginRequest) returns (LoginResponse) {
         option (google.api.http) = {
-            post: "/v1/auth/login"
+            post: "/api/v1/auth/login"
             body: "*"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -77,7 +77,7 @@ service Gateway {
     // User
     rpc GetUser(user.GetUserRequest) returns (user.UserResponse) {
         option (google.api.http) = {
-            get: "/v1/user/{user_id}"
+            get: "/api/v1/user/{user_id}"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             summary: "Get user";
@@ -88,7 +88,7 @@ service Gateway {
 
     rpc GetAllUsers(user.GetAllUsersRequest) returns (user.GetAllUsersResponse) {
         option (google.api.http) = {
-            get: "/v1/user"
+            get: "/api/v1/user"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             summary: "Get all users";
@@ -99,7 +99,7 @@ service Gateway {
 
     rpc UpdateUser(user.UpdateUserRequest) returns (user.UserResponse) {
         option (google.api.http) = {
-            patch: "/v1/user/{user_id}"
+            patch: "/api/v1/user/{user_id}"
             body: "*"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -109,9 +109,21 @@ service Gateway {
         };
     }
 
+    rpc ChangeUserRole(user.ChangeUserRoleRequest) returns (user.UserResponse) {
+        option (google.api.http) = {
+            patch: "/api/v1/user/{user_id}/role"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Change user role";
+            operation_id: "changeUserRole";
+            tags: "user";
+        };
+    }
+
     rpc DeleteUser(user.DeleteUserRequest) returns (user.DeleteUserResponse) {
         option (google.api.http) = {
-            delete: "/v1/user/{user_id}"
+            delete: "/api/v1/user/{user_id}"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             summary: "Delete user";
@@ -123,7 +135,7 @@ service Gateway {
     // Order
     rpc CreateOrder(order.CreateOrderRequest) returns (order.OrderResponse) {
         option (google.api.http) = {
-            post: "/v1/order"
+            post: "/api/v1/order"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             summary: "Create order";
@@ -134,7 +146,7 @@ service Gateway {
 
     rpc GetOrder(order.GetOrderRequest) returns (order.OrderResponse) {
         option (google.api.http) = {
-            get: "/v1/order/{order_id}"
+            get: "/api/v1/order/{order_id}"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             summary: "Get order";
@@ -145,7 +157,7 @@ service Gateway {
 
     rpc GetAllUserOrders(order.GetAllUserOrdersRequest) returns (order.GetAllUserOrdersResponse) {
         option (google.api.http) = {
-            get: "/v1/user/{user_id}/orders"
+            get: "/api/v1/user/{user_id}/orders"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             summary: "Get all user orders";
@@ -156,7 +168,7 @@ service Gateway {
 
     rpc DeleteOrder(order.DeleteOrderRequest) returns (order.DeleteOrderResponse) {
         option (google.api.http) = {
-            delete: "/v1/order/{order_id}"
+            delete: "/api/v1/order/{order_id}"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             summary: "Delete order";
@@ -167,7 +179,7 @@ service Gateway {
 
     rpc UpdateOrderline(order.UpdateOrderlineRequest) returns (order.OrderResponse) {
         option (google.api.http) = {
-            patch: "/v1/order/{order_id}/orderline/{orderline_id}"
+            patch: "/api/v1/order/{order_id}/orderline/{orderline_id}"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             summary: "Update orderline";
@@ -179,7 +191,7 @@ service Gateway {
     // Cart
     rpc GetCart(cart.GetCartRequest) returns (cart.CartModel) {
         option (google.api.http) = {
-            get: "/v1/cart/{cart_id}"
+            get: "/api/v1/cart/{cart_id}"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             summary: "Get cart";
@@ -190,7 +202,7 @@ service Gateway {
 
     rpc GetUserCart(cart.GetUserCartRequest) returns (cart.CartModel) {
         option (google.api.http) = {
-            get: "/v1/user/{user_id}/cart"
+            get: "/api/v1/user/{user_id}/cart"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             summary: "Get user cart";
@@ -201,7 +213,7 @@ service Gateway {
 
     rpc CreateCartline(cart.CreateCartlineRequest) returns (cart.CreateCartlineResponse) {
         option (google.api.http) = {
-            post: "/v1/cart/{cart_id}/cartline"
+            post: "/api/v1/cart/{cart_id}/cartline"
             body: "*"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -213,7 +225,7 @@ service Gateway {
 
     rpc UpdateCartline(cart.UpdateCartlineRequest) returns (cart.CartModel) {
         option (google.api.http) = {
-            patch: "/v1/cart/{cart_id}/cartline/{cartline_id}"
+            patch: "/api/v1/cart/{cart_id}/cartline/{cartline_id}"
             body: "*"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -225,7 +237,7 @@ service Gateway {
 
     rpc DeleteCartline(cart.DeleteCartlineRequest) returns (cart.DeleteCartlineResponse) {
         option (google.api.http) = {
-            delete: "/v1/cart/{cart_id}/cartline/{cartline_id}"
+            delete: "/api/v1/cart/{cart_id}/cartline/{cartline_id}"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             summary: "Delete cartline";
@@ -237,7 +249,7 @@ service Gateway {
     // Product
     rpc GetProduct(product.GetProductRequest) returns (product.ProductModel) {
         option (google.api.http) = {
-            get: "/v1/product/{product_id}"
+            get: "/api/v1/product/{product_id}"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             summary: "Get product";
@@ -249,7 +261,7 @@ service Gateway {
 
     rpc GetAllProducts(product.GetAllProductsRequest) returns (product.GetProductsResponse) {
         option (google.api.http) = {
-            get: "/v1/product"
+            get: "/api/v1/product"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             summary: "Get all product";
@@ -261,7 +273,7 @@ service Gateway {
 
     rpc GetAllUserProducts(product.GetAllUserProductsRequest) returns (product.GetProductsResponse) {
         option (google.api.http) = {
-            get: "/v1/user/{user_id}/products"
+            get: "/api/v1/user/{user_id}/products"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             summary: "Get all user product";
@@ -272,7 +284,7 @@ service Gateway {
 
     rpc CreateProduct(product.CreateProductRequest) returns (product.ProductModel) {
         option (google.api.http) = {
-            post: "/v1/product"
+            post: "/api/v1/product"
             body: "*"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -284,7 +296,7 @@ service Gateway {
 
     rpc UpdateProduct(product.UpdateProductRequest) returns (product.ProductModel) {
         option (google.api.http) = {
-            patch: "/v1/product"
+            patch: "/api/v1/product"
             body: "*"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -296,7 +308,7 @@ service Gateway {
 
     rpc ModerateProduct(product.ModerateProductRequest) returns (product.ProductModel) {
         option (google.api.http) = {
-            patch: "/v1/product/moderate"
+            patch: "/api/v1/product/moderate"
             body: "*"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -308,7 +320,7 @@ service Gateway {
 
     rpc DeleteProduct(product.DeleteProductRequest) returns (product.DeleteProductResponse) {
         option (google.api.http) = {
-            delete: "/v1/product/{product_id}"
+            delete: "/api/v1/product/{product_id}"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             summary: "Delete product";
@@ -319,7 +331,7 @@ service Gateway {
 
     rpc GetCategory(product.GetCategoryRequest) returns (product.CategoryModel) {
         option (google.api.http) = {
-            get: "/v1/category/{category_id}"
+            get: "/api/v1/category/{category_id}"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             summary: "Get category";
@@ -331,7 +343,7 @@ service Gateway {
 
     rpc GetAllCategories(product.GetAllCategoriesRequest) returns (product.GetAllCategoriesResponse) {
         option (google.api.http) = {
-            get: "/v1/category"
+            get: "/api/v1/category"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             summary: "Get all categories";
@@ -343,7 +355,7 @@ service Gateway {
 
     rpc CreateDiscount(product.CreateDiscountRequest) returns (product.ProductModel) {
         option (google.api.http) = {
-            post: "/v1/product/{product_id}/discount"
+            post: "/api/v1/product/{product_id}/discount"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             summary: "Create product's discount";
@@ -354,7 +366,7 @@ service Gateway {
 
     rpc DeleteDiscount(product.DeleteDiscountRequest) returns (product.DeleteDiscountResponse) {
         option (google.api.http) = {
-            delete: "/v1/product/{product_id}/discount"
+            delete: "/api/v1/product/{product_id}/discount"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             summary: "Delete product's discount";

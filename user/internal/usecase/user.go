@@ -49,3 +49,11 @@ func (usecase *UserUsecase) UpdateUser(ctx context.Context, user model.User) (*m
 
 	return usecase.repo.GetUser(ctx, user.ID)
 }
+
+func (usecase *UserUsecase) ChangeUserRole(ctx context.Context, userID uuid.UUID, role model.UserRoles) (*model.User, error) {
+	if err := usecase.repo.ChangeUserRole(ctx, userID, role); err != nil {
+		return nil, fmt.Errorf("failed to change user role: %w", err)
+	}
+
+	return usecase.repo.GetUser(ctx, userID)
+}

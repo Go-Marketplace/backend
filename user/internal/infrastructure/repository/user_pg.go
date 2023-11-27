@@ -166,6 +166,20 @@ func (repo *UserRepo) UpdateUser(ctx context.Context, user model.User) error {
 	return nil
 }
 
+func (repo *UserRepo) ChangeUserRole(ctx context.Context, userID uuid.UUID, role model.UserRoles) error {
+	_, err := repo.pg.Pool.Query(
+		ctx,
+		changeUserRole,
+		role,
+		userID,
+	)
+	if err != nil {
+		return fmt.Errorf("failed to Exec changeUserRole: %w", err)
+	}
+
+	return nil
+}
+
 func (repo *UserRepo) DeleteUser(ctx context.Context, id uuid.UUID) error {
 	_, err := repo.pg.Pool.Exec(ctx, deleteUser, id)
 	if err != nil {

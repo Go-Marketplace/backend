@@ -56,7 +56,7 @@ func (worker *cartTaskWorker) Run(ctx context.Context) {
 				for _, task := range tasks {
 					if task != nil {
 						cart, err := worker.cartUsecase.GetCart(ctx, task.CartID)
-						if err != nil {
+						if err != nil || cart == nil {
 							worker.logger.Error("failed to get cart %v: %w", task.CartID, err)
 							continue
 						}

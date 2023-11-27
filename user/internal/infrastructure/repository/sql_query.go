@@ -55,6 +55,13 @@ const (
 		WHERE user_id = $6;
 	`
 
+	changeUserRole = `
+		UPDATE users
+		SET
+			role = $1
+		WHERE user_id = $2;
+	`
+
 	deleteUser = `
 		DELETE FROM users
 		WHERE user_id = $1;
