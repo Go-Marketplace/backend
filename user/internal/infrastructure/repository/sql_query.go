@@ -58,8 +58,9 @@ const (
 	changeUserRole = `
 		UPDATE users
 		SET
-			role = $1
-		WHERE user_id = $2;
+			role = $1,
+			updated_at = $2
+		WHERE user_id = $3;
 	`
 
 	deleteUser = `

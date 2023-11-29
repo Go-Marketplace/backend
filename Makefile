@@ -19,6 +19,9 @@ install-mockgen: bindir
 gen-mocks: install-mockgen
 	rm -r order/internal/mocks/repo/
 	${MOCKGEN} -source=order/internal/infrastructure/interfaces/order.go -destination=order/internal/mocks/repo/order_mocks.go
+	${MOCKGEN} -source=user/internal/infrastructure/interfaces/user.go -destination=user/internal/mocks/repo/user_mocks.go
+
+	${MOCKGEN} -source=user/internal/usecase/user.go -destination=user/internal/mocks/usecase/user_mocks.go
 .PHONY: gen-mocks
 
 install-lint: bindir

@@ -12,11 +12,11 @@ import (
 type userRoutes struct {
 	pbUser.UnimplementedUserServer
 
-	userUsecase usecase.UserUsecase
+	userUsecase *usecase.UserUsecase
 	logger      *logger.Logger
 }
 
-func NewUserRoutes(userUsecase usecase.UserUsecase, logger *logger.Logger) *userRoutes {
+func NewUserRoutes(userUsecase *usecase.UserUsecase, logger *logger.Logger) *userRoutes {
 	return &userRoutes{
 		userUsecase: userUsecase,
 		logger:      logger,
@@ -62,7 +62,9 @@ func (router *userRoutes) CreateUser(ctx context.Context, req *pbUser.CreateUser
 		return nil, err
 	}
 
-	return &pbUser.CreateUserResponse{}, nil
+	return &pbUser.CreateUserResponse{
+		UserId: req.UserId,
+	}, nil
 }
 
 func (router *userRoutes) UpdateUser(ctx context.Context, req *pbUser.UpdateUserRequest) (*pbUser.UserResponse, error) {

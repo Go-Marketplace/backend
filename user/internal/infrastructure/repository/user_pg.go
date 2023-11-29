@@ -149,7 +149,7 @@ func (repo *UserRepo) CreateUser(ctx context.Context, user model.User) error {
 }
 
 func (repo *UserRepo) UpdateUser(ctx context.Context, user model.User) error {
-	_, err := repo.pg.Pool.Query(
+	_, err := repo.pg.Pool.Exec(
 		ctx,
 		updateUser,
 		user.FirstName,
@@ -166,12 +166,13 @@ func (repo *UserRepo) UpdateUser(ctx context.Context, user model.User) error {
 	return nil
 }
 
-func (repo *UserRepo) ChangeUserRole(ctx context.Context, userID uuid.UUID, role model.UserRoles) error {
-	_, err := repo.pg.Pool.Query(
+func (repo *UserRepo) ChangeUserRole(ctx context.Context, user model.User) error {
+	_, err := repo.pg.Pool.Exec(
 		ctx,
 		changeUserRole,
-		role,
-		userID,
+		user.Role,
+		user.UpdatedAt,
+		user.ID,
 	)
 	if err != nil {
 		return fmt.Errorf("failed to Exec changeUserRole: %w", err)

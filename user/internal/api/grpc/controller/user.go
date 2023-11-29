@@ -13,7 +13,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func GetUser(ctx context.Context, userUsecase usecase.UserUsecase, req *pbUser.GetUserRequest) (*model.User, error) {
+func GetUser(ctx context.Context, userUsecase usecase.IUserUsecase, req *pbUser.GetUserRequest) (*model.User, error) {
 	id, err := uuid.Parse(req.UserId)
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid id: %s", err)
@@ -31,7 +31,7 @@ func GetUser(ctx context.Context, userUsecase usecase.UserUsecase, req *pbUser.G
 	return user, nil
 }
 
-func GetUserByEmail(ctx context.Context, userUsecase usecase.UserUsecase, req *pbUser.GetUserByEmailRequest) (*model.User, error) {
+func GetUserByEmail(ctx context.Context, userUsecase usecase.IUserUsecase, req *pbUser.GetUserByEmailRequest) (*model.User, error) {
 	user, err := userUsecase.GetUserByEmail(ctx, req.Email)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Internal error: %s", err)
@@ -44,7 +44,7 @@ func GetUserByEmail(ctx context.Context, userUsecase usecase.UserUsecase, req *p
 	return user, nil
 }
 
-func GetAllUsers(ctx context.Context, userUsecase usecase.UserUsecase, req *pbUser.GetAllUsersRequest) ([]*model.User, error) {
+func GetAllUsers(ctx context.Context, userUsecase usecase.IUserUsecase, req *pbUser.GetAllUsersRequest) ([]*model.User, error) {
 	users, err := userUsecase.GetAllUsers(ctx)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Internal error: %s", err)
@@ -53,7 +53,7 @@ func GetAllUsers(ctx context.Context, userUsecase usecase.UserUsecase, req *pbUs
 	return users, nil
 }
 
-func CreateUser(ctx context.Context, userUsecase usecase.UserUsecase, req *pbUser.CreateUserRequest) error {
+func CreateUser(ctx context.Context, userUsecase usecase.IUserUsecase, req *pbUser.CreateUserRequest) error {
 	id, err := uuid.Parse(req.UserId)
 	if err != nil {
 		return fmt.Errorf("failed to parse user id: %w", err)
@@ -77,7 +77,7 @@ func CreateUser(ctx context.Context, userUsecase usecase.UserUsecase, req *pbUse
 	return nil
 }
 
-func UpdateUser(ctx context.Context, userUsecase usecase.UserUsecase, req *pbUser.UpdateUserRequest) (*model.User, error) {
+func UpdateUser(ctx context.Context, userUsecase usecase.IUserUsecase, req *pbUser.UpdateUserRequest) (*model.User, error) {
 	id, err := uuid.Parse(req.UserId)
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid id: %s", err)
@@ -104,7 +104,7 @@ func UpdateUser(ctx context.Context, userUsecase usecase.UserUsecase, req *pbUse
 	return user, nil
 }
 
-func DeleteUser(ctx context.Context, userUsecase usecase.UserUsecase, req *pbUser.DeleteUserRequest) error {
+func DeleteUser(ctx context.Context, userUsecase usecase.IUserUsecase, req *pbUser.DeleteUserRequest) error {
 	id, err := uuid.Parse(req.UserId)
 	if err != nil {
 		return status.Errorf(codes.InvalidArgument, "Invalid id: %s", err)
@@ -118,15 +118,23 @@ func DeleteUser(ctx context.Context, userUsecase usecase.UserUsecase, req *pbUse
 	return nil
 }
 
-func ChangeUserRole(ctx context.Context, userUsecase usecase.UserUsecase, req *pbUser.ChangeUserRoleRequest) (*model.User, error) {
+func ChangeUserRole(ctx context.Context, userUsecase usecase.IUserUsecase, req *pbUser.ChangeUserRoleRequest) (*model.User, error) {
 	userID, err := uuid.Parse(req.UserId)
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid user id: %s", err)
 	}
 
-	role := model.UserRoles(req.Role)
+	newUser := model.User{
+		ID:        userID,
+		Role:      model.UserRoles(req.Role),
+		UpdatedAt: time.Now(),
+	}
 
-	user, err := userUsecase.ChangeUserRole(ctx, userID, role)
+	if err = newUser.Validate(); err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid request: %s", err)
+	}
+
+	user, err := userUsecase.ChangeUserRole(ctx, newUser)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Internal error: %s", err)
 	}
