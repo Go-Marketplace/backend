@@ -4,6 +4,7 @@ import (
 	"time"
 
 	pbProduct "github.com/Go-Marketplace/backend/proto/gen/product"
+	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -13,10 +14,10 @@ type Product struct {
 	ID          uuid.UUID `json:"product_id"`
 	UserID      uuid.UUID `json:"user_id"`
 	CategoryID  int32     `json:"category_id"`
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	Price       int64     `json:"price"`
-	Quantity    int64     `json:"quantity"`
+	Name        string    `json:"name" validate:"max=128"`
+	Description string    `json:"description" validate:"max=1024"`
+	Price       int64     `json:"price" validate:"min=0,max=1000000000"`
+	Quantity    int64     `json:"quantity" validate:"min=0,max=10000000"`
 	Moderated   bool      `json:"moderated"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
@@ -24,13 +25,18 @@ type Product struct {
 	Discount *Discount
 }
 
-func (product *Product) ToProto() *pbProduct.ProductModel {
-	var discount *pbProduct.DiscountModel
+func (product *Product) Validate() error {
+	validate := validator.New()
+	return validate.Struct(product)
+}
+
+func (product *Product) ToProto() *pbProduct.ProductResponse {
+	var discount *pbProduct.DiscountResponse
 	if product.Discount != nil {
 		discount = product.Discount.ToProto()
 	}
 
-	return &pbProduct.ProductModel{
+	return &pbProduct.ProductResponse{
 		ProductId:   product.ID.String(),
 		UserId:      product.UserID.String(),
 		CategoryId:  product.CategoryID,
@@ -51,8 +57,8 @@ type Category struct {
 	Description string `json:"description"`
 }
 
-func (category *Category) ToProto() *pbProduct.CategoryModel {
-	return &pbProduct.CategoryModel{
+func (category *Category) ToProto() *pbProduct.CategoryResponse {
+	return &pbProduct.CategoryResponse{
 		CategoryId:  category.ID,
 		Name:        category.Name,
 		Description: category.Description,

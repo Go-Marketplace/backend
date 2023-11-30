@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func GetProduct(ctx context.Context, productUsecase *usecase.ProductUsecase, req *pbProduct.GetProductRequest) (*model.Product, error) {
+func GetProduct(ctx context.Context, productUsecase usecase.IProductUsecase, req *pbProduct.GetProductRequest) (*model.Product, error) {
 	if req == nil {
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid request")
 	}
@@ -34,7 +34,7 @@ func GetProduct(ctx context.Context, productUsecase *usecase.ProductUsecase, req
 	return product, nil
 }
 
-func GetAllProducts(ctx context.Context, productUsecase *usecase.ProductUsecase, req *pbProduct.GetAllProductsRequest) ([]*model.Product, error) {
+func GetAllProducts(ctx context.Context, productUsecase usecase.IProductUsecase, req *pbProduct.GetAllProductsRequest) ([]*model.Product, error) {
 	if req == nil {
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid request")
 	}
@@ -47,7 +47,7 @@ func GetAllProducts(ctx context.Context, productUsecase *usecase.ProductUsecase,
 	return products, nil
 }
 
-func GetAllUserProducts(ctx context.Context, productUsecase *usecase.ProductUsecase, req *pbProduct.GetAllUserProductsRequest) ([]*model.Product, error) {
+func GetAllUserProducts(ctx context.Context, productUsecase usecase.IProductUsecase, req *pbProduct.GetAllUserProductsRequest) ([]*model.Product, error) {
 	if req == nil {
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid request")
 	}
@@ -65,7 +65,7 @@ func GetAllUserProducts(ctx context.Context, productUsecase *usecase.ProductUsec
 	return products, nil
 }
 
-func GetAllCategoryProducts(ctx context.Context, productUsecase *usecase.ProductUsecase, req *pbProduct.GetAllCategoryProductsRequest) ([]*model.Product, error) {
+func GetAllCategoryProducts(ctx context.Context, productUsecase usecase.IProductUsecase, req *pbProduct.GetAllCategoryProductsRequest) ([]*model.Product, error) {
 	if req == nil {
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid request")
 	}
@@ -78,7 +78,7 @@ func GetAllCategoryProducts(ctx context.Context, productUsecase *usecase.Product
 	return products, nil
 }
 
-func CreateProduct(ctx context.Context, productUsecase *usecase.ProductUsecase, req *pbProduct.CreateProductRequest) (*model.Product, error) {
+func CreateProduct(ctx context.Context, productUsecase usecase.IProductUsecase, req *pbProduct.CreateProductRequest) (*model.Product, error) {
 	if req == nil {
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid request")
 	}
@@ -109,12 +109,18 @@ func CreateProduct(ctx context.Context, productUsecase *usecase.ProductUsecase, 
 	return &product, nil
 }
 
-func UpdateProduct(ctx context.Context, productUsecase *usecase.ProductUsecase, req *pbProduct.UpdateProductRequest) (*model.Product, error) {
+func UpdateProduct(ctx context.Context, productUsecase usecase.IProductUsecase, req *pbProduct.UpdateProductRequest) (*model.Product, error) {
 	if req == nil {
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid request")
 	}
 
-	product := model.Product{
+	productID, err := uuid.Parse(req.ProductId)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid product id: %s", err)
+	}
+
+	newProduct := model.Product{
+		ID:          productID,
 		CategoryID:  req.CategoryId,
 		Name:        req.Name,
 		Description: req.Description,
@@ -123,15 +129,15 @@ func UpdateProduct(ctx context.Context, productUsecase *usecase.ProductUsecase, 
 		UpdatedAt:   time.Now(),
 	}
 
-	err := productUsecase.UpdateProduct(ctx, product)
+	product, err := productUsecase.UpdateProduct(ctx, newProduct)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Internal error: %s", err)
 	}
 
-	return &product, nil
+	return product, nil
 }
 
-func DeleteProduct(ctx context.Context, productUsecase *usecase.ProductUsecase, req *pbProduct.DeleteProductRequest) error {
+func DeleteProduct(ctx context.Context, productUsecase usecase.IProductUsecase, req *pbProduct.DeleteProductRequest) error {
 	if req == nil {
 		return status.Errorf(codes.InvalidArgument, "Invalid request")
 	}
@@ -149,7 +155,35 @@ func DeleteProduct(ctx context.Context, productUsecase *usecase.ProductUsecase, 
 	return nil
 }
 
-func GetCategory(ctx context.Context, productUsecase *usecase.ProductUsecase, req *pbProduct.GetCategoryRequest) (*model.Category, error) {
+func ModerateProduct(ctx context.Context, productUsecase usecase.IProductUsecase, req *pbProduct.ModerateProductRequest) (*model.Product, error) {
+	if req == nil {
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid request")
+	}
+
+	productID, err := uuid.Parse(req.ProductId)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid product id: %s", err)
+	}
+
+	newProduct := model.Product{
+		ID:        productID,
+		Moderated: req.Moderated,
+		UpdatedAt: time.Now(),
+	}
+
+	product, err := productUsecase.ModerateProduct(ctx, newProduct)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Internal error: %s", err)
+	}
+
+	if product == nil {
+		return nil, status.Errorf(codes.NotFound, "Product not found")
+	}
+
+	return product, nil
+}
+
+func GetCategory(ctx context.Context, productUsecase usecase.IProductUsecase, req *pbProduct.GetCategoryRequest) (*model.Category, error) {
 	if req == nil {
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid request")
 	}
@@ -166,7 +200,7 @@ func GetCategory(ctx context.Context, productUsecase *usecase.ProductUsecase, re
 	return category, nil
 }
 
-func GetAllCategories(ctx context.Context, productUsecase *usecase.ProductUsecase, req *pbProduct.GetAllCategoriesRequest) ([]*model.Category, error) {
+func GetAllCategories(ctx context.Context, productUsecase usecase.IProductUsecase, req *pbProduct.GetAllCategoriesRequest) ([]*model.Category, error) {
 	if req == nil {
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid request")
 	}
@@ -179,7 +213,7 @@ func GetAllCategories(ctx context.Context, productUsecase *usecase.ProductUsecas
 	return categories, nil
 }
 
-func CreateDiscount(ctx context.Context, productUsecase *usecase.ProductUsecase, req *pbProduct.CreateDiscountRequest) (*model.Product, error) {
+func CreateDiscount(ctx context.Context, productUsecase usecase.IProductUsecase, req *pbProduct.CreateDiscountRequest) (*model.Product, error) {
 	if req == nil {
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid request")
 	}
@@ -204,20 +238,24 @@ func CreateDiscount(ctx context.Context, productUsecase *usecase.ProductUsecase,
 	return product, nil
 }
 
-func DeleteDiscount(ctx context.Context, productUsecase *usecase.ProductUsecase, req *pbProduct.DeleteDiscountRequest) error {
+func DeleteDiscount(ctx context.Context, productUsecase usecase.IProductUsecase, req *pbProduct.DeleteDiscountRequest) (*model.Product, error) {
 	if req == nil {
-		return status.Errorf(codes.InvalidArgument, "Invalid request")
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid request")
 	}
 
 	productID, err := uuid.Parse(req.ProductId)
 	if err != nil {
-		return status.Errorf(codes.InvalidArgument, "Invalid id: %s", err)
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid id: %s", err)
 	}
 
-	err = productUsecase.DeleteDiscount(ctx, productID)
+	product, err := productUsecase.DeleteDiscount(ctx, productID)
 	if err != nil {
 		status.Errorf(codes.Internal, "Internal error: %s", err)
 	}
 
-	return nil
+	if product == nil {
+		return nil, status.Errorf(codes.NotFound, "Product not found")
+	}
+
+	return product, nil
 }

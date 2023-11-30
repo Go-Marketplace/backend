@@ -95,6 +95,7 @@ func (repo *UserRepo) GetAllUsers(ctx context.Context) ([]*model.User, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to begin GetAllUsers transaction: %w", err)
 	}
+
 	defer func() {
 		if err != nil {
 			if err := tx.Rollback(ctx); err != nil {

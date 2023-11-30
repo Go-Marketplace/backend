@@ -7,20 +7,20 @@ option go_package = "github.com/Go-Marketplace/backend/proto/gen/product;product
 package product;
 
 service Product {
-    rpc GetProduct(GetProductRequest) returns (ProductModel);
-    rpc GetAllProducts(GetAllProductsRequest) returns (GetProductsResponse);
-    rpc GetAllUserProducts(GetAllUserProductsRequest) returns (GetProductsResponse);
-    rpc GetAllCategoryProducts(GetAllCategoryProductsRequest) returns (GetProductsResponse);
-    rpc CreateProduct(CreateProductRequest) returns (ProductModel);
-    rpc UpdateProduct(UpdateProductRequest) returns (ProductModel);
-    rpc ModerateProduct(ModerateProductRequest) returns (ProductModel);
+    rpc GetProduct(GetProductRequest) returns (ProductResponse);
+    rpc GetAllProducts(GetAllProductsRequest) returns (ProductsResponse);
+    rpc GetAllUserProducts(GetAllUserProductsRequest) returns (ProductsResponse);
+    rpc GetAllCategoryProducts(GetAllCategoryProductsRequest) returns (ProductsResponse);
+    rpc CreateProduct(CreateProductRequest) returns (ProductResponse);
+    rpc UpdateProduct(UpdateProductRequest) returns (ProductResponse);
+    rpc ModerateProduct(ModerateProductRequest) returns (ProductResponse);
     rpc DeleteProduct(DeleteProductRequest) returns (DeleteProductResponse);
 
-    rpc GetCategory(GetCategoryRequest) returns (CategoryModel);
-    rpc GetAllCategories(GetAllCategoriesRequest) returns (GetAllCategoriesResponse);
+    rpc GetCategory(GetCategoryRequest) returns (CategoryResponse);
+    rpc GetAllCategories(GetAllCategoriesRequest) returns (CategoriesResponse);
 
-    rpc CreateDiscount(CreateDiscountRequest) returns (ProductModel);
-    rpc DeleteDiscount(DeleteDiscountRequest) returns (DeleteDiscountResponse);
+    rpc CreateDiscount(CreateDiscountRequest) returns (ProductResponse);
+    rpc DeleteDiscount(DeleteDiscountRequest) returns (ProductResponse);
 }
 
 message GetProductRequest {
@@ -80,7 +80,7 @@ message DeleteDiscountRequest {
     string product_id = 1;
 }
 
-message ProductModel {
+message ProductResponse {
     string product_id = 1;
     string user_id = 2;
     int32 category_id = 3;
@@ -88,24 +88,24 @@ message ProductModel {
     string description = 5;
     int64 price = 6;
     int64 quantity = 7;
-    DiscountModel discount = 8;
+    DiscountResponse discount = 8;
     bool moderated = 9;
     google.protobuf.Timestamp created_at = 10;
     google.protobuf.Timestamp updated_at = 11;
 }
 
-message DiscountModel {
+message DiscountResponse {
     string product_id = 1;
     float percent = 2;
     google.protobuf.Timestamp created_at = 3;
     google.protobuf.Timestamp ended_at = 4;
 }
 
-message GetProductsResponse {
-    repeated ProductModel products = 1;
+message ProductsResponse {
+    repeated ProductResponse products = 1;
 }
 
-message CategoryModel {
+message CategoryResponse {
     int32 category_id = 1;
     string name = 2;
     string description = 3;
@@ -113,8 +113,8 @@ message CategoryModel {
 
 message DeleteProductResponse {}
 
-message GetAllCategoriesResponse {
-    repeated CategoryModel categories = 1;
+message CategoriesResponse {
+    repeated CategoryResponse categories = 1;
 }
 
 message DeleteDiscountResponse {}

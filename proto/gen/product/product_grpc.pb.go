@@ -37,18 +37,18 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ProductClient interface {
-	GetProduct(ctx context.Context, in *GetProductRequest, opts ...grpc.CallOption) (*ProductModel, error)
-	GetAllProducts(ctx context.Context, in *GetAllProductsRequest, opts ...grpc.CallOption) (*GetProductsResponse, error)
-	GetAllUserProducts(ctx context.Context, in *GetAllUserProductsRequest, opts ...grpc.CallOption) (*GetProductsResponse, error)
-	GetAllCategoryProducts(ctx context.Context, in *GetAllCategoryProductsRequest, opts ...grpc.CallOption) (*GetProductsResponse, error)
-	CreateProduct(ctx context.Context, in *CreateProductRequest, opts ...grpc.CallOption) (*ProductModel, error)
-	UpdateProduct(ctx context.Context, in *UpdateProductRequest, opts ...grpc.CallOption) (*ProductModel, error)
-	ModerateProduct(ctx context.Context, in *ModerateProductRequest, opts ...grpc.CallOption) (*ProductModel, error)
+	GetProduct(ctx context.Context, in *GetProductRequest, opts ...grpc.CallOption) (*ProductResponse, error)
+	GetAllProducts(ctx context.Context, in *GetAllProductsRequest, opts ...grpc.CallOption) (*ProductsResponse, error)
+	GetAllUserProducts(ctx context.Context, in *GetAllUserProductsRequest, opts ...grpc.CallOption) (*ProductsResponse, error)
+	GetAllCategoryProducts(ctx context.Context, in *GetAllCategoryProductsRequest, opts ...grpc.CallOption) (*ProductsResponse, error)
+	CreateProduct(ctx context.Context, in *CreateProductRequest, opts ...grpc.CallOption) (*ProductResponse, error)
+	UpdateProduct(ctx context.Context, in *UpdateProductRequest, opts ...grpc.CallOption) (*ProductResponse, error)
+	ModerateProduct(ctx context.Context, in *ModerateProductRequest, opts ...grpc.CallOption) (*ProductResponse, error)
 	DeleteProduct(ctx context.Context, in *DeleteProductRequest, opts ...grpc.CallOption) (*DeleteProductResponse, error)
-	GetCategory(ctx context.Context, in *GetCategoryRequest, opts ...grpc.CallOption) (*CategoryModel, error)
-	GetAllCategories(ctx context.Context, in *GetAllCategoriesRequest, opts ...grpc.CallOption) (*GetAllCategoriesResponse, error)
-	CreateDiscount(ctx context.Context, in *CreateDiscountRequest, opts ...grpc.CallOption) (*ProductModel, error)
-	DeleteDiscount(ctx context.Context, in *DeleteDiscountRequest, opts ...grpc.CallOption) (*DeleteDiscountResponse, error)
+	GetCategory(ctx context.Context, in *GetCategoryRequest, opts ...grpc.CallOption) (*CategoryResponse, error)
+	GetAllCategories(ctx context.Context, in *GetAllCategoriesRequest, opts ...grpc.CallOption) (*CategoriesResponse, error)
+	CreateDiscount(ctx context.Context, in *CreateDiscountRequest, opts ...grpc.CallOption) (*ProductResponse, error)
+	DeleteDiscount(ctx context.Context, in *DeleteDiscountRequest, opts ...grpc.CallOption) (*ProductResponse, error)
 }
 
 type productClient struct {
@@ -59,8 +59,8 @@ func NewProductClient(cc grpc.ClientConnInterface) ProductClient {
 	return &productClient{cc}
 }
 
-func (c *productClient) GetProduct(ctx context.Context, in *GetProductRequest, opts ...grpc.CallOption) (*ProductModel, error) {
-	out := new(ProductModel)
+func (c *productClient) GetProduct(ctx context.Context, in *GetProductRequest, opts ...grpc.CallOption) (*ProductResponse, error) {
+	out := new(ProductResponse)
 	err := c.cc.Invoke(ctx, Product_GetProduct_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -68,8 +68,8 @@ func (c *productClient) GetProduct(ctx context.Context, in *GetProductRequest, o
 	return out, nil
 }
 
-func (c *productClient) GetAllProducts(ctx context.Context, in *GetAllProductsRequest, opts ...grpc.CallOption) (*GetProductsResponse, error) {
-	out := new(GetProductsResponse)
+func (c *productClient) GetAllProducts(ctx context.Context, in *GetAllProductsRequest, opts ...grpc.CallOption) (*ProductsResponse, error) {
+	out := new(ProductsResponse)
 	err := c.cc.Invoke(ctx, Product_GetAllProducts_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -77,8 +77,8 @@ func (c *productClient) GetAllProducts(ctx context.Context, in *GetAllProductsRe
 	return out, nil
 }
 
-func (c *productClient) GetAllUserProducts(ctx context.Context, in *GetAllUserProductsRequest, opts ...grpc.CallOption) (*GetProductsResponse, error) {
-	out := new(GetProductsResponse)
+func (c *productClient) GetAllUserProducts(ctx context.Context, in *GetAllUserProductsRequest, opts ...grpc.CallOption) (*ProductsResponse, error) {
+	out := new(ProductsResponse)
 	err := c.cc.Invoke(ctx, Product_GetAllUserProducts_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -86,8 +86,8 @@ func (c *productClient) GetAllUserProducts(ctx context.Context, in *GetAllUserPr
 	return out, nil
 }
 
-func (c *productClient) GetAllCategoryProducts(ctx context.Context, in *GetAllCategoryProductsRequest, opts ...grpc.CallOption) (*GetProductsResponse, error) {
-	out := new(GetProductsResponse)
+func (c *productClient) GetAllCategoryProducts(ctx context.Context, in *GetAllCategoryProductsRequest, opts ...grpc.CallOption) (*ProductsResponse, error) {
+	out := new(ProductsResponse)
 	err := c.cc.Invoke(ctx, Product_GetAllCategoryProducts_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -95,8 +95,8 @@ func (c *productClient) GetAllCategoryProducts(ctx context.Context, in *GetAllCa
 	return out, nil
 }
 
-func (c *productClient) CreateProduct(ctx context.Context, in *CreateProductRequest, opts ...grpc.CallOption) (*ProductModel, error) {
-	out := new(ProductModel)
+func (c *productClient) CreateProduct(ctx context.Context, in *CreateProductRequest, opts ...grpc.CallOption) (*ProductResponse, error) {
+	out := new(ProductResponse)
 	err := c.cc.Invoke(ctx, Product_CreateProduct_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -104,8 +104,8 @@ func (c *productClient) CreateProduct(ctx context.Context, in *CreateProductRequ
 	return out, nil
 }
 
-func (c *productClient) UpdateProduct(ctx context.Context, in *UpdateProductRequest, opts ...grpc.CallOption) (*ProductModel, error) {
-	out := new(ProductModel)
+func (c *productClient) UpdateProduct(ctx context.Context, in *UpdateProductRequest, opts ...grpc.CallOption) (*ProductResponse, error) {
+	out := new(ProductResponse)
 	err := c.cc.Invoke(ctx, Product_UpdateProduct_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -113,8 +113,8 @@ func (c *productClient) UpdateProduct(ctx context.Context, in *UpdateProductRequ
 	return out, nil
 }
 
-func (c *productClient) ModerateProduct(ctx context.Context, in *ModerateProductRequest, opts ...grpc.CallOption) (*ProductModel, error) {
-	out := new(ProductModel)
+func (c *productClient) ModerateProduct(ctx context.Context, in *ModerateProductRequest, opts ...grpc.CallOption) (*ProductResponse, error) {
+	out := new(ProductResponse)
 	err := c.cc.Invoke(ctx, Product_ModerateProduct_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -131,8 +131,8 @@ func (c *productClient) DeleteProduct(ctx context.Context, in *DeleteProductRequ
 	return out, nil
 }
 
-func (c *productClient) GetCategory(ctx context.Context, in *GetCategoryRequest, opts ...grpc.CallOption) (*CategoryModel, error) {
-	out := new(CategoryModel)
+func (c *productClient) GetCategory(ctx context.Context, in *GetCategoryRequest, opts ...grpc.CallOption) (*CategoryResponse, error) {
+	out := new(CategoryResponse)
 	err := c.cc.Invoke(ctx, Product_GetCategory_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -140,8 +140,8 @@ func (c *productClient) GetCategory(ctx context.Context, in *GetCategoryRequest,
 	return out, nil
 }
 
-func (c *productClient) GetAllCategories(ctx context.Context, in *GetAllCategoriesRequest, opts ...grpc.CallOption) (*GetAllCategoriesResponse, error) {
-	out := new(GetAllCategoriesResponse)
+func (c *productClient) GetAllCategories(ctx context.Context, in *GetAllCategoriesRequest, opts ...grpc.CallOption) (*CategoriesResponse, error) {
+	out := new(CategoriesResponse)
 	err := c.cc.Invoke(ctx, Product_GetAllCategories_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -149,8 +149,8 @@ func (c *productClient) GetAllCategories(ctx context.Context, in *GetAllCategori
 	return out, nil
 }
 
-func (c *productClient) CreateDiscount(ctx context.Context, in *CreateDiscountRequest, opts ...grpc.CallOption) (*ProductModel, error) {
-	out := new(ProductModel)
+func (c *productClient) CreateDiscount(ctx context.Context, in *CreateDiscountRequest, opts ...grpc.CallOption) (*ProductResponse, error) {
+	out := new(ProductResponse)
 	err := c.cc.Invoke(ctx, Product_CreateDiscount_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -158,8 +158,8 @@ func (c *productClient) CreateDiscount(ctx context.Context, in *CreateDiscountRe
 	return out, nil
 }
 
-func (c *productClient) DeleteDiscount(ctx context.Context, in *DeleteDiscountRequest, opts ...grpc.CallOption) (*DeleteDiscountResponse, error) {
-	out := new(DeleteDiscountResponse)
+func (c *productClient) DeleteDiscount(ctx context.Context, in *DeleteDiscountRequest, opts ...grpc.CallOption) (*ProductResponse, error) {
+	out := new(ProductResponse)
 	err := c.cc.Invoke(ctx, Product_DeleteDiscount_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -171,18 +171,18 @@ func (c *productClient) DeleteDiscount(ctx context.Context, in *DeleteDiscountRe
 // All implementations must embed UnimplementedProductServer
 // for forward compatibility
 type ProductServer interface {
-	GetProduct(context.Context, *GetProductRequest) (*ProductModel, error)
-	GetAllProducts(context.Context, *GetAllProductsRequest) (*GetProductsResponse, error)
-	GetAllUserProducts(context.Context, *GetAllUserProductsRequest) (*GetProductsResponse, error)
-	GetAllCategoryProducts(context.Context, *GetAllCategoryProductsRequest) (*GetProductsResponse, error)
-	CreateProduct(context.Context, *CreateProductRequest) (*ProductModel, error)
-	UpdateProduct(context.Context, *UpdateProductRequest) (*ProductModel, error)
-	ModerateProduct(context.Context, *ModerateProductRequest) (*ProductModel, error)
+	GetProduct(context.Context, *GetProductRequest) (*ProductResponse, error)
+	GetAllProducts(context.Context, *GetAllProductsRequest) (*ProductsResponse, error)
+	GetAllUserProducts(context.Context, *GetAllUserProductsRequest) (*ProductsResponse, error)
+	GetAllCategoryProducts(context.Context, *GetAllCategoryProductsRequest) (*ProductsResponse, error)
+	CreateProduct(context.Context, *CreateProductRequest) (*ProductResponse, error)
+	UpdateProduct(context.Context, *UpdateProductRequest) (*ProductResponse, error)
+	ModerateProduct(context.Context, *ModerateProductRequest) (*ProductResponse, error)
 	DeleteProduct(context.Context, *DeleteProductRequest) (*DeleteProductResponse, error)
-	GetCategory(context.Context, *GetCategoryRequest) (*CategoryModel, error)
-	GetAllCategories(context.Context, *GetAllCategoriesRequest) (*GetAllCategoriesResponse, error)
-	CreateDiscount(context.Context, *CreateDiscountRequest) (*ProductModel, error)
-	DeleteDiscount(context.Context, *DeleteDiscountRequest) (*DeleteDiscountResponse, error)
+	GetCategory(context.Context, *GetCategoryRequest) (*CategoryResponse, error)
+	GetAllCategories(context.Context, *GetAllCategoriesRequest) (*CategoriesResponse, error)
+	CreateDiscount(context.Context, *CreateDiscountRequest) (*ProductResponse, error)
+	DeleteDiscount(context.Context, *DeleteDiscountRequest) (*ProductResponse, error)
 	mustEmbedUnimplementedProductServer()
 }
 
@@ -190,40 +190,40 @@ type ProductServer interface {
 type UnimplementedProductServer struct {
 }
 
-func (UnimplementedProductServer) GetProduct(context.Context, *GetProductRequest) (*ProductModel, error) {
+func (UnimplementedProductServer) GetProduct(context.Context, *GetProductRequest) (*ProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProduct not implemented")
 }
-func (UnimplementedProductServer) GetAllProducts(context.Context, *GetAllProductsRequest) (*GetProductsResponse, error) {
+func (UnimplementedProductServer) GetAllProducts(context.Context, *GetAllProductsRequest) (*ProductsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllProducts not implemented")
 }
-func (UnimplementedProductServer) GetAllUserProducts(context.Context, *GetAllUserProductsRequest) (*GetProductsResponse, error) {
+func (UnimplementedProductServer) GetAllUserProducts(context.Context, *GetAllUserProductsRequest) (*ProductsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllUserProducts not implemented")
 }
-func (UnimplementedProductServer) GetAllCategoryProducts(context.Context, *GetAllCategoryProductsRequest) (*GetProductsResponse, error) {
+func (UnimplementedProductServer) GetAllCategoryProducts(context.Context, *GetAllCategoryProductsRequest) (*ProductsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllCategoryProducts not implemented")
 }
-func (UnimplementedProductServer) CreateProduct(context.Context, *CreateProductRequest) (*ProductModel, error) {
+func (UnimplementedProductServer) CreateProduct(context.Context, *CreateProductRequest) (*ProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateProduct not implemented")
 }
-func (UnimplementedProductServer) UpdateProduct(context.Context, *UpdateProductRequest) (*ProductModel, error) {
+func (UnimplementedProductServer) UpdateProduct(context.Context, *UpdateProductRequest) (*ProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateProduct not implemented")
 }
-func (UnimplementedProductServer) ModerateProduct(context.Context, *ModerateProductRequest) (*ProductModel, error) {
+func (UnimplementedProductServer) ModerateProduct(context.Context, *ModerateProductRequest) (*ProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ModerateProduct not implemented")
 }
 func (UnimplementedProductServer) DeleteProduct(context.Context, *DeleteProductRequest) (*DeleteProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteProduct not implemented")
 }
-func (UnimplementedProductServer) GetCategory(context.Context, *GetCategoryRequest) (*CategoryModel, error) {
+func (UnimplementedProductServer) GetCategory(context.Context, *GetCategoryRequest) (*CategoryResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCategory not implemented")
 }
-func (UnimplementedProductServer) GetAllCategories(context.Context, *GetAllCategoriesRequest) (*GetAllCategoriesResponse, error) {
+func (UnimplementedProductServer) GetAllCategories(context.Context, *GetAllCategoriesRequest) (*CategoriesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllCategories not implemented")
 }
-func (UnimplementedProductServer) CreateDiscount(context.Context, *CreateDiscountRequest) (*ProductModel, error) {
+func (UnimplementedProductServer) CreateDiscount(context.Context, *CreateDiscountRequest) (*ProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateDiscount not implemented")
 }
-func (UnimplementedProductServer) DeleteDiscount(context.Context, *DeleteDiscountRequest) (*DeleteDiscountResponse, error) {
+func (UnimplementedProductServer) DeleteDiscount(context.Context, *DeleteDiscountRequest) (*ProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteDiscount not implemented")
 }
 func (UnimplementedProductServer) mustEmbedUnimplementedProductServer() {}

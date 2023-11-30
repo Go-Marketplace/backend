@@ -6,19 +6,29 @@ import (
 	"time"
 
 	pbProduct "github.com/Go-Marketplace/backend/proto/gen/product"
+	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type Discount struct {
 	ProductID uuid.UUID `json:"product_id"`
-	Percent   float32   `json:"percent"`
+	Percent   float32   `json:"percent" validate:"required,min=0,max=100"`
 	CreatedAt time.Time `json:"created_at"`
 	EndedAt   time.Time `json:"ended_at"`
 }
 
-func (discount *Discount) ToProto() *pbProduct.DiscountModel {
-	return &pbProduct.DiscountModel{
+func (discount *Discount) Validate() error {
+	if discount.EndedAt.Before(discount.CreatedAt) {
+		return fmt.Errorf("ended_at cannot be less than created_at")
+	}
+
+	validate := validator.New()
+	return validate.Struct(discount)
+}
+
+func (discount *Discount) ToProto() *pbProduct.DiscountResponse {
+	return &pbProduct.DiscountResponse{
 		ProductId: discount.ProductID.String(),
 		Percent:   discount.Percent,
 		CreatedAt: timestamppb.New(discount.CreatedAt),

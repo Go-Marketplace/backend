@@ -35,7 +35,7 @@ func TestChangeUserRole(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	userID, _ := uuid.Parse("3e7cbbcf-ebe3-4808-b895-fe5eaf41be22")
+	userID := uuid.New()
 
 	expectedUserFromRepo := &model.User{
 		ID:        userID,
@@ -48,7 +48,7 @@ func TestChangeUserRole(t *testing.T) {
 	testcases := []struct {
 		name         string
 		args         args
-		mock         func(repo *mocks.MockIUserUsecase)
+		mock         func(usecase *mocks.MockIUserUsecase)
 		expectedUser *model.User
 		expectedErr  error
 	}{

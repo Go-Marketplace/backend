@@ -135,27 +135,27 @@ func (router *gatewayRoutes) DeleteCartline(ctx context.Context, req *pbCart.Del
 
 // Product
 
-func (router *gatewayRoutes) GetProduct(ctx context.Context, req *pbProduct.GetProductRequest) (*pbProduct.ProductModel, error) {
+func (router *gatewayRoutes) GetProduct(ctx context.Context, req *pbProduct.GetProductRequest) (*pbProduct.ProductResponse, error) {
 	return router.productClient.GetProduct(ctx, req)
 }
 
-func (router *gatewayRoutes) GetAllProduct(ctx context.Context, req *pbProduct.GetAllProductsRequest) (*pbProduct.GetProductsResponse, error) {
+func (router *gatewayRoutes) GetAllProduct(ctx context.Context, req *pbProduct.GetAllProductsRequest) (*pbProduct.ProductsResponse, error) {
 	return router.productClient.GetAllProducts(ctx, req)
 }
 
-func (router *gatewayRoutes) GetAllUserProducts(ctx context.Context, req *pbProduct.GetAllUserProductsRequest) (*pbProduct.GetProductsResponse, error) {
+func (router *gatewayRoutes) GetAllUserProducts(ctx context.Context, req *pbProduct.GetAllUserProductsRequest) (*pbProduct.ProductsResponse, error) {
 	return router.productClient.GetAllUserProducts(ctx, req)
 }
 
-func (router *gatewayRoutes) CreateProduct(ctx context.Context, req *pbProduct.CreateProductRequest) (*pbProduct.ProductModel, error) {
+func (router *gatewayRoutes) CreateProduct(ctx context.Context, req *pbProduct.CreateProductRequest) (*pbProduct.ProductResponse, error) {
 	return router.productClient.CreateProduct(ctx, req)
 }
 
-func (router *gatewayRoutes) UpdateProduct(ctx context.Context, req *pbProduct.UpdateProductRequest) (*pbProduct.ProductModel, error) {
+func (router *gatewayRoutes) UpdateProduct(ctx context.Context, req *pbProduct.UpdateProductRequest) (*pbProduct.ProductResponse, error) {
 	return router.productClient.UpdateProduct(ctx, req)
 }
 
-func (router *gatewayRoutes) ModerateProduct(ctx context.Context, req *pbProduct.ModerateProductRequest) (*pbProduct.ProductModel, error) {
+func (router *gatewayRoutes) ModerateProduct(ctx context.Context, req *pbProduct.ModerateProductRequest) (*pbProduct.ProductResponse, error) {
 	return router.productClient.ModerateProduct(ctx, req)
 }
 
@@ -165,20 +165,20 @@ func (router *gatewayRoutes) DeleteProduct(ctx context.Context, req *pbProduct.D
 
 // Category
 
-func (router *gatewayRoutes) GetCategory(ctx context.Context, req *pbProduct.GetCategoryRequest) (*pbProduct.CategoryModel, error) {
+func (router *gatewayRoutes) GetCategory(ctx context.Context, req *pbProduct.GetCategoryRequest) (*pbProduct.CategoryResponse, error) {
 	return router.productClient.GetCategory(ctx, req)
 }
 
-func (router *gatewayRoutes) GetAllCategories(ctx context.Context, req *pbProduct.GetAllCategoriesRequest) (*pbProduct.GetAllCategoriesResponse, error) {
+func (router *gatewayRoutes) GetAllCategories(ctx context.Context, req *pbProduct.GetAllCategoriesRequest) (*pbProduct.CategoriesResponse, error) {
 	return router.productClient.GetAllCategories(ctx, req)
 }
 
 // Discount
 
-func (router *gatewayRoutes) CreateDiscount(ctx context.Context, req *pbProduct.CreateDiscountRequest) (*pbProduct.ProductModel, error) {
+func (router *gatewayRoutes) CreateDiscount(ctx context.Context, req *pbProduct.CreateDiscountRequest) (*pbProduct.ProductResponse, error) {
 	return router.productClient.CreateDiscount(ctx, req)
 }
 
-func (router *gatewayRoutes) DeleteDiscount(ctx context.Context, req *pbProduct.DeleteDiscountRequest) (*pbProduct.DeleteDiscountResponse, error) {
+func (router *gatewayRoutes) DeleteDiscount(ctx context.Context, req *pbProduct.DeleteDiscountRequest) (*pbProduct.ProductResponse, error) {
 	return router.productClient.DeleteDiscount(ctx, req)
 }

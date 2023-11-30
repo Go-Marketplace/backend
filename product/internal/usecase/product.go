@@ -9,6 +9,26 @@ import (
 	"github.com/google/uuid"
 )
 
+type IProductUsecase interface {
+	// Product
+	GetProduct(ctx context.Context, id uuid.UUID) (*model.Product, error)
+	GetAllProducts(ctx context.Context) ([]*model.Product, error)
+	GetAllUserProducts(ctx context.Context, userID uuid.UUID) ([]*model.Product, error)
+	GetAllCategoryProducts(ctx context.Context, categoryID int32) ([]*model.Product, error)
+	CreateProduct(ctx context.Context, product model.Product) error
+	UpdateProduct(ctx context.Context, product model.Product) (*model.Product, error)
+	DeleteProduct(ctx context.Context, id uuid.UUID) error
+	ModerateProduct(ctx context.Context, product model.Product) (*model.Product, error)
+
+	// Category
+	GetCategory(ctx context.Context, id int32) (*model.Category, error)
+	GetAllCategories(ctx context.Context) ([]*model.Category, error)
+
+	// Discount
+	CreateDiscount(ctx context.Context, discount model.Discount) (*model.Product, error)
+	DeleteDiscount(ctx context.Context, productID uuid.UUID) (*model.Product, error)
+}
+
 type ProductUsecase struct {
 	productRepo  interfaces.ProductRepo
 	discountRepo interfaces.DiscountRepo
@@ -95,8 +115,20 @@ func (usecase *ProductUsecase) CreateProduct(ctx context.Context, product model.
 	return usecase.productRepo.CreateProduct(ctx, product)
 }
 
-func (usecase *ProductUsecase) UpdateProduct(ctx context.Context, product model.Product) error {
-	return usecase.productRepo.UpdateProduct(ctx, product)
+func (usecase *ProductUsecase) UpdateProduct(ctx context.Context, product model.Product) (*model.Product, error) {
+	if err := usecase.productRepo.UpdateProduct(ctx, product); err != nil {
+		return nil, err
+	}
+
+	return usecase.GetProduct(ctx, product.ID)
+}
+
+func (usecase *ProductUsecase) ModerateProduct(ctx context.Context, product model.Product) (*model.Product, error) {
+	if err := usecase.productRepo.ModerateProduct(ctx, product); err != nil {
+		return nil, err
+	}
+
+	return usecase.GetProduct(ctx, product.ID)
 }
 
 func (usecase *ProductUsecase) DeleteProduct(ctx context.Context, id uuid.UUID) error {
@@ -116,9 +148,13 @@ func (usecase *ProductUsecase) CreateDiscount(ctx context.Context, discount mode
 		return nil, err
 	}
 
-	return usecase.productRepo.GetProduct(ctx, discount.ProductID)
+	return usecase.GetProduct(ctx, discount.ProductID)
 }
 
-func (usecase *ProductUsecase) DeleteDiscount(ctx context.Context, productID uuid.UUID) error {
-	return usecase.discountRepo.DeleteDiscount(ctx, productID)
+func (usecase *ProductUsecase) DeleteDiscount(ctx context.Context, productID uuid.UUID) (*model.Product, error) {
+	if err := usecase.discountRepo.DeleteDiscount(ctx, productID); err != nil {
+		return nil, err
+	}
+
+	return usecase.GetProduct(ctx, productID)
 }

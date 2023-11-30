@@ -147,9 +147,25 @@ func (repo *ProductRepo) UpdateProduct(ctx context.Context, product model.Produc
 		product.Price,
 		product.Quantity,
 		product.UpdatedAt,
+		product.ID,
 	)
 	if err != nil {
 		return fmt.Errorf("failed to Exec updateProduct: %w", err)
+	}
+
+	return nil
+}
+
+func (repo *ProductRepo) ModerateProduct(ctx context.Context, product model.Product) error {
+	_, err := repo.pg.Pool.Exec(
+		ctx,
+		moderateProduct,
+		product.Moderated,
+		product.UpdatedAt,
+		product.ID,
+	)
+	if err != nil {
+		return fmt.Errorf("failed to Exec moderateProduct: %w", err)
 	}
 
 	return nil

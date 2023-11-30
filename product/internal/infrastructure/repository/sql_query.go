@@ -14,6 +14,7 @@ const (
 			products.created_at,
 			products.updated_at
 		FROM products
+		WHERE products.moderated = false;
 	`
 
 	getProductByID = `
@@ -45,7 +46,7 @@ const (
 			products.created_at,
 			products.updated_at
 		FROM products
-		WHERE category_id = $1;
+		WHERE category_id = $1 AND products.moderated = false;
 	`
 
 	getAllUserProducts = `
@@ -100,6 +101,14 @@ const (
 			quantity = $5,
 			updated_at = $6
 		WHERE product_id = $7;
+	`
+
+	moderateProduct = `
+		UPDATE products
+		SET
+			moderated = $1,
+			updated_at = $2
+		WHERE product_id = $3;
 	`
 
 	deleteProduct = `

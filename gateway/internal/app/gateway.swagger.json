@@ -265,7 +265,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/productGetAllCategoriesResponse"
+              "$ref": "#/definitions/productCategoriesResponse"
             }
           },
           "default": {
@@ -289,7 +289,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/productCategoryModel"
+              "$ref": "#/definitions/productCategoryResponse"
             }
           },
           "default": {
@@ -463,7 +463,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/productGetProductsResponse"
+              "$ref": "#/definitions/productProductsResponse"
             }
           },
           "default": {
@@ -485,7 +485,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/productProductModel"
+              "$ref": "#/definitions/productProductResponse"
             }
           },
           "default": {
@@ -516,7 +516,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/productProductModel"
+              "$ref": "#/definitions/productProductResponse"
             }
           },
           "default": {
@@ -549,7 +549,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/productProductModel"
+              "$ref": "#/definitions/productProductResponse"
             }
           },
           "default": {
@@ -582,7 +582,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/productProductModel"
+              "$ref": "#/definitions/productProductResponse"
             }
           },
           "default": {
@@ -643,7 +643,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/productDeleteDiscountResponse"
+              "$ref": "#/definitions/productProductResponse"
             }
           },
           "default": {
@@ -672,7 +672,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/productProductModel"
+              "$ref": "#/definitions/productProductResponse"
             }
           },
           "default": {
@@ -913,7 +913,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/productGetProductsResponse"
+              "$ref": "#/definitions/productProductsResponse"
             }
           },
           "default": {
@@ -929,6 +929,50 @@
             "in": "path",
             "required": true,
             "type": "string"
+          }
+        ],
+        "tags": [
+          "user"
+        ]
+      }
+    },
+    "/api/v1/user/{userId}/role": {
+      "patch": {
+        "summary": "Change user role",
+        "operationId": "changeUserRole",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/userUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "role": {
+                  "$ref": "#/definitions/userUserRole"
+                }
+              }
+            }
           }
         ],
         "tags": [
@@ -1139,7 +1183,19 @@
       ],
       "default": "CANCELED"
     },
-    "productCategoryModel": {
+    "productCategoriesResponse": {
+      "type": "object",
+      "properties": {
+        "categories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/productCategoryResponse"
+          }
+        }
+      }
+    },
+    "productCategoryResponse": {
       "type": "object",
       "properties": {
         "categoryId": {
@@ -1180,13 +1236,10 @@
         }
       }
     },
-    "productDeleteDiscountResponse": {
-      "type": "object"
-    },
     "productDeleteProductResponse": {
       "type": "object"
     },
-    "productDiscountModel": {
+    "productDiscountResponse": {
       "type": "object",
       "properties": {
         "productId": {
@@ -1206,30 +1259,6 @@
         }
       }
     },
-    "productGetAllCategoriesResponse": {
-      "type": "object",
-      "properties": {
-        "categories": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/productCategoryModel"
-          }
-        }
-      }
-    },
-    "productGetProductsResponse": {
-      "type": "object",
-      "properties": {
-        "products": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/productProductModel"
-          }
-        }
-      }
-    },
     "productModerateProductRequest": {
       "type": "object",
       "properties": {
@@ -1241,7 +1270,7 @@
         }
       }
     },
-    "productProductModel": {
+    "productProductResponse": {
       "type": "object",
       "properties": {
         "productId": {
@@ -1269,7 +1298,7 @@
           "format": "int64"
         },
         "discount": {
-          "$ref": "#/definitions/productDiscountModel"
+          "$ref": "#/definitions/productDiscountResponse"
         },
         "moderated": {
           "type": "boolean"
@@ -1281,6 +1310,18 @@
         "updatedAt": {
           "type": "string",
           "format": "date-time"
+        }
+      }
+    },
+    "productProductsResponse": {
+      "type": "object",
+      "properties": {
+        "products": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/productProductResponse"
+          }
         }
       }
     },

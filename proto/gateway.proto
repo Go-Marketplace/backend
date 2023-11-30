@@ -247,7 +247,7 @@ service Gateway {
     }
 
     // Product
-    rpc GetProduct(product.GetProductRequest) returns (product.ProductModel) {
+    rpc GetProduct(product.GetProductRequest) returns (product.ProductResponse) {
         option (google.api.http) = {
             get: "/api/v1/product/{product_id}"
         };
@@ -259,7 +259,7 @@ service Gateway {
         };
     }
 
-    rpc GetAllProducts(product.GetAllProductsRequest) returns (product.GetProductsResponse) {
+    rpc GetAllProducts(product.GetAllProductsRequest) returns (product.ProductsResponse) {
         option (google.api.http) = {
             get: "/api/v1/product"
         };
@@ -271,7 +271,7 @@ service Gateway {
         };
     }
 
-    rpc GetAllUserProducts(product.GetAllUserProductsRequest) returns (product.GetProductsResponse) {
+    rpc GetAllUserProducts(product.GetAllUserProductsRequest) returns (product.ProductsResponse) {
         option (google.api.http) = {
             get: "/api/v1/user/{user_id}/products"
         };
@@ -282,7 +282,7 @@ service Gateway {
         };
     }
 
-    rpc CreateProduct(product.CreateProductRequest) returns (product.ProductModel) {
+    rpc CreateProduct(product.CreateProductRequest) returns (product.ProductResponse) {
         option (google.api.http) = {
             post: "/api/v1/product"
             body: "*"
@@ -294,7 +294,7 @@ service Gateway {
         };
     }
 
-    rpc UpdateProduct(product.UpdateProductRequest) returns (product.ProductModel) {
+    rpc UpdateProduct(product.UpdateProductRequest) returns (product.ProductResponse) {
         option (google.api.http) = {
             patch: "/api/v1/product"
             body: "*"
@@ -306,7 +306,7 @@ service Gateway {
         };
     }
 
-    rpc ModerateProduct(product.ModerateProductRequest) returns (product.ProductModel) {
+    rpc ModerateProduct(product.ModerateProductRequest) returns (product.ProductResponse) {
         option (google.api.http) = {
             patch: "/api/v1/product/moderate"
             body: "*"
@@ -329,7 +329,7 @@ service Gateway {
         };
     }
 
-    rpc GetCategory(product.GetCategoryRequest) returns (product.CategoryModel) {
+    rpc GetCategory(product.GetCategoryRequest) returns (product.CategoryResponse) {
         option (google.api.http) = {
             get: "/api/v1/category/{category_id}"
         };
@@ -341,7 +341,7 @@ service Gateway {
         };
     }
 
-    rpc GetAllCategories(product.GetAllCategoriesRequest) returns (product.GetAllCategoriesResponse) {
+    rpc GetAllCategories(product.GetAllCategoriesRequest) returns (product.CategoriesResponse) {
         option (google.api.http) = {
             get: "/api/v1/category"
         };
@@ -353,7 +353,7 @@ service Gateway {
         };
     }
 
-    rpc CreateDiscount(product.CreateDiscountRequest) returns (product.ProductModel) {
+    rpc CreateDiscount(product.CreateDiscountRequest) returns (product.ProductResponse) {
         option (google.api.http) = {
             post: "/api/v1/product/{product_id}/discount"
         };
@@ -364,7 +364,7 @@ service Gateway {
         };
     }
 
-    rpc DeleteDiscount(product.DeleteDiscountRequest) returns (product.DeleteDiscountResponse) {
+    rpc DeleteDiscount(product.DeleteDiscountRequest) returns (product.ProductResponse) {
         option (google.api.http) = {
             delete: "/api/v1/product/{product_id}/discount"
         };
