@@ -296,8 +296,8 @@
     },
     "/api/v1/product": {
       "get": {
-        "summary": "Get all product",
-        "operationId": "getAllProducts",
+        "summary": "Get products with filters",
+        "operationId": "getProducts",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -312,6 +312,27 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "categoryId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "moderated",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
         "tags": [
           "product"
         ],
@@ -911,8 +932,8 @@
     },
     "/api/v1/user/{userId}/products": {
       "get": {
-        "summary": "Get all user product",
-        "operationId": "getAllUserProducts",
+        "summary": "Get user product",
+        "operationId": "getUserProducts",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -933,6 +954,19 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "categoryId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "moderated",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "tags": [

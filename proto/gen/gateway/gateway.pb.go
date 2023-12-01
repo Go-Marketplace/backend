@@ -287,7 +287,7 @@ var file_gateway_proto_rawDesc = []byte{
 	0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x22, 0x32, 0x0a, 0x0d, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52,
 	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x21, 0x0a, 0x0c, 0x61, 0x63, 0x63, 0x65, 0x73,
 	0x73, 0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x61,
-	0x63, 0x63, 0x65, 0x73, 0x73, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x32, 0x9a, 0x21, 0x0a, 0x07, 0x47,
+	0x63, 0x63, 0x65, 0x73, 0x73, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x32, 0x8a, 0x21, 0x0a, 0x07, 0x47,
 	0x61, 0x74, 0x65, 0x77, 0x61, 0x79, 0x12, 0x95, 0x01, 0x0a, 0x0c, 0x52, 0x65, 0x67, 0x69, 0x73,
 	0x74, 0x65, 0x72, 0x55, 0x73, 0x65, 0x72, 0x12, 0x1c, 0x2e, 0x67, 0x61, 0x74, 0x65, 0x77, 0x61,
 	0x79, 0x2e, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65,
@@ -451,24 +451,23 @@ var file_gateway_proto_rawDesc = []byte{
 	0x75, 0x63, 0x74, 0x2a, 0x0a, 0x67, 0x65, 0x74, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x62,
 	0x00, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x1e, 0x12, 0x1c, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x76, 0x31,
 	0x2f, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x2f, 0x7b, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63,
-	0x74, 0x5f, 0x69, 0x64, 0x7d, 0x12, 0x93, 0x01, 0x0a, 0x0e, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c,
-	0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x73, 0x12, 0x1e, 0x2e, 0x70, 0x72, 0x6f, 0x64, 0x75,
-	0x63, 0x74, 0x2e, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74,
-	0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x19, 0x2e, 0x70, 0x72, 0x6f, 0x64, 0x75,
-	0x63, 0x74, 0x2e, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x22, 0x46, 0x92, 0x41, 0x2c, 0x0a, 0x07, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63,
-	0x74, 0x12, 0x0f, 0x47, 0x65, 0x74, 0x20, 0x61, 0x6c, 0x6c, 0x20, 0x70, 0x72, 0x6f, 0x64, 0x75,
-	0x63, 0x74, 0x2a, 0x0e, 0x67, 0x65, 0x74, 0x41, 0x6c, 0x6c, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63,
-	0x74, 0x73, 0x62, 0x00, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x11, 0x12, 0x0f, 0x2f, 0x61, 0x70, 0x69,
-	0x2f, 0x76, 0x31, 0x2f, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x12, 0xaf, 0x01, 0x0a, 0x12,
-	0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c, 0x55, 0x73, 0x65, 0x72, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63,
-	0x74, 0x73, 0x12, 0x22, 0x2e, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x2e, 0x47, 0x65, 0x74,
-	0x41, 0x6c, 0x6c, 0x55, 0x73, 0x65, 0x72, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x73, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x19, 0x2e, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74,
-	0x2e, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x22, 0x5a, 0x92, 0x41, 0x30, 0x0a, 0x04, 0x75, 0x73, 0x65, 0x72, 0x12, 0x14, 0x47, 0x65,
-	0x74, 0x20, 0x61, 0x6c, 0x6c, 0x20, 0x75, 0x73, 0x65, 0x72, 0x20, 0x70, 0x72, 0x6f, 0x64, 0x75,
-	0x63, 0x74, 0x2a, 0x12, 0x67, 0x65, 0x74, 0x41, 0x6c, 0x6c, 0x55, 0x73, 0x65, 0x72, 0x50, 0x72,
+	0x74, 0x5f, 0x69, 0x64, 0x7d, 0x12, 0x94, 0x01, 0x0a, 0x0b, 0x47, 0x65, 0x74, 0x50, 0x72, 0x6f,
+	0x64, 0x75, 0x63, 0x74, 0x73, 0x12, 0x1b, 0x2e, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x2e,
+	0x47, 0x65, 0x74, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x1a, 0x19, 0x2e, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x2e, 0x50, 0x72, 0x6f,
+	0x64, 0x75, 0x63, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x4d, 0x92,
+	0x41, 0x33, 0x0a, 0x07, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x12, 0x19, 0x47, 0x65, 0x74,
+	0x20, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x73, 0x20, 0x77, 0x69, 0x74, 0x68, 0x20, 0x66,
+	0x69, 0x6c, 0x74, 0x65, 0x72, 0x73, 0x2a, 0x0b, 0x67, 0x65, 0x74, 0x50, 0x72, 0x6f, 0x64, 0x75,
+	0x63, 0x74, 0x73, 0x62, 0x00, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x11, 0x12, 0x0f, 0x2f, 0x61, 0x70,
+	0x69, 0x2f, 0x76, 0x31, 0x2f, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x12, 0x9e, 0x01, 0x0a,
+	0x0f, 0x47, 0x65, 0x74, 0x55, 0x73, 0x65, 0x72, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x73,
+	0x12, 0x1b, 0x2e, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x2e, 0x47, 0x65, 0x74, 0x50, 0x72,
+	0x6f, 0x64, 0x75, 0x63, 0x74, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x19, 0x2e,
+	0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x2e, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x73,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x53, 0x92, 0x41, 0x29, 0x0a, 0x04, 0x75,
+	0x73, 0x65, 0x72, 0x12, 0x10, 0x47, 0x65, 0x74, 0x20, 0x75, 0x73, 0x65, 0x72, 0x20, 0x70, 0x72,
+	0x6f, 0x64, 0x75, 0x63, 0x74, 0x2a, 0x0f, 0x67, 0x65, 0x74, 0x55, 0x73, 0x65, 0x72, 0x50, 0x72,
 	0x6f, 0x64, 0x75, 0x63, 0x74, 0x73, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x21, 0x12, 0x1f, 0x2f, 0x61,
 	0x70, 0x69, 0x2f, 0x76, 0x31, 0x2f, 0x75, 0x73, 0x65, 0x72, 0x2f, 0x7b, 0x75, 0x73, 0x65, 0x72,
 	0x5f, 0x69, 0x64, 0x7d, 0x2f, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x73, 0x12, 0x8f, 0x01,
@@ -593,49 +592,48 @@ func file_gateway_proto_rawDescGZIP() []byte {
 
 var file_gateway_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_gateway_proto_goTypes = []interface{}{
-	(*RegisterUserRequest)(nil),               // 0: gateway.RegisterUserRequest
-	(*RegisterUserResponse)(nil),              // 1: gateway.RegisterUserResponse
-	(*LoginRequest)(nil),                      // 2: gateway.LoginRequest
-	(*LoginResponse)(nil),                     // 3: gateway.LoginResponse
-	(*user.GetUserRequest)(nil),               // 4: user.GetUserRequest
-	(*user.GetAllUsersRequest)(nil),           // 5: user.GetAllUsersRequest
-	(*user.UpdateUserRequest)(nil),            // 6: user.UpdateUserRequest
-	(*user.ChangeUserRoleRequest)(nil),        // 7: user.ChangeUserRoleRequest
-	(*user.DeleteUserRequest)(nil),            // 8: user.DeleteUserRequest
-	(*order.CreateOrderRequest)(nil),          // 9: order.CreateOrderRequest
-	(*order.GetOrderRequest)(nil),             // 10: order.GetOrderRequest
-	(*order.GetAllUserOrdersRequest)(nil),     // 11: order.GetAllUserOrdersRequest
-	(*order.DeleteOrderRequest)(nil),          // 12: order.DeleteOrderRequest
-	(*order.UpdateOrderlineRequest)(nil),      // 13: order.UpdateOrderlineRequest
-	(*cart.GetUserCartRequest)(nil),           // 14: cart.GetUserCartRequest
-	(*cart.CreateCartlineRequest)(nil),        // 15: cart.CreateCartlineRequest
-	(*cart.UpdateCartlineRequest)(nil),        // 16: cart.UpdateCartlineRequest
-	(*cart.DeleteCartlineRequest)(nil),        // 17: cart.DeleteCartlineRequest
-	(*cart.DeleteCartCartlinesRequest)(nil),   // 18: cart.DeleteCartCartlinesRequest
-	(*product.GetProductRequest)(nil),         // 19: product.GetProductRequest
-	(*product.GetAllProductsRequest)(nil),     // 20: product.GetAllProductsRequest
-	(*product.GetAllUserProductsRequest)(nil), // 21: product.GetAllUserProductsRequest
-	(*product.CreateProductRequest)(nil),      // 22: product.CreateProductRequest
-	(*product.UpdateProductRequest)(nil),      // 23: product.UpdateProductRequest
-	(*product.ModerateProductRequest)(nil),    // 24: product.ModerateProductRequest
-	(*product.DeleteProductRequest)(nil),      // 25: product.DeleteProductRequest
-	(*product.GetCategoryRequest)(nil),        // 26: product.GetCategoryRequest
-	(*product.GetAllCategoriesRequest)(nil),   // 27: product.GetAllCategoriesRequest
-	(*product.CreateDiscountRequest)(nil),     // 28: product.CreateDiscountRequest
-	(*product.DeleteDiscountRequest)(nil),     // 29: product.DeleteDiscountRequest
-	(*user.UserResponse)(nil),                 // 30: user.UserResponse
-	(*user.GetAllUsersResponse)(nil),          // 31: user.GetAllUsersResponse
-	(*user.DeleteUserResponse)(nil),           // 32: user.DeleteUserResponse
-	(*order.OrderResponse)(nil),               // 33: order.OrderResponse
-	(*order.GetAllUserOrdersResponse)(nil),    // 34: order.GetAllUserOrdersResponse
-	(*order.DeleteOrderResponse)(nil),         // 35: order.DeleteOrderResponse
-	(*cart.CartResponse)(nil),                 // 36: cart.CartResponse
-	(*cart.CartlineResponse)(nil),             // 37: cart.CartlineResponse
-	(*product.ProductResponse)(nil),           // 38: product.ProductResponse
-	(*product.ProductsResponse)(nil),          // 39: product.ProductsResponse
-	(*product.DeleteProductResponse)(nil),     // 40: product.DeleteProductResponse
-	(*product.CategoryResponse)(nil),          // 41: product.CategoryResponse
-	(*product.CategoriesResponse)(nil),        // 42: product.CategoriesResponse
+	(*RegisterUserRequest)(nil),             // 0: gateway.RegisterUserRequest
+	(*RegisterUserResponse)(nil),            // 1: gateway.RegisterUserResponse
+	(*LoginRequest)(nil),                    // 2: gateway.LoginRequest
+	(*LoginResponse)(nil),                   // 3: gateway.LoginResponse
+	(*user.GetUserRequest)(nil),             // 4: user.GetUserRequest
+	(*user.GetAllUsersRequest)(nil),         // 5: user.GetAllUsersRequest
+	(*user.UpdateUserRequest)(nil),          // 6: user.UpdateUserRequest
+	(*user.ChangeUserRoleRequest)(nil),      // 7: user.ChangeUserRoleRequest
+	(*user.DeleteUserRequest)(nil),          // 8: user.DeleteUserRequest
+	(*order.CreateOrderRequest)(nil),        // 9: order.CreateOrderRequest
+	(*order.GetOrderRequest)(nil),           // 10: order.GetOrderRequest
+	(*order.GetAllUserOrdersRequest)(nil),   // 11: order.GetAllUserOrdersRequest
+	(*order.DeleteOrderRequest)(nil),        // 12: order.DeleteOrderRequest
+	(*order.UpdateOrderlineRequest)(nil),    // 13: order.UpdateOrderlineRequest
+	(*cart.GetUserCartRequest)(nil),         // 14: cart.GetUserCartRequest
+	(*cart.CreateCartlineRequest)(nil),      // 15: cart.CreateCartlineRequest
+	(*cart.UpdateCartlineRequest)(nil),      // 16: cart.UpdateCartlineRequest
+	(*cart.DeleteCartlineRequest)(nil),      // 17: cart.DeleteCartlineRequest
+	(*cart.DeleteCartCartlinesRequest)(nil), // 18: cart.DeleteCartCartlinesRequest
+	(*product.GetProductRequest)(nil),       // 19: product.GetProductRequest
+	(*product.GetProductsRequest)(nil),      // 20: product.GetProductsRequest
+	(*product.CreateProductRequest)(nil),    // 21: product.CreateProductRequest
+	(*product.UpdateProductRequest)(nil),    // 22: product.UpdateProductRequest
+	(*product.ModerateProductRequest)(nil),  // 23: product.ModerateProductRequest
+	(*product.DeleteProductRequest)(nil),    // 24: product.DeleteProductRequest
+	(*product.GetCategoryRequest)(nil),      // 25: product.GetCategoryRequest
+	(*product.GetAllCategoriesRequest)(nil), // 26: product.GetAllCategoriesRequest
+	(*product.CreateDiscountRequest)(nil),   // 27: product.CreateDiscountRequest
+	(*product.DeleteDiscountRequest)(nil),   // 28: product.DeleteDiscountRequest
+	(*user.UserResponse)(nil),               // 29: user.UserResponse
+	(*user.GetAllUsersResponse)(nil),        // 30: user.GetAllUsersResponse
+	(*user.DeleteUserResponse)(nil),         // 31: user.DeleteUserResponse
+	(*order.OrderResponse)(nil),             // 32: order.OrderResponse
+	(*order.GetAllUserOrdersResponse)(nil),  // 33: order.GetAllUserOrdersResponse
+	(*order.DeleteOrderResponse)(nil),       // 34: order.DeleteOrderResponse
+	(*cart.CartResponse)(nil),               // 35: cart.CartResponse
+	(*cart.CartlineResponse)(nil),           // 36: cart.CartlineResponse
+	(*product.ProductResponse)(nil),         // 37: product.ProductResponse
+	(*product.ProductsResponse)(nil),        // 38: product.ProductsResponse
+	(*product.DeleteProductResponse)(nil),   // 39: product.DeleteProductResponse
+	(*product.CategoryResponse)(nil),        // 40: product.CategoryResponse
+	(*product.CategoriesResponse)(nil),      // 41: product.CategoriesResponse
 }
 var file_gateway_proto_depIdxs = []int32{
 	0,  // 0: gateway.Gateway.RegisterUser:input_type -> gateway.RegisterUserRequest
@@ -656,44 +654,44 @@ var file_gateway_proto_depIdxs = []int32{
 	17, // 15: gateway.Gateway.DeleteCartline:input_type -> cart.DeleteCartlineRequest
 	18, // 16: gateway.Gateway.DeleteCartCartlines:input_type -> cart.DeleteCartCartlinesRequest
 	19, // 17: gateway.Gateway.GetProduct:input_type -> product.GetProductRequest
-	20, // 18: gateway.Gateway.GetAllProducts:input_type -> product.GetAllProductsRequest
-	21, // 19: gateway.Gateway.GetAllUserProducts:input_type -> product.GetAllUserProductsRequest
-	22, // 20: gateway.Gateway.CreateProduct:input_type -> product.CreateProductRequest
-	23, // 21: gateway.Gateway.UpdateProduct:input_type -> product.UpdateProductRequest
-	24, // 22: gateway.Gateway.ModerateProduct:input_type -> product.ModerateProductRequest
-	25, // 23: gateway.Gateway.DeleteProduct:input_type -> product.DeleteProductRequest
-	26, // 24: gateway.Gateway.GetCategory:input_type -> product.GetCategoryRequest
-	27, // 25: gateway.Gateway.GetAllCategories:input_type -> product.GetAllCategoriesRequest
-	28, // 26: gateway.Gateway.CreateDiscount:input_type -> product.CreateDiscountRequest
-	29, // 27: gateway.Gateway.DeleteDiscount:input_type -> product.DeleteDiscountRequest
+	20, // 18: gateway.Gateway.GetProducts:input_type -> product.GetProductsRequest
+	20, // 19: gateway.Gateway.GetUserProducts:input_type -> product.GetProductsRequest
+	21, // 20: gateway.Gateway.CreateProduct:input_type -> product.CreateProductRequest
+	22, // 21: gateway.Gateway.UpdateProduct:input_type -> product.UpdateProductRequest
+	23, // 22: gateway.Gateway.ModerateProduct:input_type -> product.ModerateProductRequest
+	24, // 23: gateway.Gateway.DeleteProduct:input_type -> product.DeleteProductRequest
+	25, // 24: gateway.Gateway.GetCategory:input_type -> product.GetCategoryRequest
+	26, // 25: gateway.Gateway.GetAllCategories:input_type -> product.GetAllCategoriesRequest
+	27, // 26: gateway.Gateway.CreateDiscount:input_type -> product.CreateDiscountRequest
+	28, // 27: gateway.Gateway.DeleteDiscount:input_type -> product.DeleteDiscountRequest
 	1,  // 28: gateway.Gateway.RegisterUser:output_type -> gateway.RegisterUserResponse
 	3,  // 29: gateway.Gateway.Login:output_type -> gateway.LoginResponse
-	30, // 30: gateway.Gateway.GetUser:output_type -> user.UserResponse
-	31, // 31: gateway.Gateway.GetAllUsers:output_type -> user.GetAllUsersResponse
-	30, // 32: gateway.Gateway.UpdateUser:output_type -> user.UserResponse
-	30, // 33: gateway.Gateway.ChangeUserRole:output_type -> user.UserResponse
-	32, // 34: gateway.Gateway.DeleteUser:output_type -> user.DeleteUserResponse
-	33, // 35: gateway.Gateway.CreateOrder:output_type -> order.OrderResponse
-	33, // 36: gateway.Gateway.GetOrder:output_type -> order.OrderResponse
-	34, // 37: gateway.Gateway.GetAllUserOrders:output_type -> order.GetAllUserOrdersResponse
-	35, // 38: gateway.Gateway.DeleteOrder:output_type -> order.DeleteOrderResponse
-	33, // 39: gateway.Gateway.UpdateOrderline:output_type -> order.OrderResponse
-	36, // 40: gateway.Gateway.GetUserCart:output_type -> cart.CartResponse
-	37, // 41: gateway.Gateway.CreateCartline:output_type -> cart.CartlineResponse
-	36, // 42: gateway.Gateway.UpdateCartline:output_type -> cart.CartResponse
-	36, // 43: gateway.Gateway.DeleteCartline:output_type -> cart.CartResponse
-	36, // 44: gateway.Gateway.DeleteCartCartlines:output_type -> cart.CartResponse
-	38, // 45: gateway.Gateway.GetProduct:output_type -> product.ProductResponse
-	39, // 46: gateway.Gateway.GetAllProducts:output_type -> product.ProductsResponse
-	39, // 47: gateway.Gateway.GetAllUserProducts:output_type -> product.ProductsResponse
-	38, // 48: gateway.Gateway.CreateProduct:output_type -> product.ProductResponse
-	38, // 49: gateway.Gateway.UpdateProduct:output_type -> product.ProductResponse
-	38, // 50: gateway.Gateway.ModerateProduct:output_type -> product.ProductResponse
-	40, // 51: gateway.Gateway.DeleteProduct:output_type -> product.DeleteProductResponse
-	41, // 52: gateway.Gateway.GetCategory:output_type -> product.CategoryResponse
-	42, // 53: gateway.Gateway.GetAllCategories:output_type -> product.CategoriesResponse
-	38, // 54: gateway.Gateway.CreateDiscount:output_type -> product.ProductResponse
-	38, // 55: gateway.Gateway.DeleteDiscount:output_type -> product.ProductResponse
+	29, // 30: gateway.Gateway.GetUser:output_type -> user.UserResponse
+	30, // 31: gateway.Gateway.GetAllUsers:output_type -> user.GetAllUsersResponse
+	29, // 32: gateway.Gateway.UpdateUser:output_type -> user.UserResponse
+	29, // 33: gateway.Gateway.ChangeUserRole:output_type -> user.UserResponse
+	31, // 34: gateway.Gateway.DeleteUser:output_type -> user.DeleteUserResponse
+	32, // 35: gateway.Gateway.CreateOrder:output_type -> order.OrderResponse
+	32, // 36: gateway.Gateway.GetOrder:output_type -> order.OrderResponse
+	33, // 37: gateway.Gateway.GetAllUserOrders:output_type -> order.GetAllUserOrdersResponse
+	34, // 38: gateway.Gateway.DeleteOrder:output_type -> order.DeleteOrderResponse
+	32, // 39: gateway.Gateway.UpdateOrderline:output_type -> order.OrderResponse
+	35, // 40: gateway.Gateway.GetUserCart:output_type -> cart.CartResponse
+	36, // 41: gateway.Gateway.CreateCartline:output_type -> cart.CartlineResponse
+	35, // 42: gateway.Gateway.UpdateCartline:output_type -> cart.CartResponse
+	35, // 43: gateway.Gateway.DeleteCartline:output_type -> cart.CartResponse
+	35, // 44: gateway.Gateway.DeleteCartCartlines:output_type -> cart.CartResponse
+	37, // 45: gateway.Gateway.GetProduct:output_type -> product.ProductResponse
+	38, // 46: gateway.Gateway.GetProducts:output_type -> product.ProductsResponse
+	38, // 47: gateway.Gateway.GetUserProducts:output_type -> product.ProductsResponse
+	37, // 48: gateway.Gateway.CreateProduct:output_type -> product.ProductResponse
+	37, // 49: gateway.Gateway.UpdateProduct:output_type -> product.ProductResponse
+	37, // 50: gateway.Gateway.ModerateProduct:output_type -> product.ProductResponse
+	39, // 51: gateway.Gateway.DeleteProduct:output_type -> product.DeleteProductResponse
+	40, // 52: gateway.Gateway.GetCategory:output_type -> product.CategoryResponse
+	41, // 53: gateway.Gateway.GetAllCategories:output_type -> product.CategoriesResponse
+	37, // 54: gateway.Gateway.CreateDiscount:output_type -> product.ProductResponse
+	37, // 55: gateway.Gateway.DeleteDiscount:output_type -> product.ProductResponse
 	28, // [28:56] is the sub-list for method output_type
 	0,  // [0:28] is the sub-list for method input_type
 	0,  // [0:0] is the sub-list for extension type_name

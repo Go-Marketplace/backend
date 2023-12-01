@@ -32,63 +32,19 @@ func (routes *productRoutes) GetProduct(ctx context.Context, req *pbProduct.GetP
 	return product.ToProto(), nil
 }
 
-func (routes *productRoutes) GetAllProducts(ctx context.Context, req *pbProduct.GetAllProductsRequest) (*pbProduct.ProductsResponse, error) {
-	products, err := controller.GetAllProducts(ctx, routes.productUsecase, req)
+func (routes *productRoutes) GetProducts(ctx context.Context, req *pbProduct.GetProductsRequest) (*pbProduct.ProductsResponse, error) {
+	products, err := controller.GetProducts(ctx, routes.productUsecase, req)
 	if err != nil {
 		return nil, err
 	}
 
 	protoProducts := make([]*pbProduct.ProductResponse, 0, len(products))
 	for _, product := range products {
-		protoProducts = append(protoProducts, product.ToProto())
-	}
-
-	return &pbProduct.ProductsResponse{
-		Products: protoProducts,
-	}, nil
-}
-
-func (routes *productRoutes) GetAllUserProducts(ctx context.Context, req *pbProduct.GetAllUserProductsRequest) (*pbProduct.ProductsResponse, error) {
-	products, err := controller.GetAllUserProducts(ctx, routes.productUsecase, req)
-	if err != nil {
-		return nil, err
-	}
-
-	protoProducts := make([]*pbProduct.ProductResponse, 0, len(products))
-	for _, product := range products {
-		protoProducts = append(protoProducts, product.ToProto())
-	}
-
-	return &pbProduct.ProductsResponse{
-		Products: protoProducts,
-	}, nil
-}
-
-func (routes *productRoutes) GetAllCategoriesProducts(ctx context.Context, req *pbProduct.GetAllCategoryProductsRequest) (*pbProduct.ProductsResponse, error) {
-	products, err := controller.GetAllCategoryProducts(ctx, routes.productUsecase, req)
-	if err != nil {
-		return nil, err
-	}
-
-	protoProducts := make([]*pbProduct.ProductResponse, 0, len(products))
-	for _, product := range products {
-		protoProducts = append(protoProducts, product.ToProto())
-	}
-
-	return &pbProduct.ProductsResponse{
-		Products: protoProducts,
-	}, nil
-}
-
-func (routes *productRoutes) GetAllCategoryProducts(ctx context.Context, req *pbProduct.GetAllCategoryProductsRequest) (*pbProduct.ProductsResponse, error) {
-	products, err := controller.GetAllCategoryProducts(ctx, routes.productUsecase, req)
-	if err != nil {
-		return nil, err
-	}
-
-	protoProducts := make([]*pbProduct.ProductResponse, 0, len(products))
-	for _, product := range products {
-		protoProducts = append(protoProducts, product.ToProto())
+		if product != nil {
+			protoProducts = append(protoProducts, product.ToProto())
+		} else {
+			routes.logger.Warn("Get nil product in GetProducts handler")
+		}
 	}
 
 	return &pbProduct.ProductsResponse{

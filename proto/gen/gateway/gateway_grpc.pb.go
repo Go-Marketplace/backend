@@ -41,8 +41,8 @@ const (
 	Gateway_DeleteCartline_FullMethodName      = "/gateway.Gateway/DeleteCartline"
 	Gateway_DeleteCartCartlines_FullMethodName = "/gateway.Gateway/DeleteCartCartlines"
 	Gateway_GetProduct_FullMethodName          = "/gateway.Gateway/GetProduct"
-	Gateway_GetAllProducts_FullMethodName      = "/gateway.Gateway/GetAllProducts"
-	Gateway_GetAllUserProducts_FullMethodName  = "/gateway.Gateway/GetAllUserProducts"
+	Gateway_GetProducts_FullMethodName         = "/gateway.Gateway/GetProducts"
+	Gateway_GetUserProducts_FullMethodName     = "/gateway.Gateway/GetUserProducts"
 	Gateway_CreateProduct_FullMethodName       = "/gateway.Gateway/CreateProduct"
 	Gateway_UpdateProduct_FullMethodName       = "/gateway.Gateway/UpdateProduct"
 	Gateway_ModerateProduct_FullMethodName     = "/gateway.Gateway/ModerateProduct"
@@ -79,8 +79,8 @@ type GatewayClient interface {
 	DeleteCartCartlines(ctx context.Context, in *cart.DeleteCartCartlinesRequest, opts ...grpc.CallOption) (*cart.CartResponse, error)
 	// Product
 	GetProduct(ctx context.Context, in *product.GetProductRequest, opts ...grpc.CallOption) (*product.ProductResponse, error)
-	GetAllProducts(ctx context.Context, in *product.GetAllProductsRequest, opts ...grpc.CallOption) (*product.ProductsResponse, error)
-	GetAllUserProducts(ctx context.Context, in *product.GetAllUserProductsRequest, opts ...grpc.CallOption) (*product.ProductsResponse, error)
+	GetProducts(ctx context.Context, in *product.GetProductsRequest, opts ...grpc.CallOption) (*product.ProductsResponse, error)
+	GetUserProducts(ctx context.Context, in *product.GetProductsRequest, opts ...grpc.CallOption) (*product.ProductsResponse, error)
 	CreateProduct(ctx context.Context, in *product.CreateProductRequest, opts ...grpc.CallOption) (*product.ProductResponse, error)
 	UpdateProduct(ctx context.Context, in *product.UpdateProductRequest, opts ...grpc.CallOption) (*product.ProductResponse, error)
 	ModerateProduct(ctx context.Context, in *product.ModerateProductRequest, opts ...grpc.CallOption) (*product.ProductResponse, error)
@@ -261,18 +261,18 @@ func (c *gatewayClient) GetProduct(ctx context.Context, in *product.GetProductRe
 	return out, nil
 }
 
-func (c *gatewayClient) GetAllProducts(ctx context.Context, in *product.GetAllProductsRequest, opts ...grpc.CallOption) (*product.ProductsResponse, error) {
+func (c *gatewayClient) GetProducts(ctx context.Context, in *product.GetProductsRequest, opts ...grpc.CallOption) (*product.ProductsResponse, error) {
 	out := new(product.ProductsResponse)
-	err := c.cc.Invoke(ctx, Gateway_GetAllProducts_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Gateway_GetProducts_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *gatewayClient) GetAllUserProducts(ctx context.Context, in *product.GetAllUserProductsRequest, opts ...grpc.CallOption) (*product.ProductsResponse, error) {
+func (c *gatewayClient) GetUserProducts(ctx context.Context, in *product.GetProductsRequest, opts ...grpc.CallOption) (*product.ProductsResponse, error) {
 	out := new(product.ProductsResponse)
-	err := c.cc.Invoke(ctx, Gateway_GetAllUserProducts_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Gateway_GetUserProducts_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -377,8 +377,8 @@ type GatewayServer interface {
 	DeleteCartCartlines(context.Context, *cart.DeleteCartCartlinesRequest) (*cart.CartResponse, error)
 	// Product
 	GetProduct(context.Context, *product.GetProductRequest) (*product.ProductResponse, error)
-	GetAllProducts(context.Context, *product.GetAllProductsRequest) (*product.ProductsResponse, error)
-	GetAllUserProducts(context.Context, *product.GetAllUserProductsRequest) (*product.ProductsResponse, error)
+	GetProducts(context.Context, *product.GetProductsRequest) (*product.ProductsResponse, error)
+	GetUserProducts(context.Context, *product.GetProductsRequest) (*product.ProductsResponse, error)
 	CreateProduct(context.Context, *product.CreateProductRequest) (*product.ProductResponse, error)
 	UpdateProduct(context.Context, *product.UpdateProductRequest) (*product.ProductResponse, error)
 	ModerateProduct(context.Context, *product.ModerateProductRequest) (*product.ProductResponse, error)
@@ -448,11 +448,11 @@ func (UnimplementedGatewayServer) DeleteCartCartlines(context.Context, *cart.Del
 func (UnimplementedGatewayServer) GetProduct(context.Context, *product.GetProductRequest) (*product.ProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProduct not implemented")
 }
-func (UnimplementedGatewayServer) GetAllProducts(context.Context, *product.GetAllProductsRequest) (*product.ProductsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAllProducts not implemented")
+func (UnimplementedGatewayServer) GetProducts(context.Context, *product.GetProductsRequest) (*product.ProductsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProducts not implemented")
 }
-func (UnimplementedGatewayServer) GetAllUserProducts(context.Context, *product.GetAllUserProductsRequest) (*product.ProductsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAllUserProducts not implemented")
+func (UnimplementedGatewayServer) GetUserProducts(context.Context, *product.GetProductsRequest) (*product.ProductsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserProducts not implemented")
 }
 func (UnimplementedGatewayServer) CreateProduct(context.Context, *product.CreateProductRequest) (*product.ProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateProduct not implemented")
@@ -815,38 +815,38 @@ func _Gateway_GetProduct_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Gateway_GetAllProducts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(product.GetAllProductsRequest)
+func _Gateway_GetProducts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(product.GetProductsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(GatewayServer).GetAllProducts(ctx, in)
+		return srv.(GatewayServer).GetProducts(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Gateway_GetAllProducts_FullMethodName,
+		FullMethod: Gateway_GetProducts_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GatewayServer).GetAllProducts(ctx, req.(*product.GetAllProductsRequest))
+		return srv.(GatewayServer).GetProducts(ctx, req.(*product.GetProductsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Gateway_GetAllUserProducts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(product.GetAllUserProductsRequest)
+func _Gateway_GetUserProducts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(product.GetProductsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(GatewayServer).GetAllUserProducts(ctx, in)
+		return srv.(GatewayServer).GetUserProducts(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Gateway_GetAllUserProducts_FullMethodName,
+		FullMethod: Gateway_GetUserProducts_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GatewayServer).GetAllUserProducts(ctx, req.(*product.GetAllUserProductsRequest))
+		return srv.(GatewayServer).GetUserProducts(ctx, req.(*product.GetProductsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1075,12 +1075,12 @@ var Gateway_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Gateway_GetProduct_Handler,
 		},
 		{
-			MethodName: "GetAllProducts",
-			Handler:    _Gateway_GetAllProducts_Handler,
+			MethodName: "GetProducts",
+			Handler:    _Gateway_GetProducts_Handler,
 		},
 		{
-			MethodName: "GetAllUserProducts",
-			Handler:    _Gateway_GetAllUserProducts_Handler,
+			MethodName: "GetUserProducts",
+			Handler:    _Gateway_GetUserProducts_Handler,
 		},
 		{
 			MethodName: "CreateProduct",

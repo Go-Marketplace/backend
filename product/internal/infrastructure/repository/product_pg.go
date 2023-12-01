@@ -6,6 +6,7 @@ import (
 
 	"github.com/Go-Marketplace/backend/pkg/logger"
 	"github.com/Go-Marketplace/backend/pkg/postgres"
+	"github.com/Go-Marketplace/backend/product/internal/api/grpc/dto"
 	"github.com/Go-Marketplace/backend/product/internal/model"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -46,10 +47,17 @@ func scanCategory(rows pgx.Rows, category *model.Category) error {
 	)
 }
 
-func (repo *ProductRepo) GetProduct(ctx context.Context, id uuid.UUID) (*model.Product, error) {
-	rows, err := repo.pg.Pool.Query(ctx, getProductByID, id)
+func (repo *ProductRepo) GetProduct(ctx context.Context, productID uuid.UUID) (*model.Product, error) {
+	query := getProductQuery(productID)
+
+	sqlQuery, args, err := query.ToSql()
 	if err != nil {
-		return nil, fmt.Errorf("failed to Query getProductByID: %w", err)
+		return nil, fmt.Errorf("failed to get sql query from: %w", err)
+	}
+
+	rows, err := repo.pg.Pool.Query(ctx, sqlQuery, args...)
+	if err != nil {
+		return nil, fmt.Errorf("failed to Query %v get: %w", sqlQuery, err)
 	}
 
 	product := &model.Product{}
@@ -69,7 +77,7 @@ func (repo *ProductRepo) GetProduct(ctx context.Context, id uuid.UUID) (*model.P
 	return product, nil
 }
 
-func (repo *ProductRepo) getAllProductsByFilters(ctx context.Context, query string, filters ...interface{}) ([]*model.Product, error) {
+func (repo *ProductRepo) getProductsByFilters(ctx context.Context, query string, filters ...interface{}) ([]*model.Product, error) {
 	rows, err := repo.pg.Pool.Query(ctx, query, filters...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to Query %s: %w", query, err)
@@ -88,26 +96,15 @@ func (repo *ProductRepo) getAllProductsByFilters(ctx context.Context, query stri
 	return products, nil
 }
 
-func (repo *ProductRepo) GetAllProducts(ctx context.Context) ([]*model.Product, error) {
-	products, err := repo.getAllProductsByFilters(ctx, getAllProducts)
+func (repo *ProductRepo) GetProducts(ctx context.Context, searchParams dto.SearchProductsDTO) ([]*model.Product, error) {
+	query := getSearchProductsQuery(searchParams)
+
+	sqlQuery, args, err := query.ToSql()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to get sql query from getAllProducts: %w", err)
 	}
 
-	return products, nil
-}
-
-func (repo *ProductRepo) GetAllUserProducts(ctx context.Context, userID uuid.UUID) ([]*model.Product, error) {
-	products, err := repo.getAllProductsByFilters(ctx, getAllUserProducts, userID)
-	if err != nil {
-		return nil, err
-	}
-
-	return products, nil
-}
-
-func (repo *ProductRepo) GetAllCategoryProducts(ctx context.Context, categoryID int32) ([]*model.Product, error) {
-	products, err := repo.getAllProductsByFilters(ctx, getAllCategoryProducts, categoryID)
+	products, err := repo.getProductsByFilters(ctx, sqlQuery, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -116,72 +113,59 @@ func (repo *ProductRepo) GetAllCategoryProducts(ctx context.Context, categoryID 
 }
 
 func (repo *ProductRepo) CreateProduct(ctx context.Context, product model.Product) error {
-	_, err := repo.pg.Pool.Exec(
-		ctx,
-		createProduct,
-		product.ID,
-		product.UserID,
-		product.CategoryID,
-		product.Name,
-		product.Description,
-		product.Price,
-		product.Quantity,
-		product.Moderated,
-		product.CreatedAt,
-		product.UpdatedAt,
-	)
+	query := createProductQuery(product)
+
+	sqlQuery, args, err := query.ToSql()
 	if err != nil {
-		return fmt.Errorf("failed to Exec createProduct: %w", err)
+		return fmt.Errorf("failed to get sql query: %w", err)
+	}
+
+	if _, err = repo.pg.Pool.Exec(ctx, sqlQuery, args...); err != nil {
+		return fmt.Errorf("failed to Exec sqlQuery %v: %w", sqlQuery, err)
 	}
 
 	return nil
 }
 
 func (repo *ProductRepo) UpdateProduct(ctx context.Context, product model.Product) error {
-	_, err := repo.pg.Pool.Exec(
-		ctx,
-		updateProduct,
-		product.CategoryID,
-		product.Name,
-		product.Description,
-		product.Price,
-		product.Quantity,
-		product.UpdatedAt,
-		product.ID,
-	)
+	query := updateProductQuery(product)
+
+	sqlQuery, args, err := query.ToSql()
 	if err != nil {
+		return fmt.Errorf("failed to get sql query: %w", err)
+	}
+
+	if _, err = repo.pg.Pool.Exec(ctx, sqlQuery, args...); err != nil {
 		return fmt.Errorf("failed to Exec updateProduct: %w", err)
 	}
 
 	return nil
 }
 
-func (repo *ProductRepo) ModerateProduct(ctx context.Context, product model.Product) error {
-	_, err := repo.pg.Pool.Exec(
-		ctx,
-		moderateProduct,
-		product.Moderated,
-		product.UpdatedAt,
-		product.ID,
-	)
+func (repo *ProductRepo) DeleteProduct(ctx context.Context, productID uuid.UUID) error {
+	query := deleteProductQuery(productID)
+
+	sqlQuery, args, err := query.ToSql()
 	if err != nil {
-		return fmt.Errorf("failed to Exec moderateProduct: %w", err)
+		return fmt.Errorf("failed to get sql query: %w", err)
 	}
 
-	return nil
-}
-
-func (repo *ProductRepo) DeleteProduct(ctx context.Context, id uuid.UUID) error {
-	_, err := repo.pg.Pool.Exec(ctx, deleteProduct, id)
-	if err != nil {
+	if _, err = repo.pg.Pool.Exec(ctx, sqlQuery, args...); err != nil {
 		return fmt.Errorf("failed to Exec deleteProduct: %w", err)
 	}
 
 	return nil
 }
 
-func (repo *ProductRepo) GetCategory(ctx context.Context, id int32) (*model.Category, error) {
-	rows, err := repo.pg.Pool.Query(ctx, getCategoryByID, id)
+func (repo *ProductRepo) GetCategory(ctx context.Context, categoryID int32) (*model.Category, error) {
+	query := getCategory(categoryID)
+
+	sqlQuery, args, err := query.ToSql()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get sql query: %w", err)
+	}
+
+	rows, err := repo.pg.Pool.Query(ctx, sqlQuery, args...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to Query getCategoryByID: %w", err)
 	}
@@ -204,7 +188,14 @@ func (repo *ProductRepo) GetCategory(ctx context.Context, id int32) (*model.Cate
 }
 
 func (repo *ProductRepo) GetAllCategories(ctx context.Context) ([]*model.Category, error) {
-	rows, err := repo.pg.Pool.Query(ctx, getAllCategories)
+	query := getAllCategoriesQuery()
+
+	sqlQuery, args, err := query.ToSql()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get sql query: %w", err)
+	}
+
+	rows, err := repo.pg.Pool.Query(ctx, sqlQuery, args...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to Query getAllCategories: %w", err)
 	}

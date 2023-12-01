@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/Go-Marketplace/backend/pkg/logger"
+	"github.com/Go-Marketplace/backend/product/internal/api/grpc/dto"
 	"github.com/Go-Marketplace/backend/product/internal/infrastructure/interfaces"
 	"github.com/Go-Marketplace/backend/product/internal/model"
 	"github.com/google/uuid"
@@ -11,14 +12,11 @@ import (
 
 type IProductUsecase interface {
 	// Product
+	GetProducts(ctx context.Context, searchParams dto.SearchProductsDTO) ([]*model.Product, error)
 	GetProduct(ctx context.Context, id uuid.UUID) (*model.Product, error)
-	GetAllProducts(ctx context.Context) ([]*model.Product, error)
-	GetAllUserProducts(ctx context.Context, userID uuid.UUID) ([]*model.Product, error)
-	GetAllCategoryProducts(ctx context.Context, categoryID int32) ([]*model.Product, error)
 	CreateProduct(ctx context.Context, product model.Product) error
 	UpdateProduct(ctx context.Context, product model.Product) (*model.Product, error)
 	DeleteProduct(ctx context.Context, id uuid.UUID) error
-	ModerateProduct(ctx context.Context, product model.Product) (*model.Product, error)
 
 	// Category
 	GetCategory(ctx context.Context, id int32) (*model.Category, error)
@@ -69,36 +67,8 @@ func (usecase *ProductUsecase) GetProduct(ctx context.Context, id uuid.UUID) (*m
 	return product, nil
 }
 
-func (usecase *ProductUsecase) GetAllProducts(ctx context.Context) ([]*model.Product, error) {
-	products, err := usecase.productRepo.GetAllProducts(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	err = usecase.setProductsDiscount(ctx, products...)
-	if err != nil {
-		return nil, err
-	}
-
-	return products, nil
-}
-
-func (usecase *ProductUsecase) GetAllUserProducts(ctx context.Context, userID uuid.UUID) ([]*model.Product, error) {
-	products, err := usecase.productRepo.GetAllUserProducts(ctx, userID)
-	if err != nil {
-		return nil, err
-	}
-
-	err = usecase.setProductsDiscount(ctx, products...)
-	if err != nil {
-		return nil, err
-	}
-
-	return products, nil
-}
-
-func (usecase *ProductUsecase) GetAllCategoryProducts(ctx context.Context, categoryID int32) ([]*model.Product, error) {
-	products, err := usecase.productRepo.GetAllCategoryProducts(ctx, categoryID)
+func (usecase *ProductUsecase) GetProducts(ctx context.Context, searchParams dto.SearchProductsDTO) ([]*model.Product, error) {
+	products, err := usecase.productRepo.GetProducts(ctx, searchParams)
 	if err != nil {
 		return nil, err
 	}
@@ -117,14 +87,6 @@ func (usecase *ProductUsecase) CreateProduct(ctx context.Context, product model.
 
 func (usecase *ProductUsecase) UpdateProduct(ctx context.Context, product model.Product) (*model.Product, error) {
 	if err := usecase.productRepo.UpdateProduct(ctx, product); err != nil {
-		return nil, err
-	}
-
-	return usecase.GetProduct(ctx, product.ID)
-}
-
-func (usecase *ProductUsecase) ModerateProduct(ctx context.Context, product model.Product) (*model.Product, error) {
-	if err := usecase.productRepo.ModerateProduct(ctx, product); err != nil {
 		return nil, err
 	}
 

@@ -7,10 +7,8 @@ option go_package = "github.com/Go-Marketplace/backend/proto/gen/product;product
 package product;
 
 service Product {
+    rpc GetProducts(GetProductsRequest) returns (ProductsResponse);
     rpc GetProduct(GetProductRequest) returns (ProductResponse);
-    rpc GetAllProducts(GetAllProductsRequest) returns (ProductsResponse);
-    rpc GetAllUserProducts(GetAllUserProductsRequest) returns (ProductsResponse);
-    rpc GetAllCategoryProducts(GetAllCategoryProductsRequest) returns (ProductsResponse);
     rpc CreateProduct(CreateProductRequest) returns (ProductResponse);
     rpc UpdateProduct(UpdateProductRequest) returns (ProductResponse);
     rpc ModerateProduct(ModerateProductRequest) returns (ProductResponse);
@@ -23,18 +21,14 @@ service Product {
     rpc DeleteDiscount(DeleteDiscountRequest) returns (ProductResponse);
 }
 
+message GetProductsRequest {
+    string user_id = 1;
+    int32 category_id = 2;
+    bool moderated = 3;
+}
+
 message GetProductRequest {
     string product_id = 1;
-}
-
-message GetAllProductsRequest {}
-
-message GetAllUserProductsRequest {
-    string user_id = 1;
-}
-
-message GetAllCategoryProductsRequest {
-    int32 category_id = 1;
 }
 
 message CreateProductRequest {

@@ -139,12 +139,12 @@ func (router *gatewayRoutes) GetProduct(ctx context.Context, req *pbProduct.GetP
 	return router.productClient.GetProduct(ctx, req)
 }
 
-func (router *gatewayRoutes) GetAllProduct(ctx context.Context, req *pbProduct.GetAllProductsRequest) (*pbProduct.ProductsResponse, error) {
-	return router.productClient.GetAllProducts(ctx, req)
+func (router *gatewayRoutes) GetAllProduct(ctx context.Context, req *pbProduct.GetProductsRequest) (*pbProduct.ProductsResponse, error) {
+	return router.productClient.GetProducts(ctx, req)
 }
 
-func (router *gatewayRoutes) GetAllUserProducts(ctx context.Context, req *pbProduct.GetAllUserProductsRequest) (*pbProduct.ProductsResponse, error) {
-	return router.productClient.GetAllUserProducts(ctx, req)
+func (router *gatewayRoutes) GetUserProducts(ctx context.Context, req *pbProduct.GetProductsRequest) (*pbProduct.ProductsResponse, error) {
+	return router.productClient.GetProducts(ctx, req)
 }
 
 func (router *gatewayRoutes) CreateProduct(ctx context.Context, req *pbProduct.CreateProductRequest) (*pbProduct.ProductResponse, error) {

@@ -260,25 +260,25 @@ service Gateway {
         };
     }
 
-    rpc GetAllProducts(product.GetAllProductsRequest) returns (product.ProductsResponse) {
+    rpc GetProducts(product.GetProductsRequest) returns (product.ProductsResponse) {
         option (google.api.http) = {
             get: "/api/v1/product"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-            summary: "Get all product";
-            operation_id: "getAllProducts";
+            summary: "Get products with filters";
+            operation_id: "getProducts";
             tags: "product";
             security: {};
         };
     }
 
-    rpc GetAllUserProducts(product.GetAllUserProductsRequest) returns (product.ProductsResponse) {
+    rpc GetUserProducts(product.GetProductsRequest) returns (product.ProductsResponse) {
         option (google.api.http) = {
             get: "/api/v1/user/{user_id}/products"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-            summary: "Get all user product";
-            operation_id: "getAllUserProducts";
+            summary: "Get user product";
+            operation_id: "getUserProducts";
             tags: "user";
         };
     }

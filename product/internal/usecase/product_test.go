@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/Go-Marketplace/backend/pkg/logger"
+	"github.com/Go-Marketplace/backend/product/internal/api/grpc/dto"
 	mocks "github.com/Go-Marketplace/backend/product/internal/mocks/repo"
 	"github.com/Go-Marketplace/backend/product/internal/model"
 	"github.com/Go-Marketplace/backend/product/internal/usecase"
@@ -119,18 +120,18 @@ func TestGetProduct(t *testing.T) {
 	}
 }
 
-func TestGetAllProduct(t *testing.T) {
+func TestGetProducts(t *testing.T) {
 	t.Parallel()
 
 	type args struct {
-		ctx context.Context
+		ctx          context.Context
+		searchParams dto.SearchProductsDTO
 	}
 
 	ctx := context.Background()
-
 	productID := uuid.New()
 
-	expectedProductFromRepo := []*model.Product{
+	expectedProductsFromRepo := []*model.Product{
 		{
 			ID:          productID,
 			Name:        "test",
@@ -153,22 +154,24 @@ func TestGetAllProduct(t *testing.T) {
 		{
 			name: "Successfully get all products",
 			args: args{
-				ctx: ctx,
+				ctx:          ctx,
+				searchParams: dto.SearchProductsDTO{},
 			},
 			mock: func(productRepo *mocks.MockProductRepo, discountRepo *mocks.MockDiscountRepo) {
-				productRepo.EXPECT().GetAllProducts(ctx).Return(expectedProductFromRepo, nil).Times(1)
+				productRepo.EXPECT().GetProducts(ctx, dto.SearchProductsDTO{}).Return(expectedProductsFromRepo, nil).Times(1)
 				discountRepo.EXPECT().GetDiscount(ctx, productID).Return(expectedDiscountFromRepo, nil).Times(1)
 			},
-			expectedProducts: expectedProductFromRepo,
+			expectedProducts: expectedProductsFromRepo,
 			expectedErr:      nil,
 		},
 		{
-			name: "Got error when get all products",
+			name: "Got error when get products",
 			args: args{
-				ctx: ctx,
+				ctx:          ctx,
+				searchParams: dto.SearchProductsDTO{},
 			},
 			mock: func(productRepo *mocks.MockProductRepo, discountRepo *mocks.MockDiscountRepo) {
-				productRepo.EXPECT().GetAllProducts(ctx).Return(nil, expectedErrFromRepo).Times(1)
+				productRepo.EXPECT().GetProducts(ctx, dto.SearchProductsDTO{}).Return(nil, expectedErrFromRepo).Times(1)
 			},
 			expectedProducts: nil,
 			expectedErr:      expectedErrFromRepo,
@@ -176,10 +179,11 @@ func TestGetAllProduct(t *testing.T) {
 		{
 			name: "Got error when get discount",
 			args: args{
-				ctx: ctx,
+				ctx:          ctx,
+				searchParams: dto.SearchProductsDTO{},
 			},
 			mock: func(productRepo *mocks.MockProductRepo, discountRepo *mocks.MockDiscountRepo) {
-				productRepo.EXPECT().GetAllProducts(ctx).Return(expectedProductFromRepo, nil).Times(1)
+				productRepo.EXPECT().GetProducts(ctx, dto.SearchProductsDTO{}).Return(expectedProductsFromRepo, nil).Times(1)
 				discountRepo.EXPECT().GetDiscount(ctx, productID).Return(nil, expectedErrFromRepo).Times(1)
 			},
 			expectedProducts: nil,
@@ -196,11 +200,12 @@ func TestGetAllProduct(t *testing.T) {
 			productUsecase, productRepo, discountRepo := productHelper(t)
 			testcase.mock(productRepo, discountRepo)
 
-			actualProduct, actualErr := productUsecase.GetAllProducts(
+			actualProducts, actualErr := productUsecase.GetProducts(
 				testcase.args.ctx,
+				testcase.args.searchParams,
 			)
 
-			assert.Equal(t, testcase.expectedProducts, actualProduct)
+			assert.Equal(t, testcase.expectedProducts, actualProducts)
 			assert.Equal(t, testcase.expectedErr, actualErr)
 		})
 	}
