@@ -8,11 +8,13 @@ import (
 	"github.com/Go-Marketplace/backend/cart/internal/model"
 	"github.com/Go-Marketplace/backend/cart/internal/usecase"
 	"github.com/Go-Marketplace/backend/pkg/logger"
-	"github.com/google/uuid"
 	"gopkg.in/tomb.v2"
 )
 
-const cartTaskWorkerInterval = time.Second
+const (
+	cartTTL                = 5 * time.Minute
+	cartTaskWorkerInterval = time.Second
+)
 
 type cartTaskWorker struct {
 	tomb         tomb.Tomb
@@ -55,28 +57,22 @@ func (worker *cartTaskWorker) Run(ctx context.Context) {
 
 				for _, task := range tasks {
 					if task != nil {
-						cart, err := worker.cartUsecase.GetCart(ctx, task.CartID)
-						if err != nil || cart == nil {
-							worker.logger.Error("failed to get cart %v: %w", task.CartID, err)
+						if _, err = worker.cartUsecase.DeleteCartCartlines(ctx, task.UserID); err != nil {
+							worker.logger.Error("failed to delete cart %v cartlines: %w", task.UserID, err)
 							continue
 						}
 
-						err = worker.cartUsecase.DeleteCart(ctx, task.CartID)
-						if err != nil {
-							worker.logger.Error("failed to delete cart %v: %w", task.CartID, err)
-							continue
+						cartTask := model.CartTask{
+							UserID:    task.UserID,
+							Timestamp: time.Now().Add(cartTTL).Unix(),
 						}
 
-						err = worker.cartUsecase.CreateCart(ctx, model.Cart{
-							ID:        uuid.New(),
-							UserID:    cart.UserID,
-							CreatedAt: time.Now(),
-							UpdatedAt: time.Now(),
-						})
-						if err != nil {
-							worker.logger.Error("failed to create cart: %w", err)
+						if err = worker.cartTaskRepo.CreateCartTask(ctx, cartTask); err != nil {
+							worker.logger.Error("failed to create cart %v task: %w", task.UserID, err)
 							continue
 						}
+					} else {
+						worker.logger.Warn("Got nil task")
 					}
 				}
 			}

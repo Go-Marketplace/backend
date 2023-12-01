@@ -19,7 +19,6 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Cart_GetCart_FullMethodName             = "/cart.Cart/GetCart"
 	Cart_GetUserCart_FullMethodName         = "/cart.Cart/GetUserCart"
 	Cart_CreateCart_FullMethodName          = "/cart.Cart/CreateCart"
 	Cart_DeleteCart_FullMethodName          = "/cart.Cart/DeleteCart"
@@ -33,14 +32,13 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CartClient interface {
-	GetCart(ctx context.Context, in *GetCartRequest, opts ...grpc.CallOption) (*CartModel, error)
-	GetUserCart(ctx context.Context, in *GetUserCartRequest, opts ...grpc.CallOption) (*CartModel, error)
-	CreateCart(ctx context.Context, in *CreateCartRequest, opts ...grpc.CallOption) (*CreateCartResponse, error)
+	GetUserCart(ctx context.Context, in *GetUserCartRequest, opts ...grpc.CallOption) (*CartResponse, error)
+	CreateCart(ctx context.Context, in *CreateCartRequest, opts ...grpc.CallOption) (*CartResponse, error)
 	DeleteCart(ctx context.Context, in *DeleteCartRequest, opts ...grpc.CallOption) (*DeleteCartResponse, error)
-	DeleteCartCartlines(ctx context.Context, in *DeleteCartCartlinesRequest, opts ...grpc.CallOption) (*DeleteCartCartlinesResponse, error)
-	CreateCartline(ctx context.Context, in *CreateCartlineRequest, opts ...grpc.CallOption) (*CreateCartlineResponse, error)
-	UpdateCartline(ctx context.Context, in *UpdateCartlineRequest, opts ...grpc.CallOption) (*CartModel, error)
-	DeleteCartline(ctx context.Context, in *DeleteCartlineRequest, opts ...grpc.CallOption) (*DeleteCartlineResponse, error)
+	DeleteCartCartlines(ctx context.Context, in *DeleteCartCartlinesRequest, opts ...grpc.CallOption) (*CartResponse, error)
+	CreateCartline(ctx context.Context, in *CreateCartlineRequest, opts ...grpc.CallOption) (*CartlineResponse, error)
+	UpdateCartline(ctx context.Context, in *UpdateCartlineRequest, opts ...grpc.CallOption) (*CartResponse, error)
+	DeleteCartline(ctx context.Context, in *DeleteCartlineRequest, opts ...grpc.CallOption) (*CartResponse, error)
 }
 
 type cartClient struct {
@@ -51,17 +49,8 @@ func NewCartClient(cc grpc.ClientConnInterface) CartClient {
 	return &cartClient{cc}
 }
 
-func (c *cartClient) GetCart(ctx context.Context, in *GetCartRequest, opts ...grpc.CallOption) (*CartModel, error) {
-	out := new(CartModel)
-	err := c.cc.Invoke(ctx, Cart_GetCart_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *cartClient) GetUserCart(ctx context.Context, in *GetUserCartRequest, opts ...grpc.CallOption) (*CartModel, error) {
-	out := new(CartModel)
+func (c *cartClient) GetUserCart(ctx context.Context, in *GetUserCartRequest, opts ...grpc.CallOption) (*CartResponse, error) {
+	out := new(CartResponse)
 	err := c.cc.Invoke(ctx, Cart_GetUserCart_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -69,8 +58,8 @@ func (c *cartClient) GetUserCart(ctx context.Context, in *GetUserCartRequest, op
 	return out, nil
 }
 
-func (c *cartClient) CreateCart(ctx context.Context, in *CreateCartRequest, opts ...grpc.CallOption) (*CreateCartResponse, error) {
-	out := new(CreateCartResponse)
+func (c *cartClient) CreateCart(ctx context.Context, in *CreateCartRequest, opts ...grpc.CallOption) (*CartResponse, error) {
+	out := new(CartResponse)
 	err := c.cc.Invoke(ctx, Cart_CreateCart_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -87,8 +76,8 @@ func (c *cartClient) DeleteCart(ctx context.Context, in *DeleteCartRequest, opts
 	return out, nil
 }
 
-func (c *cartClient) DeleteCartCartlines(ctx context.Context, in *DeleteCartCartlinesRequest, opts ...grpc.CallOption) (*DeleteCartCartlinesResponse, error) {
-	out := new(DeleteCartCartlinesResponse)
+func (c *cartClient) DeleteCartCartlines(ctx context.Context, in *DeleteCartCartlinesRequest, opts ...grpc.CallOption) (*CartResponse, error) {
+	out := new(CartResponse)
 	err := c.cc.Invoke(ctx, Cart_DeleteCartCartlines_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -96,8 +85,8 @@ func (c *cartClient) DeleteCartCartlines(ctx context.Context, in *DeleteCartCart
 	return out, nil
 }
 
-func (c *cartClient) CreateCartline(ctx context.Context, in *CreateCartlineRequest, opts ...grpc.CallOption) (*CreateCartlineResponse, error) {
-	out := new(CreateCartlineResponse)
+func (c *cartClient) CreateCartline(ctx context.Context, in *CreateCartlineRequest, opts ...grpc.CallOption) (*CartlineResponse, error) {
+	out := new(CartlineResponse)
 	err := c.cc.Invoke(ctx, Cart_CreateCartline_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -105,8 +94,8 @@ func (c *cartClient) CreateCartline(ctx context.Context, in *CreateCartlineReque
 	return out, nil
 }
 
-func (c *cartClient) UpdateCartline(ctx context.Context, in *UpdateCartlineRequest, opts ...grpc.CallOption) (*CartModel, error) {
-	out := new(CartModel)
+func (c *cartClient) UpdateCartline(ctx context.Context, in *UpdateCartlineRequest, opts ...grpc.CallOption) (*CartResponse, error) {
+	out := new(CartResponse)
 	err := c.cc.Invoke(ctx, Cart_UpdateCartline_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -114,8 +103,8 @@ func (c *cartClient) UpdateCartline(ctx context.Context, in *UpdateCartlineReque
 	return out, nil
 }
 
-func (c *cartClient) DeleteCartline(ctx context.Context, in *DeleteCartlineRequest, opts ...grpc.CallOption) (*DeleteCartlineResponse, error) {
-	out := new(DeleteCartlineResponse)
+func (c *cartClient) DeleteCartline(ctx context.Context, in *DeleteCartlineRequest, opts ...grpc.CallOption) (*CartResponse, error) {
+	out := new(CartResponse)
 	err := c.cc.Invoke(ctx, Cart_DeleteCartline_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -127,14 +116,13 @@ func (c *cartClient) DeleteCartline(ctx context.Context, in *DeleteCartlineReque
 // All implementations must embed UnimplementedCartServer
 // for forward compatibility
 type CartServer interface {
-	GetCart(context.Context, *GetCartRequest) (*CartModel, error)
-	GetUserCart(context.Context, *GetUserCartRequest) (*CartModel, error)
-	CreateCart(context.Context, *CreateCartRequest) (*CreateCartResponse, error)
+	GetUserCart(context.Context, *GetUserCartRequest) (*CartResponse, error)
+	CreateCart(context.Context, *CreateCartRequest) (*CartResponse, error)
 	DeleteCart(context.Context, *DeleteCartRequest) (*DeleteCartResponse, error)
-	DeleteCartCartlines(context.Context, *DeleteCartCartlinesRequest) (*DeleteCartCartlinesResponse, error)
-	CreateCartline(context.Context, *CreateCartlineRequest) (*CreateCartlineResponse, error)
-	UpdateCartline(context.Context, *UpdateCartlineRequest) (*CartModel, error)
-	DeleteCartline(context.Context, *DeleteCartlineRequest) (*DeleteCartlineResponse, error)
+	DeleteCartCartlines(context.Context, *DeleteCartCartlinesRequest) (*CartResponse, error)
+	CreateCartline(context.Context, *CreateCartlineRequest) (*CartlineResponse, error)
+	UpdateCartline(context.Context, *UpdateCartlineRequest) (*CartResponse, error)
+	DeleteCartline(context.Context, *DeleteCartlineRequest) (*CartResponse, error)
 	mustEmbedUnimplementedCartServer()
 }
 
@@ -142,28 +130,25 @@ type CartServer interface {
 type UnimplementedCartServer struct {
 }
 
-func (UnimplementedCartServer) GetCart(context.Context, *GetCartRequest) (*CartModel, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetCart not implemented")
-}
-func (UnimplementedCartServer) GetUserCart(context.Context, *GetUserCartRequest) (*CartModel, error) {
+func (UnimplementedCartServer) GetUserCart(context.Context, *GetUserCartRequest) (*CartResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserCart not implemented")
 }
-func (UnimplementedCartServer) CreateCart(context.Context, *CreateCartRequest) (*CreateCartResponse, error) {
+func (UnimplementedCartServer) CreateCart(context.Context, *CreateCartRequest) (*CartResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateCart not implemented")
 }
 func (UnimplementedCartServer) DeleteCart(context.Context, *DeleteCartRequest) (*DeleteCartResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteCart not implemented")
 }
-func (UnimplementedCartServer) DeleteCartCartlines(context.Context, *DeleteCartCartlinesRequest) (*DeleteCartCartlinesResponse, error) {
+func (UnimplementedCartServer) DeleteCartCartlines(context.Context, *DeleteCartCartlinesRequest) (*CartResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteCartCartlines not implemented")
 }
-func (UnimplementedCartServer) CreateCartline(context.Context, *CreateCartlineRequest) (*CreateCartlineResponse, error) {
+func (UnimplementedCartServer) CreateCartline(context.Context, *CreateCartlineRequest) (*CartlineResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateCartline not implemented")
 }
-func (UnimplementedCartServer) UpdateCartline(context.Context, *UpdateCartlineRequest) (*CartModel, error) {
+func (UnimplementedCartServer) UpdateCartline(context.Context, *UpdateCartlineRequest) (*CartResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateCartline not implemented")
 }
-func (UnimplementedCartServer) DeleteCartline(context.Context, *DeleteCartlineRequest) (*DeleteCartlineResponse, error) {
+func (UnimplementedCartServer) DeleteCartline(context.Context, *DeleteCartlineRequest) (*CartResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteCartline not implemented")
 }
 func (UnimplementedCartServer) mustEmbedUnimplementedCartServer() {}
@@ -177,24 +162,6 @@ type UnsafeCartServer interface {
 
 func RegisterCartServer(s grpc.ServiceRegistrar, srv CartServer) {
 	s.RegisterService(&Cart_ServiceDesc, srv)
-}
-
-func _Cart_GetCart_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetCartRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(CartServer).GetCart(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Cart_GetCart_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CartServer).GetCart(ctx, req.(*GetCartRequest))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _Cart_GetUserCart_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -330,10 +297,6 @@ var Cart_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "cart.Cart",
 	HandlerType: (*CartServer)(nil),
 	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "GetCart",
-			Handler:    _Cart_GetCart_Handler,
-		},
 		{
 			MethodName: "GetUserCart",
 			Handler:    _Cart_GetUserCart_Handler,

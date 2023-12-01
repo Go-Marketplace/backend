@@ -23,34 +23,34 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Gateway_RegisterUser_FullMethodName       = "/gateway.Gateway/RegisterUser"
-	Gateway_Login_FullMethodName              = "/gateway.Gateway/Login"
-	Gateway_GetUser_FullMethodName            = "/gateway.Gateway/GetUser"
-	Gateway_GetAllUsers_FullMethodName        = "/gateway.Gateway/GetAllUsers"
-	Gateway_UpdateUser_FullMethodName         = "/gateway.Gateway/UpdateUser"
-	Gateway_ChangeUserRole_FullMethodName     = "/gateway.Gateway/ChangeUserRole"
-	Gateway_DeleteUser_FullMethodName         = "/gateway.Gateway/DeleteUser"
-	Gateway_CreateOrder_FullMethodName        = "/gateway.Gateway/CreateOrder"
-	Gateway_GetOrder_FullMethodName           = "/gateway.Gateway/GetOrder"
-	Gateway_GetAllUserOrders_FullMethodName   = "/gateway.Gateway/GetAllUserOrders"
-	Gateway_DeleteOrder_FullMethodName        = "/gateway.Gateway/DeleteOrder"
-	Gateway_UpdateOrderline_FullMethodName    = "/gateway.Gateway/UpdateOrderline"
-	Gateway_GetCart_FullMethodName            = "/gateway.Gateway/GetCart"
-	Gateway_GetUserCart_FullMethodName        = "/gateway.Gateway/GetUserCart"
-	Gateway_CreateCartline_FullMethodName     = "/gateway.Gateway/CreateCartline"
-	Gateway_UpdateCartline_FullMethodName     = "/gateway.Gateway/UpdateCartline"
-	Gateway_DeleteCartline_FullMethodName     = "/gateway.Gateway/DeleteCartline"
-	Gateway_GetProduct_FullMethodName         = "/gateway.Gateway/GetProduct"
-	Gateway_GetAllProducts_FullMethodName     = "/gateway.Gateway/GetAllProducts"
-	Gateway_GetAllUserProducts_FullMethodName = "/gateway.Gateway/GetAllUserProducts"
-	Gateway_CreateProduct_FullMethodName      = "/gateway.Gateway/CreateProduct"
-	Gateway_UpdateProduct_FullMethodName      = "/gateway.Gateway/UpdateProduct"
-	Gateway_ModerateProduct_FullMethodName    = "/gateway.Gateway/ModerateProduct"
-	Gateway_DeleteProduct_FullMethodName      = "/gateway.Gateway/DeleteProduct"
-	Gateway_GetCategory_FullMethodName        = "/gateway.Gateway/GetCategory"
-	Gateway_GetAllCategories_FullMethodName   = "/gateway.Gateway/GetAllCategories"
-	Gateway_CreateDiscount_FullMethodName     = "/gateway.Gateway/CreateDiscount"
-	Gateway_DeleteDiscount_FullMethodName     = "/gateway.Gateway/DeleteDiscount"
+	Gateway_RegisterUser_FullMethodName        = "/gateway.Gateway/RegisterUser"
+	Gateway_Login_FullMethodName               = "/gateway.Gateway/Login"
+	Gateway_GetUser_FullMethodName             = "/gateway.Gateway/GetUser"
+	Gateway_GetAllUsers_FullMethodName         = "/gateway.Gateway/GetAllUsers"
+	Gateway_UpdateUser_FullMethodName          = "/gateway.Gateway/UpdateUser"
+	Gateway_ChangeUserRole_FullMethodName      = "/gateway.Gateway/ChangeUserRole"
+	Gateway_DeleteUser_FullMethodName          = "/gateway.Gateway/DeleteUser"
+	Gateway_CreateOrder_FullMethodName         = "/gateway.Gateway/CreateOrder"
+	Gateway_GetOrder_FullMethodName            = "/gateway.Gateway/GetOrder"
+	Gateway_GetAllUserOrders_FullMethodName    = "/gateway.Gateway/GetAllUserOrders"
+	Gateway_DeleteOrder_FullMethodName         = "/gateway.Gateway/DeleteOrder"
+	Gateway_UpdateOrderline_FullMethodName     = "/gateway.Gateway/UpdateOrderline"
+	Gateway_GetUserCart_FullMethodName         = "/gateway.Gateway/GetUserCart"
+	Gateway_CreateCartline_FullMethodName      = "/gateway.Gateway/CreateCartline"
+	Gateway_UpdateCartline_FullMethodName      = "/gateway.Gateway/UpdateCartline"
+	Gateway_DeleteCartline_FullMethodName      = "/gateway.Gateway/DeleteCartline"
+	Gateway_DeleteCartCartlines_FullMethodName = "/gateway.Gateway/DeleteCartCartlines"
+	Gateway_GetProduct_FullMethodName          = "/gateway.Gateway/GetProduct"
+	Gateway_GetAllProducts_FullMethodName      = "/gateway.Gateway/GetAllProducts"
+	Gateway_GetAllUserProducts_FullMethodName  = "/gateway.Gateway/GetAllUserProducts"
+	Gateway_CreateProduct_FullMethodName       = "/gateway.Gateway/CreateProduct"
+	Gateway_UpdateProduct_FullMethodName       = "/gateway.Gateway/UpdateProduct"
+	Gateway_ModerateProduct_FullMethodName     = "/gateway.Gateway/ModerateProduct"
+	Gateway_DeleteProduct_FullMethodName       = "/gateway.Gateway/DeleteProduct"
+	Gateway_GetCategory_FullMethodName         = "/gateway.Gateway/GetCategory"
+	Gateway_GetAllCategories_FullMethodName    = "/gateway.Gateway/GetAllCategories"
+	Gateway_CreateDiscount_FullMethodName      = "/gateway.Gateway/CreateDiscount"
+	Gateway_DeleteDiscount_FullMethodName      = "/gateway.Gateway/DeleteDiscount"
 )
 
 // GatewayClient is the client API for Gateway service.
@@ -72,12 +72,11 @@ type GatewayClient interface {
 	GetAllUserOrders(ctx context.Context, in *order.GetAllUserOrdersRequest, opts ...grpc.CallOption) (*order.GetAllUserOrdersResponse, error)
 	DeleteOrder(ctx context.Context, in *order.DeleteOrderRequest, opts ...grpc.CallOption) (*order.DeleteOrderResponse, error)
 	UpdateOrderline(ctx context.Context, in *order.UpdateOrderlineRequest, opts ...grpc.CallOption) (*order.OrderResponse, error)
-	// Cart
-	GetCart(ctx context.Context, in *cart.GetCartRequest, opts ...grpc.CallOption) (*cart.CartModel, error)
-	GetUserCart(ctx context.Context, in *cart.GetUserCartRequest, opts ...grpc.CallOption) (*cart.CartModel, error)
-	CreateCartline(ctx context.Context, in *cart.CreateCartlineRequest, opts ...grpc.CallOption) (*cart.CreateCartlineResponse, error)
-	UpdateCartline(ctx context.Context, in *cart.UpdateCartlineRequest, opts ...grpc.CallOption) (*cart.CartModel, error)
-	DeleteCartline(ctx context.Context, in *cart.DeleteCartlineRequest, opts ...grpc.CallOption) (*cart.DeleteCartlineResponse, error)
+	GetUserCart(ctx context.Context, in *cart.GetUserCartRequest, opts ...grpc.CallOption) (*cart.CartResponse, error)
+	CreateCartline(ctx context.Context, in *cart.CreateCartlineRequest, opts ...grpc.CallOption) (*cart.CartlineResponse, error)
+	UpdateCartline(ctx context.Context, in *cart.UpdateCartlineRequest, opts ...grpc.CallOption) (*cart.CartResponse, error)
+	DeleteCartline(ctx context.Context, in *cart.DeleteCartlineRequest, opts ...grpc.CallOption) (*cart.CartResponse, error)
+	DeleteCartCartlines(ctx context.Context, in *cart.DeleteCartCartlinesRequest, opts ...grpc.CallOption) (*cart.CartResponse, error)
 	// Product
 	GetProduct(ctx context.Context, in *product.GetProductRequest, opts ...grpc.CallOption) (*product.ProductResponse, error)
 	GetAllProducts(ctx context.Context, in *product.GetAllProductsRequest, opts ...grpc.CallOption) (*product.ProductsResponse, error)
@@ -208,17 +207,8 @@ func (c *gatewayClient) UpdateOrderline(ctx context.Context, in *order.UpdateOrd
 	return out, nil
 }
 
-func (c *gatewayClient) GetCart(ctx context.Context, in *cart.GetCartRequest, opts ...grpc.CallOption) (*cart.CartModel, error) {
-	out := new(cart.CartModel)
-	err := c.cc.Invoke(ctx, Gateway_GetCart_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *gatewayClient) GetUserCart(ctx context.Context, in *cart.GetUserCartRequest, opts ...grpc.CallOption) (*cart.CartModel, error) {
-	out := new(cart.CartModel)
+func (c *gatewayClient) GetUserCart(ctx context.Context, in *cart.GetUserCartRequest, opts ...grpc.CallOption) (*cart.CartResponse, error) {
+	out := new(cart.CartResponse)
 	err := c.cc.Invoke(ctx, Gateway_GetUserCart_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -226,8 +216,8 @@ func (c *gatewayClient) GetUserCart(ctx context.Context, in *cart.GetUserCartReq
 	return out, nil
 }
 
-func (c *gatewayClient) CreateCartline(ctx context.Context, in *cart.CreateCartlineRequest, opts ...grpc.CallOption) (*cart.CreateCartlineResponse, error) {
-	out := new(cart.CreateCartlineResponse)
+func (c *gatewayClient) CreateCartline(ctx context.Context, in *cart.CreateCartlineRequest, opts ...grpc.CallOption) (*cart.CartlineResponse, error) {
+	out := new(cart.CartlineResponse)
 	err := c.cc.Invoke(ctx, Gateway_CreateCartline_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -235,8 +225,8 @@ func (c *gatewayClient) CreateCartline(ctx context.Context, in *cart.CreateCartl
 	return out, nil
 }
 
-func (c *gatewayClient) UpdateCartline(ctx context.Context, in *cart.UpdateCartlineRequest, opts ...grpc.CallOption) (*cart.CartModel, error) {
-	out := new(cart.CartModel)
+func (c *gatewayClient) UpdateCartline(ctx context.Context, in *cart.UpdateCartlineRequest, opts ...grpc.CallOption) (*cart.CartResponse, error) {
+	out := new(cart.CartResponse)
 	err := c.cc.Invoke(ctx, Gateway_UpdateCartline_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -244,9 +234,18 @@ func (c *gatewayClient) UpdateCartline(ctx context.Context, in *cart.UpdateCartl
 	return out, nil
 }
 
-func (c *gatewayClient) DeleteCartline(ctx context.Context, in *cart.DeleteCartlineRequest, opts ...grpc.CallOption) (*cart.DeleteCartlineResponse, error) {
-	out := new(cart.DeleteCartlineResponse)
+func (c *gatewayClient) DeleteCartline(ctx context.Context, in *cart.DeleteCartlineRequest, opts ...grpc.CallOption) (*cart.CartResponse, error) {
+	out := new(cart.CartResponse)
 	err := c.cc.Invoke(ctx, Gateway_DeleteCartline_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *gatewayClient) DeleteCartCartlines(ctx context.Context, in *cart.DeleteCartCartlinesRequest, opts ...grpc.CallOption) (*cart.CartResponse, error) {
+	out := new(cart.CartResponse)
+	err := c.cc.Invoke(ctx, Gateway_DeleteCartCartlines_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -371,12 +370,11 @@ type GatewayServer interface {
 	GetAllUserOrders(context.Context, *order.GetAllUserOrdersRequest) (*order.GetAllUserOrdersResponse, error)
 	DeleteOrder(context.Context, *order.DeleteOrderRequest) (*order.DeleteOrderResponse, error)
 	UpdateOrderline(context.Context, *order.UpdateOrderlineRequest) (*order.OrderResponse, error)
-	// Cart
-	GetCart(context.Context, *cart.GetCartRequest) (*cart.CartModel, error)
-	GetUserCart(context.Context, *cart.GetUserCartRequest) (*cart.CartModel, error)
-	CreateCartline(context.Context, *cart.CreateCartlineRequest) (*cart.CreateCartlineResponse, error)
-	UpdateCartline(context.Context, *cart.UpdateCartlineRequest) (*cart.CartModel, error)
-	DeleteCartline(context.Context, *cart.DeleteCartlineRequest) (*cart.DeleteCartlineResponse, error)
+	GetUserCart(context.Context, *cart.GetUserCartRequest) (*cart.CartResponse, error)
+	CreateCartline(context.Context, *cart.CreateCartlineRequest) (*cart.CartlineResponse, error)
+	UpdateCartline(context.Context, *cart.UpdateCartlineRequest) (*cart.CartResponse, error)
+	DeleteCartline(context.Context, *cart.DeleteCartlineRequest) (*cart.CartResponse, error)
+	DeleteCartCartlines(context.Context, *cart.DeleteCartCartlinesRequest) (*cart.CartResponse, error)
 	// Product
 	GetProduct(context.Context, *product.GetProductRequest) (*product.ProductResponse, error)
 	GetAllProducts(context.Context, *product.GetAllProductsRequest) (*product.ProductsResponse, error)
@@ -432,20 +430,20 @@ func (UnimplementedGatewayServer) DeleteOrder(context.Context, *order.DeleteOrde
 func (UnimplementedGatewayServer) UpdateOrderline(context.Context, *order.UpdateOrderlineRequest) (*order.OrderResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateOrderline not implemented")
 }
-func (UnimplementedGatewayServer) GetCart(context.Context, *cart.GetCartRequest) (*cart.CartModel, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetCart not implemented")
-}
-func (UnimplementedGatewayServer) GetUserCart(context.Context, *cart.GetUserCartRequest) (*cart.CartModel, error) {
+func (UnimplementedGatewayServer) GetUserCart(context.Context, *cart.GetUserCartRequest) (*cart.CartResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserCart not implemented")
 }
-func (UnimplementedGatewayServer) CreateCartline(context.Context, *cart.CreateCartlineRequest) (*cart.CreateCartlineResponse, error) {
+func (UnimplementedGatewayServer) CreateCartline(context.Context, *cart.CreateCartlineRequest) (*cart.CartlineResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateCartline not implemented")
 }
-func (UnimplementedGatewayServer) UpdateCartline(context.Context, *cart.UpdateCartlineRequest) (*cart.CartModel, error) {
+func (UnimplementedGatewayServer) UpdateCartline(context.Context, *cart.UpdateCartlineRequest) (*cart.CartResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateCartline not implemented")
 }
-func (UnimplementedGatewayServer) DeleteCartline(context.Context, *cart.DeleteCartlineRequest) (*cart.DeleteCartlineResponse, error) {
+func (UnimplementedGatewayServer) DeleteCartline(context.Context, *cart.DeleteCartlineRequest) (*cart.CartResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteCartline not implemented")
+}
+func (UnimplementedGatewayServer) DeleteCartCartlines(context.Context, *cart.DeleteCartCartlinesRequest) (*cart.CartResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteCartCartlines not implemented")
 }
 func (UnimplementedGatewayServer) GetProduct(context.Context, *product.GetProductRequest) (*product.ProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProduct not implemented")
@@ -709,24 +707,6 @@ func _Gateway_UpdateOrderline_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Gateway_GetCart_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(cart.GetCartRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(GatewayServer).GetCart(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Gateway_GetCart_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GatewayServer).GetCart(ctx, req.(*cart.GetCartRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Gateway_GetUserCart_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(cart.GetUserCartRequest)
 	if err := dec(in); err != nil {
@@ -795,6 +775,24 @@ func _Gateway_DeleteCartline_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(GatewayServer).DeleteCartline(ctx, req.(*cart.DeleteCartlineRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Gateway_DeleteCartCartlines_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(cart.DeleteCartCartlinesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GatewayServer).DeleteCartCartlines(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Gateway_DeleteCartCartlines_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GatewayServer).DeleteCartCartlines(ctx, req.(*cart.DeleteCartCartlinesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1053,10 +1051,6 @@ var Gateway_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Gateway_UpdateOrderline_Handler,
 		},
 		{
-			MethodName: "GetCart",
-			Handler:    _Gateway_GetCart_Handler,
-		},
-		{
 			MethodName: "GetUserCart",
 			Handler:    _Gateway_GetUserCart_Handler,
 		},
@@ -1071,6 +1065,10 @@ var Gateway_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteCartline",
 			Handler:    _Gateway_DeleteCartline_Handler,
+		},
+		{
+			MethodName: "DeleteCartCartlines",
+			Handler:    _Gateway_DeleteCartCartlines_Handler,
 		},
 		{
 			MethodName: "GetProduct",

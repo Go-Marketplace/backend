@@ -7,19 +7,14 @@ option go_package = "github.com/Go-Marketplace/backend/proto/gen/cart;cart";
 package cart;
 
 service Cart {
-    rpc GetCart(GetCartRequest) returns (CartModel);
-    rpc GetUserCart(GetUserCartRequest) returns (CartModel);
-    rpc CreateCart(CreateCartRequest) returns (CreateCartResponse);
+    rpc GetUserCart(GetUserCartRequest) returns (CartResponse);
+    rpc CreateCart(CreateCartRequest) returns (CartResponse);
     rpc DeleteCart(DeleteCartRequest) returns (DeleteCartResponse);
-    rpc DeleteCartCartlines(DeleteCartCartlinesRequest) returns (DeleteCartCartlinesResponse);
+    rpc DeleteCartCartlines(DeleteCartCartlinesRequest) returns (CartResponse);
 
-    rpc CreateCartline(CreateCartlineRequest) returns (CreateCartlineResponse);
-    rpc UpdateCartline(UpdateCartlineRequest) returns (CartModel);
-    rpc DeleteCartline(DeleteCartlineRequest) returns (DeleteCartlineResponse);
-}
-
-message GetCartRequest {
-    string cart_id = 1;
+    rpc CreateCartline(CreateCartlineRequest) returns (CartlineResponse);
+    rpc UpdateCartline(UpdateCartlineRequest) returns (CartResponse);
+    rpc DeleteCartline(DeleteCartlineRequest) returns (CartResponse);
 }
 
 message GetUserCartRequest {
@@ -31,56 +26,45 @@ message CreateCartRequest {
 }
 
 message CreateCartlineRequest {
-    string cart_id = 1;
+    string user_id = 1;
     string product_id = 2;
+    string name = 3;
 }
 
 message UpdateCartlineRequest {
-    string cart_id = 1;
-    string cartline_id = 2;
-    int64 quantity = 3;
+    string user_id = 1;
+    string product_id = 2;
+    string name = 3;
+    int64 quantity = 4;
 }
 
 message DeleteCartlineRequest {
-    string cart_id = 1;
-    string cartline_id = 2;
+    string user_id = 1;
+    string product_id = 2;
 }
 
 message DeleteCartRequest {
-    string cart_id = 1;
+    string user_id = 1;
 }
 
 message DeleteCartCartlinesRequest {
-    string cart_id = 1;
+    string user_id = 1;
 }
 
-message CartModel {
-    string cart_id = 1;
-    string user_id = 2;
-    repeated CartlineModel cartlines = 3;
-    google.protobuf.Timestamp created_at = 4;
-    google.protobuf.Timestamp updated_at = 5;
+message CartResponse {
+    string user_id = 1;
+    repeated CartlineResponse cartlines = 2;
+    google.protobuf.Timestamp created_at = 3;
+    google.protobuf.Timestamp updated_at = 4;
 }
 
-message CartlineModel {
-    string cartline_id = 1;
-    string cart_id = 2;
-    string product_id = 3;
+message CartlineResponse {
+    string user_id = 1;
+    string product_id = 2;
+    string name = 3;
     int64 quantity = 4;
     google.protobuf.Timestamp created_at = 5;
     google.protobuf.Timestamp updated_at = 6;
 }
 
-message DeleteCartlineResponse {}
-
 message DeleteCartResponse {}
-
-message CreateCartResponse {
-    string cart_id = 1;
-}
-
-message CreateCartlineResponse {
-    string cartline_id = 1;
-}
-
-message DeleteCartCartlinesResponse {}

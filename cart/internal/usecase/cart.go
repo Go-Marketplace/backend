@@ -28,10 +28,6 @@ func NewCartUsecase(cartRepo interfaces.CartRepo, cartTaskRepo interfaces.CartTa
 	}
 }
 
-func (usecase *CartUsecase) GetCart(ctx context.Context, id uuid.UUID) (*model.Cart, error) {
-	return usecase.cartRepo.GetCart(ctx, id)
-}
-
 func (usecase *CartUsecase) GetUserCart(ctx context.Context, userID uuid.UUID) (*model.Cart, error) {
 	return usecase.cartRepo.GetUserCart(ctx, userID)
 }
@@ -42,7 +38,7 @@ func (usecase *CartUsecase) CreateCart(ctx context.Context, cart model.Cart) err
 	}
 
 	if err := usecase.cartTaskRepo.CreateCartTask(ctx, model.CartTask{
-		CartID:    cart.ID,
+		UserID:    cart.UserID,
 		Timestamp: time.Now().Add(cartTTL).Unix(),
 	}); err != nil {
 		return err
@@ -60,17 +56,25 @@ func (usecase *CartUsecase) UpdateCartline(ctx context.Context, cartline model.C
 		return nil, err
 	}
 
-	return usecase.cartRepo.GetCart(ctx, cartline.ID)
+	return usecase.GetUserCart(ctx, cartline.UserID)
 }
 
-func (usecase *CartUsecase) DeleteCart(ctx context.Context, id uuid.UUID) error {
-	return usecase.cartRepo.DeleteCart(ctx, id)
+func (usecase *CartUsecase) DeleteCart(ctx context.Context, userID uuid.UUID) error {
+	return usecase.cartRepo.DeleteCart(ctx, userID)
 }
 
-func (usecase *CartUsecase) DeleteCartline(ctx context.Context, id uuid.UUID) error {
-	return usecase.cartRepo.DeleteCartline(ctx, id)
+func (usecase *CartUsecase) DeleteCartline(ctx context.Context, cartline model.CartLine) (*model.Cart, error) {
+	if err := usecase.cartRepo.DeleteCartline(ctx, cartline); err != nil {
+		return nil, err
+	}
+
+	return usecase.GetUserCart(ctx, cartline.UserID)
 }
 
-func (usecase *CartUsecase) DeleteCartCartlines(ctx context.Context, cartID uuid.UUID) error {
-	return usecase.cartRepo.DeleteCartCartlines(ctx, cartID)
+func (usecase *CartUsecase) DeleteCartCartlines(ctx context.Context, userID uuid.UUID) (*model.Cart, error) {
+	if err := usecase.cartRepo.DeleteCartCartlines(ctx, userID); err != nil {
+		return nil, err
+	}
+
+	return usecase.GetUserCart(ctx, userID)
 }

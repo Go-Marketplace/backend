@@ -38,6 +38,8 @@ func (repo *CartTaskRepo) CreateCartTask(ctx context.Context, task model.CartTas
 		return fmt.Errorf("failed to ZAdd new task: %w", err)
 	}
 
+	repo.logger.Info("Create cart task for %s cart", task.UserID)
+
 	return nil
 }
 

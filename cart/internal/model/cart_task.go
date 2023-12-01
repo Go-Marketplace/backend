@@ -8,7 +8,7 @@ import (
 )
 
 type CartTask struct {
-	CartID    uuid.UUID `json:"cart_id"`
+	UserID    uuid.UUID `json:"user_id"`
 	Timestamp int64     `json:"timestamp"`
 }
 
