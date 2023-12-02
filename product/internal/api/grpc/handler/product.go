@@ -70,6 +70,14 @@ func (routes *productRoutes) UpdateProduct(ctx context.Context, req *pbProduct.U
 	return product.ToProto(), nil
 }
 
+func (routes *productRoutes) UpdateProducts(ctx context.Context, req *pbProduct.UpdateProductsRequest) (*pbProduct.UpdateProductsResponse, error) {
+	if err := controller.UpdateProducts(ctx, routes.productUsecase, req); err != nil {
+		return nil, err
+	}
+
+	return &pbProduct.UpdateProductsResponse{}, nil
+}
+
 func (routes *productRoutes) DeleteProduct(ctx context.Context, req *pbProduct.DeleteProductRequest) (*pbProduct.DeleteProductResponse, error) {
 	err := controller.DeleteProduct(ctx, routes.productUsecase, req)
 	if err != nil {

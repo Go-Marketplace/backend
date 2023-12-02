@@ -27,10 +27,21 @@ func GetProducts(ctx context.Context, productUsecase usecase.IProductUsecase, re
 		}
 	}
 
+	productIDs := make([]uuid.UUID, 0, len(req.ProductIds))
+	for _, productIDStr := range req.ProductIds {
+		productID, err := uuid.Parse(productIDStr)
+		if err != nil {
+			return nil, status.Errorf(codes.InvalidArgument, "Invalid product id: %s", err)
+		}
+
+		productIDs = append(productIDs, productID)
+	}
+
 	searchParams := dto.SearchProductsDTO{
 		UserID:     userID,
 		CategoryID: req.CategoryId,
 		Moderated:  req.Moderated,
+		ProductIDs: productIDs,
 	}
 
 	products, err := productUsecase.GetProducts(ctx, searchParams)
@@ -119,6 +130,36 @@ func UpdateProduct(ctx context.Context, productUsecase usecase.IProductUsecase, 
 	}
 
 	return product, nil
+}
+
+func UpdateProducts(ctx context.Context, productUsecase usecase.IProductUsecase, req *pbProduct.UpdateProductsRequest) error {
+	if req == nil {
+		return status.Errorf(codes.InvalidArgument, "Invalid request")
+	}
+
+	products := make([]model.Product, 0, len(req.Products))
+
+	for _, reqProduct := range req.Products {
+		productID, err := uuid.Parse(reqProduct.ProductId)
+		if err != nil {
+			return status.Errorf(codes.InvalidArgument, "Invalid product id: %s", err)
+		}
+
+		products = append(products, model.Product{
+			ID:          productID,
+			CategoryID:  reqProduct.CategoryId,
+			Name:        reqProduct.Name,
+			Description: reqProduct.Description,
+			Price:       reqProduct.Price,
+			Quantity:    reqProduct.Quantity,
+		})
+	}
+
+	if err := productUsecase.UpdateProducts(ctx, products); err != nil {
+		return status.Errorf(codes.Internal, "Internal error: %s", err)
+	}
+
+	return nil
 }
 
 func DeleteProduct(ctx context.Context, productUsecase usecase.IProductUsecase, req *pbProduct.DeleteProductRequest) error {

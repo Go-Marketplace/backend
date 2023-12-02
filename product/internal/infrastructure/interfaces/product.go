@@ -13,6 +13,7 @@ type ProductRepo interface {
 	GetProduct(ctx context.Context, id uuid.UUID) (*model.Product, error)
 	CreateProduct(ctx context.Context, product model.Product) error
 	UpdateProduct(ctx context.Context, product model.Product) error
+	UpdateProducts(ctx context.Context, products []model.Product) error
 	DeleteProduct(ctx context.Context, id uuid.UUID) error
 
 	GetAllCategories(ctx context.Context) ([]*model.Category, error)

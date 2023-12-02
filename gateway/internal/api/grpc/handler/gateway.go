@@ -121,15 +121,15 @@ func (router *gatewayRoutes) CreateCartline(ctx context.Context, req *pbCart.Cre
 	return router.cartClient.CreateCartline(ctx, req)
 }
 
-func (router *gatewayRoutes) UpdateCartline(ctx context.Context, req *pbCart.UpdateCartlineRequest) (*pbCart.CartResponse, error) {
+func (router *gatewayRoutes) UpdateCartline(ctx context.Context, req *pbCart.UpdateCartlineRequest) (*pbCart.CartlineResponse, error) {
 	return router.cartClient.UpdateCartline(ctx, req)
 }
 
-func (router *gatewayRoutes) DeleteCartline(ctx context.Context, req *pbCart.DeleteCartlineRequest) (*pbCart.CartResponse, error) {
+func (router *gatewayRoutes) DeleteCartline(ctx context.Context, req *pbCart.DeleteCartlineRequest) (*pbCart.DeleteCartlineResponse, error) {
 	return router.cartClient.DeleteCartline(ctx, req)
 }
 
-func (router *gatewayRoutes) DeleteCartCartlines(ctx context.Context, req *pbCart.DeleteCartCartlinesRequest) (*pbCart.CartResponse, error) {
+func (router *gatewayRoutes) DeleteCartCartlines(ctx context.Context, req *pbCart.DeleteCartCartlinesRequest) (*pbCart.DeleteCartCartlinesResponse, error) {
 	return router.cartClient.DeleteCartCartlines(ctx, req)
 }
 

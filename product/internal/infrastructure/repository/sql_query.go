@@ -35,7 +35,7 @@ func getProductQuery(productID uuid.UUID) sq.SelectBuilder {
 		})
 }
 
-func getSearchProductsQuery(searchParams dto.SearchProductsDTO) sq.SelectBuilder {
+func searchProductsQuery(searchParams dto.SearchProductsDTO) sq.SelectBuilder {
 	query := getAllProductsQuery().Where(sq.Eq{
 		"moderated": searchParams.Moderated,
 	})
@@ -49,6 +49,12 @@ func getSearchProductsQuery(searchParams dto.SearchProductsDTO) sq.SelectBuilder
 	if searchParams.CategoryID != 0 {
 		query = query.Where(sq.Eq{
 			"category_id": searchParams.CategoryID,
+		})
+	}
+
+	if len(searchParams.ProductIDs) != 0 {
+		query = query.Where(sq.Eq{
+			"product_id": searchParams.ProductIDs,
 		})
 	}
 

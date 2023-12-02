@@ -47,34 +47,34 @@ func (usecase *CartUsecase) CreateCart(ctx context.Context, cart model.Cart) err
 	return nil
 }
 
-func (usecase *CartUsecase) CreateCartline(ctx context.Context, cartline model.CartLine) error {
+func (usecase *CartUsecase) GetCartline(ctx context.Context, userID, productID uuid.UUID) (*model.CartLine, error) {
+	return usecase.cartRepo.GetCartline(ctx, userID, productID)
+}
+
+func (usecase *CartUsecase) CreateCartline(ctx context.Context, cartline *model.CartLine) error {
 	return usecase.cartRepo.CreateCartline(ctx, cartline)
 }
 
-func (usecase *CartUsecase) UpdateCartline(ctx context.Context, cartline model.CartLine) (*model.Cart, error) {
+func (usecase *CartUsecase) CreateCartlines(ctx context.Context, cartlines []*model.CartLine) error {
+	return usecase.cartRepo.CreateCartlines(ctx, cartlines)
+}
+
+func (usecase *CartUsecase) UpdateCartline(ctx context.Context, cartline model.CartLine) (*model.CartLine, error) {
 	if err := usecase.cartRepo.UpdateCartline(ctx, cartline); err != nil {
 		return nil, err
 	}
 
-	return usecase.GetUserCart(ctx, cartline.UserID)
+	return usecase.GetCartline(ctx, cartline.UserID, cartline.ProductID)
 }
 
 func (usecase *CartUsecase) DeleteCart(ctx context.Context, userID uuid.UUID) error {
 	return usecase.cartRepo.DeleteCart(ctx, userID)
 }
 
-func (usecase *CartUsecase) DeleteCartline(ctx context.Context, cartline model.CartLine) (*model.Cart, error) {
-	if err := usecase.cartRepo.DeleteCartline(ctx, cartline); err != nil {
-		return nil, err
-	}
-
-	return usecase.GetUserCart(ctx, cartline.UserID)
+func (usecase *CartUsecase) DeleteCartline(ctx context.Context, userID uuid.UUID, productID uuid.UUID) error {
+	return usecase.cartRepo.DeleteCartline(ctx, userID, productID)
 }
 
-func (usecase *CartUsecase) DeleteCartCartlines(ctx context.Context, userID uuid.UUID) (*model.Cart, error) {
-	if err := usecase.cartRepo.DeleteCartCartlines(ctx, userID); err != nil {
-		return nil, err
-	}
-
-	return usecase.GetUserCart(ctx, userID)
+func (usecase *CartUsecase) DeleteCartCartlines(ctx context.Context, userID uuid.UUID) error {
+	return usecase.cartRepo.DeleteCartCartlines(ctx, userID)
 }

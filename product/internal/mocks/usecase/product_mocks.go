@@ -155,21 +155,6 @@ func (mr *MockIProductUsecaseMockRecorder) GetProducts(ctx, searchParams interfa
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProducts", reflect.TypeOf((*MockIProductUsecase)(nil).GetProducts), ctx, searchParams)
 }
 
-// ModerateProduct mocks base method.
-func (m *MockIProductUsecase) ModerateProduct(ctx context.Context, product model.Product) (*model.Product, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ModerateProduct", ctx, product)
-	ret0, _ := ret[0].(*model.Product)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// ModerateProduct indicates an expected call of ModerateProduct.
-func (mr *MockIProductUsecaseMockRecorder) ModerateProduct(ctx, product interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModerateProduct", reflect.TypeOf((*MockIProductUsecase)(nil).ModerateProduct), ctx, product)
-}
-
 // UpdateProduct mocks base method.
 func (m *MockIProductUsecase) UpdateProduct(ctx context.Context, product model.Product) (*model.Product, error) {
 	m.ctrl.T.Helper()
@@ -183,4 +168,18 @@ func (m *MockIProductUsecase) UpdateProduct(ctx context.Context, product model.P
 func (mr *MockIProductUsecaseMockRecorder) UpdateProduct(ctx, product interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateProduct", reflect.TypeOf((*MockIProductUsecase)(nil).UpdateProduct), ctx, product)
+}
+
+// UpdateProducts mocks base method.
+func (m *MockIProductUsecase) UpdateProducts(ctx context.Context, products []model.Product) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateProducts", ctx, products)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateProducts indicates an expected call of UpdateProducts.
+func (mr *MockIProductUsecaseMockRecorder) UpdateProducts(ctx, products interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateProducts", reflect.TypeOf((*MockIProductUsecase)(nil).UpdateProducts), ctx, products)
 }

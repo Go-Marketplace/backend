@@ -10,6 +10,7 @@ service Product {
     rpc GetProducts(GetProductsRequest) returns (ProductsResponse);
     rpc GetProduct(GetProductRequest) returns (ProductResponse);
     rpc CreateProduct(CreateProductRequest) returns (ProductResponse);
+    rpc UpdateProducts(UpdateProductsRequest) returns (UpdateProductsResponse);
     rpc UpdateProduct(UpdateProductRequest) returns (ProductResponse);
     rpc ModerateProduct(ModerateProductRequest) returns (ProductResponse);
     rpc DeleteProduct(DeleteProductRequest) returns (DeleteProductResponse);
@@ -25,6 +26,7 @@ message GetProductsRequest {
     string user_id = 1;
     int32 category_id = 2;
     bool moderated = 3;
+    repeated string product_ids = 4;
 }
 
 message GetProductRequest {
@@ -47,6 +49,10 @@ message UpdateProductRequest {
     string description = 4;
     int64 price = 5;
     int64 quantity = 6;
+}
+
+message UpdateProductsRequest {
+    repeated UpdateProductRequest products = 1;
 }
 
 message ModerateProductRequest {
@@ -112,3 +118,5 @@ message CategoriesResponse {
 }
 
 message DeleteDiscountResponse {}
+
+message UpdateProductsResponse {}

@@ -10,10 +10,12 @@ import (
 type CartRepo interface {
 	GetUserCart(ctx context.Context, userID uuid.UUID) (*model.Cart, error)
 	CreateCart(ctx context.Context, cart model.Cart) error
-	DeleteCart(ctx context.Context, id uuid.UUID) error
-	DeleteCartCartlines(ctx context.Context, cartID uuid.UUID) error
+	DeleteCart(ctx context.Context, userID uuid.UUID) error
+	DeleteCartCartlines(ctx context.Context, userID uuid.UUID) error
 
-	CreateCartline(ctx context.Context, cartline model.CartLine) error
+	GetCartline(ctx context.Context, userID, productID uuid.UUID) (*model.CartLine, error)
+	CreateCartline(ctx context.Context, cartline *model.CartLine) error
+	CreateCartlines(ctx context.Context, cartlines []*model.CartLine) error
 	UpdateCartline(ctx context.Context, cartline model.CartLine) error
-	DeleteCartline(ctx context.Context, cartline model.CartLine) error
+	DeleteCartline(ctx context.Context, userID uuid.UUID, productID uuid.UUID) error
 }

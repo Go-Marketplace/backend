@@ -213,7 +213,7 @@ service Gateway {
         };
     }
 
-    rpc UpdateCartline(cart.UpdateCartlineRequest) returns (cart.CartResponse) {
+    rpc UpdateCartline(cart.UpdateCartlineRequest) returns (cart.CartlineResponse) {
         option (google.api.http) = {
             patch: "/api/v1/user/{user_id}/cartline/{product_id}"
             body: "*"
@@ -225,7 +225,7 @@ service Gateway {
         };
     }
 
-    rpc DeleteCartline(cart.DeleteCartlineRequest) returns (cart.CartResponse) {
+    rpc DeleteCartline(cart.DeleteCartlineRequest) returns (cart.DeleteCartlineResponse) {
         option (google.api.http) = {
             delete: "/api/v1/user/{user_id}/cartline/{product_id}"
         };
@@ -236,7 +236,7 @@ service Gateway {
         };
     }
 
-    rpc DeleteCartCartlines(cart.DeleteCartCartlinesRequest) returns (cart.CartResponse) {
+    rpc DeleteCartCartlines(cart.DeleteCartCartlinesRequest) returns (cart.DeleteCartCartlinesResponse) {
         option (google.api.http) = {
             delete: "/api/v1/user/{user_id}/cartline"
         };

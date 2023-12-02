@@ -19,7 +19,9 @@ import (
 	"github.com/Go-Marketplace/backend/pkg/postgres"
 	"github.com/Go-Marketplace/backend/pkg/redis"
 	pbCart "github.com/Go-Marketplace/backend/proto/gen/cart"
+	pbProduct "github.com/Go-Marketplace/backend/proto/gen/product"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
 )
 
@@ -40,10 +42,22 @@ func Run(cfg *config.Config) {
 	}
 	defer pg.Close()
 
+	// Create product client
+	productConn, err := grpc.Dial(
+		fmt.Sprintf("%s:%v", cfg.ProductConfig.GRPC.Host, cfg.ProductConfig.GRPC.Port),
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
+	if err != nil {
+		log.Fatalf("failed to create productConn: %v", err)
+	}
+	defer productConn.Close()
+
+	productClient := pbProduct.NewProductClient(productConn)
+
 	cartRepo := repository.NewCartRepo(pg, logger)
 	cartTaskRepo := repository.NewCartTaskRepo(redis, logger)
 	cartUsecase := usecase.NewCartUsecase(cartRepo, cartTaskRepo, logger)
-	cartHandler := handler.NewCartRoutes(cartUsecase, logger)
+	cartHandler := handler.NewCartRoutes(cartUsecase, productClient, logger)
 
 	interceptor := interceptors.NewInterceptorManager(logger)
 	grpcServer, err := grpcserver.New(
@@ -66,8 +80,8 @@ func Run(cfg *config.Config) {
 
 	cartTaskWorker := worker.NewCartTaskWorker(cartTaskRepo, cartUsecase, logger)
 	cartTaskWorker.Run(ctx)
-	defer func () {
-		if err := cartTaskWorker.Stop(); err != nil {
+	defer func() {
+		if err = cartTaskWorker.Stop(); err != nil {
 			logger.Error("failed to stop cart task worker: %w", err)
 		}
 	}()

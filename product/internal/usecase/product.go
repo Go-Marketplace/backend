@@ -16,6 +16,7 @@ type IProductUsecase interface {
 	GetProduct(ctx context.Context, id uuid.UUID) (*model.Product, error)
 	CreateProduct(ctx context.Context, product model.Product) error
 	UpdateProduct(ctx context.Context, product model.Product) (*model.Product, error)
+	UpdateProducts(ctx context.Context, products []model.Product) error
 	DeleteProduct(ctx context.Context, id uuid.UUID) error
 
 	// Category
@@ -83,6 +84,10 @@ func (usecase *ProductUsecase) GetProducts(ctx context.Context, searchParams dto
 
 func (usecase *ProductUsecase) CreateProduct(ctx context.Context, product model.Product) error {
 	return usecase.productRepo.CreateProduct(ctx, product)
+}
+
+func (usecase *ProductUsecase) UpdateProducts(ctx context.Context, products []model.Product) error {
+	return usecase.productRepo.UpdateProducts(ctx, products)
 }
 
 func (usecase *ProductUsecase) UpdateProduct(ctx context.Context, product model.Product) (*model.Product, error) {

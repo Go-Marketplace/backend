@@ -125,20 +125,6 @@ func (mr *MockProductRepoMockRecorder) GetProducts(ctx, searchParams interface{}
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProducts", reflect.TypeOf((*MockProductRepo)(nil).GetProducts), ctx, searchParams)
 }
 
-// ModerateProduct mocks base method.
-func (m *MockProductRepo) ModerateProduct(ctx context.Context, product model.Product) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ModerateProduct", ctx, product)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// ModerateProduct indicates an expected call of ModerateProduct.
-func (mr *MockProductRepoMockRecorder) ModerateProduct(ctx, product interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModerateProduct", reflect.TypeOf((*MockProductRepo)(nil).ModerateProduct), ctx, product)
-}
-
 // UpdateProduct mocks base method.
 func (m *MockProductRepo) UpdateProduct(ctx context.Context, product model.Product) error {
 	m.ctrl.T.Helper()
@@ -151,4 +137,18 @@ func (m *MockProductRepo) UpdateProduct(ctx context.Context, product model.Produ
 func (mr *MockProductRepoMockRecorder) UpdateProduct(ctx, product interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateProduct", reflect.TypeOf((*MockProductRepo)(nil).UpdateProduct), ctx, product)
+}
+
+// UpdateProducts mocks base method.
+func (m *MockProductRepo) UpdateProducts(ctx context.Context, products []model.Product) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateProducts", ctx, products)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateProducts indicates an expected call of UpdateProducts.
+func (mr *MockProductRepoMockRecorder) UpdateProducts(ctx, products interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateProducts", reflect.TypeOf((*MockProductRepo)(nil).UpdateProducts), ctx, products)
 }

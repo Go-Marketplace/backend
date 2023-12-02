@@ -10,11 +10,11 @@ service Cart {
     rpc GetUserCart(GetUserCartRequest) returns (CartResponse);
     rpc CreateCart(CreateCartRequest) returns (CartResponse);
     rpc DeleteCart(DeleteCartRequest) returns (DeleteCartResponse);
-    rpc DeleteCartCartlines(DeleteCartCartlinesRequest) returns (CartResponse);
+    rpc DeleteCartCartlines(DeleteCartCartlinesRequest) returns (DeleteCartCartlinesResponse);
 
     rpc CreateCartline(CreateCartlineRequest) returns (CartlineResponse);
-    rpc UpdateCartline(UpdateCartlineRequest) returns (CartResponse);
-    rpc DeleteCartline(DeleteCartlineRequest) returns (CartResponse);
+    rpc UpdateCartline(UpdateCartlineRequest) returns (CartlineResponse);
+    rpc DeleteCartline(DeleteCartlineRequest) returns (DeleteCartlineResponse);
 }
 
 message GetUserCartRequest {
@@ -68,3 +68,7 @@ message CartlineResponse {
 }
 
 message DeleteCartResponse {}
+
+message DeleteCartlineResponse {}
+
+message DeleteCartCartlinesResponse {}

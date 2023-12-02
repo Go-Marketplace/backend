@@ -97,7 +97,7 @@ func (repo *ProductRepo) getProductsByFilters(ctx context.Context, query string,
 }
 
 func (repo *ProductRepo) GetProducts(ctx context.Context, searchParams dto.SearchProductsDTO) ([]*model.Product, error) {
-	query := getSearchProductsQuery(searchParams)
+	query := searchProductsQuery(searchParams)
 
 	sqlQuery, args, err := query.ToSql()
 	if err != nil {
@@ -140,6 +140,23 @@ func (repo *ProductRepo) UpdateProduct(ctx context.Context, product model.Produc
 	}
 
 	return nil
+}
+
+func (repo *ProductRepo) UpdateProducts(ctx context.Context, products []model.Product) error {
+	batch := &pgx.Batch{}
+	for _, product := range products {
+		query := updateProductQuery(product)
+
+		sqlQuery, args, err := query.ToSql()
+		if err != nil {
+			return fmt.Errorf("failed to get sql query: %w", err)
+		}
+
+		batch.Queue(sqlQuery, args...)
+	}
+
+	batchResults := repo.pg.Pool.SendBatch(ctx, batch)
+	return batchResults.Close()
 }
 
 func (repo *ProductRepo) DeleteProduct(ctx context.Context, productID uuid.UUID) error {

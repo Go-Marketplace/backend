@@ -331,6 +331,16 @@
             "in": "query",
             "required": false,
             "type": "boolean"
+          },
+          {
+            "name": "productIds",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
           }
         ],
         "tags": [
@@ -742,7 +752,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/cartCartResponse"
+              "$ref": "#/definitions/cartDeleteCartCartlinesResponse"
             }
           },
           "default": {
@@ -818,7 +828,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/cartCartResponse"
+              "$ref": "#/definitions/cartDeleteCartlineResponse"
             }
           },
           "default": {
@@ -853,7 +863,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/cartCartResponse"
+              "$ref": "#/definitions/cartCartlineResponse"
             }
           },
           "default": {
@@ -967,6 +977,16 @@
             "in": "query",
             "required": false,
             "type": "boolean"
+          },
+          {
+            "name": "productIds",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
           }
         ],
         "tags": [
@@ -1068,6 +1088,12 @@
           "format": "date-time"
         }
       }
+    },
+    "cartDeleteCartCartlinesResponse": {
+      "type": "object"
+    },
+    "cartDeleteCartlineResponse": {
+      "type": "object"
     },
     "gatewayLoginRequest": {
       "type": "object",

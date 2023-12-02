@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/Go-Marketplace/backend/cart/internal/model"
 	"github.com/Go-Marketplace/backend/pkg/logger"
@@ -46,8 +45,26 @@ func scanFullCart(rows pgx.Rows, cart *model.Cart, cartline *model.CartLine) err
 	)
 }
 
+func scanCartline(rows pgx.Rows, cartline *model.CartLine) error {
+	return rows.Scan(
+		&cartline.UserID,
+		&cartline.ProductID,
+		&cartline.Name,
+		&cartline.Quantity,
+		&cartline.CreatedAt,
+		&cartline.UpdatedAt,
+	)
+}
+
 func getUserCartInTx(ctx context.Context, tx pgx.Tx, userID uuid.UUID) (*model.Cart, error) {
-	rows, err := tx.Query(ctx, getUserCart, userID)
+	query := getUserCartQuery(userID)
+
+	sqlQuery, args, err := query.ToSql()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get sql query: %w", err)
+	}
+
+	rows, err := tx.Query(ctx, sqlQuery, args...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to Query getUserCart: %w", err)
 	}
@@ -55,7 +72,7 @@ func getUserCartInTx(ctx context.Context, tx pgx.Tx, userID uuid.UUID) (*model.C
 	cart := &model.Cart{}
 	found := false
 	for rows.Next() {
-		err := scanCart(rows, cart)
+		err = scanCart(rows, cart)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan cart: %w", err)
 		}
@@ -92,7 +109,14 @@ func (repo *CartRepo) GetUserCart(ctx context.Context, userID uuid.UUID) (*model
 		}
 	}()
 
-	rows, err := tx.Query(ctx, getFullUserCart, userID)
+	query := getFullUserCartQuery(userID)
+
+	sqlQuery, args, err := query.ToSql()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get sql query: %w", err)
+	}
+
+	rows, err := tx.Query(ctx, sqlQuery, args...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to Query getFullUserCart: %w", err)
 	}
@@ -103,7 +127,7 @@ func (repo *CartRepo) GetUserCart(ctx context.Context, userID uuid.UUID) (*model
 		cart := &model.Cart{}
 		cartline := &model.CartLine{}
 
-		err := scanFullCart(rows, cart, cartline)
+		err = scanFullCart(rows, cart, cartline)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan full cart: %w", err)
 		}
@@ -131,14 +155,14 @@ func (repo *CartRepo) GetUserCart(ctx context.Context, userID uuid.UUID) (*model
 }
 
 func (repo *CartRepo) CreateCart(ctx context.Context, cart model.Cart) error {
-	_, err := repo.pg.Pool.Exec(
-		ctx,
-		createCart,
-		cart.UserID,
-		cart.CreatedAt,
-		cart.UpdatedAt,
-	)
+	query := createCartQuery(cart)
+
+	sqlQuery, args, err := query.ToSql()
 	if err != nil {
+		return fmt.Errorf("failed to get sql query: %w", err)
+	}
+
+	if _, err = repo.pg.Pool.Exec(ctx, sqlQuery, args...); err != nil {
 		return fmt.Errorf("failed to Exec createCart: %w", err)
 	}
 
@@ -146,35 +170,78 @@ func (repo *CartRepo) CreateCart(ctx context.Context, cart model.Cart) error {
 }
 
 func updateCartInTx(ctx context.Context, tx pgx.Tx, userID uuid.UUID) error {
-	_, err := tx.Exec(
-		ctx,
-		updateCart,
-		time.Now(),
-		userID,
-	)
+	query := updateCartQuery(userID)
+
+	sqlQuery, args, err := query.ToSql()
 	if err != nil {
+		return fmt.Errorf("failed to get sql query: %w", err)
+	}
+
+	if _, err = tx.Exec(ctx, sqlQuery, args...); err != nil {
 		return fmt.Errorf("failed to Exec updateCart: %w", err)
 	}
 
 	return nil
 }
 
-func (repo *CartRepo) CreateCartline(ctx context.Context, cartline model.CartLine) error {
-	_, err := repo.pg.Pool.Exec(
-		ctx,
-		createCartline,
-		cartline.UserID,
-		cartline.ProductID,
-		cartline.Name,
-		cartline.Quantity,
-		cartline.CreatedAt,
-		cartline.UpdatedAt,
-	)
+func (repo *CartRepo) GetCartline(ctx context.Context, userID, productID uuid.UUID) (*model.CartLine, error) {
+	query := getCartlineQuery(userID, productID)
+
+	sqlQuery, args, err := query.ToSql()
 	if err != nil {
+		return nil, fmt.Errorf("failed to get sql query: %w", err)
+	}
+
+	rows, err := repo.pg.Pool.Query(ctx, sqlQuery, args...)
+	if err != nil {
+		return nil, fmt.Errorf("failed to Query getCartline: %w", err)
+	}
+
+	cartlineMap := make(map[string]*model.CartLine)
+	for rows.Next() {
+		cartline := &model.CartLine{}
+		
+		if err = scanCartline(rows, cartline); err != nil {
+			return nil, fmt.Errorf("failed to scan cartline: %w", err)
+		}
+
+		cartlineMap[cartline.UserID.String()+cartline.ProductID.String()] = cartline
+	}
+
+	return cartlineMap[userID.String()+productID.String()], nil
+}
+
+func (repo *CartRepo) CreateCartline(ctx context.Context, cartline *model.CartLine) error {
+	query := createCartlineQuery(cartline)
+
+	sqlQuery, args, err := query.ToSql()
+	if err != nil {
+		return fmt.Errorf("failed to get sql query: %w", err)
+	}
+
+	if _, err = repo.pg.Pool.Exec(ctx, sqlQuery, args...); err != nil {
 		return fmt.Errorf("failed to Exec createCartline: %w", err)
 	}
 
 	return nil
+}
+
+func (repo *CartRepo) CreateCartlines(ctx context.Context, cartlines []*model.CartLine) error {
+	batch := &pgx.Batch{}
+
+	for _, cartline := range cartlines {
+		query := createCartlineQuery(cartline)
+
+		sqlQuery, args, err := query.ToSql()
+		if err != nil {
+			return fmt.Errorf("failed to get sql query: %w", err)
+		}
+
+		batch.Queue(sqlQuery, args...)
+	}
+
+	batchResults := repo.pg.Pool.SendBatch(ctx, batch)
+	return batchResults.Close()
 }
 
 func (repo *CartRepo) UpdateCartline(ctx context.Context, cartline model.CartLine) error {
@@ -200,16 +267,14 @@ func (repo *CartRepo) UpdateCartline(ctx context.Context, cartline model.CartLin
 		}
 	}()
 
-	_, err = tx.Exec(
-		ctx,
-		updateCartline,
-		cartline.Name,
-		cartline.Quantity,
-		cartline.UpdatedAt,
-		cartline.UserID,
-		cartline.ProductID,
-	)
+	query := updateCartlineQuery(cartline)
+
+	sqlQuery, args, err := query.ToSql()
 	if err != nil {
+		return fmt.Errorf("failed to get sql query: %w", err)
+	}
+
+	if _, err = tx.Exec(ctx, sqlQuery, args...); err != nil {
 		return fmt.Errorf("failed to Exec updateCartline: %w", err)
 	}
 
@@ -221,15 +286,21 @@ func (repo *CartRepo) UpdateCartline(ctx context.Context, cartline model.CartLin
 }
 
 func (repo *CartRepo) DeleteCart(ctx context.Context, userID uuid.UUID) error {
-	_, err := repo.pg.Pool.Exec(ctx, deleteCart, userID)
+	query := deleteCartQuery(userID)
+
+	sqlQuery, args, err := query.ToSql()
 	if err != nil {
+		return fmt.Errorf("failed to get sql query: %w", err)
+	}
+
+	if _, err = repo.pg.Pool.Exec(ctx, sqlQuery, args...); err != nil {
 		return fmt.Errorf("failed to Exec deleteCart: %w", err)
 	}
 
 	return nil
 }
 
-func (repo *CartRepo) DeleteCartline(ctx context.Context, cartline model.CartLine) error {
+func (repo *CartRepo) DeleteCartline(ctx context.Context, userID uuid.UUID, productID uuid.UUID) error {
 	conn, err := repo.pg.Pool.Acquire(ctx)
 	if err != nil {
 		return fmt.Errorf("failed to Acquire in UpdateCartline: %w", err)
@@ -252,17 +323,18 @@ func (repo *CartRepo) DeleteCartline(ctx context.Context, cartline model.CartLin
 		}
 	}()
 
-	_, err = tx.Exec(
-		ctx,
-		deleteCartline,
-		cartline.UserID,
-		cartline.ProductID,
-	)
+	query := deleteCartlineQuery(userID, productID)
+
+	sqlQuery, args, err := query.ToSql()
 	if err != nil {
+		return fmt.Errorf("failed to get sql query")
+	}
+
+	if _, err = tx.Exec(ctx, sqlQuery, args...); err != nil {
 		return fmt.Errorf("failed to Exec deleteCartline: %w", err)
 	}
 
-	if err = updateCartInTx(ctx, tx, cartline.UserID); err != nil {
+	if err = updateCartInTx(ctx, tx, userID); err != nil {
 		return fmt.Errorf("failed to update cart in transaction: %w", err)
 	}
 
@@ -292,7 +364,14 @@ func (repo *CartRepo) DeleteCartCartlines(ctx context.Context, userID uuid.UUID)
 		}
 	}()
 
-	_, err = tx.Exec(ctx, deleteCartCartlines, userID)
+	query := deleteCartCartlinesQuery(userID)
+
+	sqlQuery, args, err := query.ToSql()
+	if err != nil {
+		return fmt.Errorf("failed to get sql query: %w", err)
+	}
+
+	_, err = tx.Exec(ctx, sqlQuery, args...)
 	if err != nil {
 		return fmt.Errorf("failed to Exec deleteCartCartlines: %w", err)
 	}

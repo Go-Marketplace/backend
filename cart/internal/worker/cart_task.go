@@ -57,7 +57,7 @@ func (worker *cartTaskWorker) Run(ctx context.Context) {
 
 				for _, task := range tasks {
 					if task != nil {
-						if _, err = worker.cartUsecase.DeleteCartCartlines(ctx, task.UserID); err != nil {
+						if err = worker.cartUsecase.DeleteCartCartlines(ctx, task.UserID); err != nil {
 							worker.logger.Error("failed to delete cart %v cartlines: %w", task.UserID, err)
 							continue
 						}
