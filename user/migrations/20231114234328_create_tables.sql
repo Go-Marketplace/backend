@@ -45,6 +45,17 @@ INSERT INTO users (
     2,
     'now()',
     'now()'
+), (
+    'efb5b1a0-2222-4106-a2bc-577bd4b287d4',
+    'admin',
+    'admin',
+    'adminadmin',
+    'admin@mail.ru',
+    'admin',
+    '+123456789',
+    3,
+    'now()',
+    'now()'
 );
 
 -- +goose StatementBegin

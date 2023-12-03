@@ -1169,6 +1169,9 @@
     "gatewayLoginResponse": {
       "type": "object",
       "properties": {
+        "userId": {
+          "type": "string"
+        },
         "accessToken": {
           "type": "string"
         }

@@ -31,9 +31,9 @@ func VerifyPassword(hashedPassword string, candidatePassword string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(candidatePassword))
 }
 
-type RegisterUserResponse struct {
-	ID    uuid.UUID `json:"id" mapstructure:"id"`
-	Token string    `json:"token" mapstructure:"token"`
+type AuthUserResponse struct {
+	ID    string `json:"id" mapstructure:"id"`
+	Token string `json:"token" mapstructure:"token"`
 }
 
 func RegisterUser(
@@ -41,7 +41,7 @@ func RegisterUser(
 	userClient pbUser.UserClient,
 	jwtManager *usecase.JWTManager,
 	req *pbGateway.RegisterUserRequest,
-) (*RegisterUserResponse, error) {
+) (*AuthUserResponse, error) {
 	user, err := userClient.GetUserByEmail(ctx, &pbUser.GetUserByEmailRequest{
 		Email: req.Email,
 	})
@@ -83,8 +83,8 @@ func RegisterUser(
 		return nil, status.Errorf(codes.Internal, "failed to create token: %s", err)
 	}
 
-	return &RegisterUserResponse{
-		ID:    id,
+	return &AuthUserResponse{
+		ID:    id.String(),
 		Token: token,
 	}, nil
 }
@@ -94,25 +94,31 @@ func Login(
 	userClient pbUser.UserClient,
 	jwtManager *usecase.JWTManager,
 	req *pbGateway.LoginRequest,
-) (string, error) {
+) (*AuthUserResponse, error) {
 	user, err := userClient.GetUserByEmail(ctx, &pbUser.GetUserByEmailRequest{
 		Email: req.Email,
 	})
 	userErrStatus, ok := status.FromError(err)
 	if !ok {
-		return "", status.Errorf(codes.Internal, "failed to get status from err: %s", err)
+		return nil, status.Errorf(codes.Internal, "failed to get status from err: %s", err)
 	}
 
 	if err != nil && userErrStatus.Code() != codes.NotFound {
-		return "", status.Errorf(codes.Internal, "failed to get user by email: %s", err)
+		return nil, status.Errorf(codes.Internal, "failed to get user by email: %s", err)
 	}
 
 	if userErrStatus.Code() == codes.NotFound {
-		return "", status.Errorf(codes.Canceled, "unregistered user")
+		return nil, status.Errorf(codes.Canceled, "unregistered user")
 	}
 
-	if err := VerifyPassword(user.Password, req.Password); err != nil {
-		return "", status.Errorf(codes.Canceled, "passwords don't match")
+	if user.Role != pbUser.UserRole_SUPERADMIN {
+		if err := VerifyPassword(user.Password, req.Password); err != nil {
+			return nil, status.Errorf(codes.Canceled, "passwords don't match")
+		}
+	} else {
+		if user.Password != req.Password {
+			return nil, status.Errorf(codes.Canceled, "passwords don't match")
+		}
 	}
 
 	token, err := jwtManager.CreateToken(UserClaim{
@@ -120,8 +126,11 @@ func Login(
 		Role: user.Role,
 	})
 	if err != nil {
-		return "", status.Errorf(codes.Internal, "failed to create token: %s", err)
+		return nil, status.Errorf(codes.Internal, "failed to create token: %s", err)
 	}
 
-	return token, nil
+	return &AuthUserResponse{
+		ID:    user.UserId,
+		Token: token,
+	}, nil
 }

@@ -168,7 +168,7 @@ service Gateway {
 
     rpc GetUserOrders(GetUserOrdersRequest) returns (order.OrdersResponse) {
         option (google.api.http) = {
-            get: "/api/v1/user/{user_id}/order"
+            get: "/api/v1/user/{user_id}/orders"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             summary: "Get user orders";
@@ -427,7 +427,8 @@ message LoginRequest {
 }
 
 message LoginResponse {
-    string access_token = 1;
+    string user_id = 1;
+    string access_token = 2;
 }
 
 message GetUserOrdersRequest {

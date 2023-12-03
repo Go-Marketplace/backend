@@ -51,19 +51,20 @@ func (router *gatewayRoutes) RegisterUser(ctx context.Context, req *pbGateway.Re
 	}
 
 	return &pbGateway.RegisterUserResponse{
-		UserId:      resp.ID.String(),
+		UserId:      resp.ID,
 		AccessToken: resp.Token,
 	}, nil
 }
 
 func (router *gatewayRoutes) Login(ctx context.Context, req *pbGateway.LoginRequest) (*pbGateway.LoginResponse, error) {
-	token, err := controller.Login(ctx, router.userClient, router.jwtManager, req)
+	resp, err := controller.Login(ctx, router.userClient, router.jwtManager, req)
 	if err != nil {
 		return nil, err
 	}
 
 	return &pbGateway.LoginResponse{
-		AccessToken: token,
+		UserId:      resp.ID,
+		AccessToken: resp.Token,
 	}, nil
 }
 
