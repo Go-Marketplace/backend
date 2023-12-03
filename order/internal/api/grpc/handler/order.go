@@ -6,25 +6,36 @@ import (
 	"github.com/Go-Marketplace/backend/order/internal/api/grpc/controller"
 	"github.com/Go-Marketplace/backend/order/internal/usecase"
 	"github.com/Go-Marketplace/backend/pkg/logger"
+	pbCart "github.com/Go-Marketplace/backend/proto/gen/cart"
 	pbOrder "github.com/Go-Marketplace/backend/proto/gen/order"
+	pbProduct "github.com/Go-Marketplace/backend/proto/gen/product"
 )
 
 type orderRoutes struct {
 	pbOrder.UnimplementedOrderServer
 
-	orderUseCase usecase.OrderUseCase
-	logger       *logger.Logger
+	orderUsecase  *usecase.OrderUsecase
+	cartClient    pbCart.CartClient
+	productClient pbProduct.ProductClient
+	logger        *logger.Logger
 }
 
-func NewOrderRoutes(orderUseCase usecase.OrderUseCase, logger *logger.Logger) *orderRoutes {
+func NewOrderRoutes(
+	orderUsecase *usecase.OrderUsecase,
+	cartClient pbCart.CartClient,
+	productClient pbProduct.ProductClient,
+	logger *logger.Logger,
+) *orderRoutes {
 	return &orderRoutes{
-		orderUseCase: orderUseCase,
-		logger:       logger,
+		orderUsecase:  orderUsecase,
+		cartClient:    cartClient,
+		productClient: productClient,
+		logger:        logger,
 	}
 }
 
 func (router *orderRoutes) GetOrder(ctx context.Context, req *pbOrder.GetOrderRequest) (*pbOrder.OrderResponse, error) {
-	order, err := controller.GetOrder(ctx, router.orderUseCase, req)
+	order, err := controller.GetOrder(ctx, router.orderUsecase, req)
 	if err != nil {
 		return nil, err
 	}
@@ -32,28 +43,69 @@ func (router *orderRoutes) GetOrder(ctx context.Context, req *pbOrder.GetOrderRe
 	return order.ToProto(), nil
 }
 
-func (router *orderRoutes) GetAllUserOrders(ctx context.Context, req *pbOrder.GetAllUserOrdersRequest) (*pbOrder.GetAllUserOrdersResponse, error) {
-	userOrders, err := controller.GetAllUserOrders(ctx, router.orderUseCase, req)
+func (router *orderRoutes) GetOrders(ctx context.Context, req *pbOrder.GetOrdersRequest) (*pbOrder.OrdersResponse, error) {
+	orders, err := controller.GetOrders(ctx, router.orderUsecase, req)
 	if err != nil {
 		return nil, err
 	}
 
-	protoUserOrders := make([]*pbOrder.OrderResponse, 0, len(userOrders))
-	for _, userOrder := range userOrders {
-		if userOrder != nil {
-			protoUserOrders = append(protoUserOrders, userOrder.ToProto())
+	protoOrders := make([]*pbOrder.OrderResponse, 0, len(orders))
+	for _, order := range orders {
+		if order != nil {
+			protoOrders = append(protoOrders, order.ToProto())
 		}
 	}
 
-	return &pbOrder.GetAllUserOrdersResponse{
-		Orders: protoUserOrders,
+	return &pbOrder.OrdersResponse{
+		Orders: protoOrders,
 	}, nil
 }
 
-func (router *orderRoutes) CancelOrder(ctx context.Context, req *pbOrder.DeleteOrderRequest) (*pbOrder.DeleteOrderResponse, error) {
-	if err := controller.DeleteOrder(ctx, router.orderUseCase, req); err != nil {
+func (router *orderRoutes) CreateOrder(ctx context.Context, req *pbOrder.CreateOrderRequest) (*pbOrder.OrderResponse, error) {
+	order, err := controller.CreateOrder(
+		ctx,
+		router.orderUsecase,
+		router.cartClient,
+		router.productClient,
+		req,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return order.ToProto(), nil
+}
+
+func (router *orderRoutes) DeleteOrder(ctx context.Context, req *pbOrder.DeleteOrderRequest) (*pbOrder.DeleteOrderResponse, error) {
+	if err := controller.DeleteOrder(ctx, router.orderUsecase, router.productClient, req); err != nil {
 		return nil, err
 	}
 
 	return &pbOrder.DeleteOrderResponse{}, nil
+}
+
+func (router *orderRoutes) GetOrderline(ctx context.Context, req *pbOrder.GetOrderlineRequest) (*pbOrder.OrderlineResponse, error) {
+	orderline, err := controller.GetOrderline(ctx, router.orderUsecase, req)
+	if err != nil {
+		return nil, err
+	}
+
+	return orderline.ToProto(), nil
+}
+
+func (router *orderRoutes) UpdateOrderline(ctx context.Context, req *pbOrder.UpdateOrderlineRequest) (*pbOrder.OrderlineResponse, error) {
+	orderline, err := controller.UpdateOrderline(ctx, router.orderUsecase, req)
+	if err != nil {
+		return nil, err
+	}
+
+	return orderline.ToProto(), nil
+}
+
+func (router *orderRoutes) DeleteOrderline(ctx context.Context, req *pbOrder.DeleteOrderlineRequest) (*pbOrder.DeleteOrderlineResponse, error) {
+	if err := controller.DeleteOrderline(ctx, router.orderUsecase, router.productClient, req); err != nil {
+		return nil, err
+	}
+
+	return &pbOrder.DeleteOrderlineResponse{}, nil
 }

@@ -155,12 +155,23 @@ service Gateway {
         };
     }
 
-    rpc GetAllUserOrders(order.GetAllUserOrdersRequest) returns (order.GetAllUserOrdersResponse) {
+    rpc GetOrders(order.GetOrdersRequest) returns (order.OrdersResponse) {
         option (google.api.http) = {
-            get: "/api/v1/user/{user_id}/orders"
+            get: "/api/v1/order"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-            summary: "Get all user orders";
+            summary: "Get filtered orders";
+            operation_id: "getOrders";
+            tags: "order";
+        };
+    }
+
+    rpc GetUserOrders(order.GetOrdersRequest) returns (order.OrdersResponse) {
+        option (google.api.http) = {
+            get: "/api/v1/user/{user_id}/order"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Get user orders";
             operation_id: "getUserOrders";
             tags: "user";
         };
@@ -177,13 +188,35 @@ service Gateway {
         };
     }
 
-    rpc UpdateOrderline(order.UpdateOrderlineRequest) returns (order.OrderResponse) {
+    rpc GetOrderline(order.GetOrderlineRequest) returns (order.OrderlineResponse) {
         option (google.api.http) = {
-            patch: "/api/v1/order/{order_id}/orderline/{orderline_id}"
+            get: "/api/v1/order/{order_id}/orderline/{product_id}"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Get orderline";
+            operation_id: "getOrderline";
+            tags: "order";
+        };
+    }
+
+    rpc UpdateOrderline(order.UpdateOrderlineRequest) returns (order.OrderlineResponse) {
+        option (google.api.http) = {
+            patch: "/api/v1/order/{order_id}/orderline/{product_id}"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             summary: "Update orderline";
             operation_id: "updateOrderline";
+            tags: "order";
+        };
+    }
+
+    rpc DeleteOrderline(order.DeleteOrderlineRequest) returns (order.DeleteOrderlineResponse) {
+        option (google.api.http) = {
+            delete: "/api/v1/order/{order_id}/orderline/{product_id}"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Delete orderline";
+            operation_id: "deleteOrderline";
             tags: "order";
         };
     }
@@ -197,13 +230,13 @@ service Gateway {
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             summary: "Get user cart";
             operation_id: "getUserCart";
-            tags: "cart";
+            tags: "user";
         };
     }
 
     rpc CreateCartline(cart.CreateCartlineRequest) returns (cart.CartlineResponse) {
         option (google.api.http) = {
-            post: "/api/v1/user/{user_id}/cartline"
+            post: "/api/v1/cart/{user_id}/cartline"
             body: "*"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -215,7 +248,7 @@ service Gateway {
 
     rpc UpdateCartline(cart.UpdateCartlineRequest) returns (cart.CartlineResponse) {
         option (google.api.http) = {
-            patch: "/api/v1/user/{user_id}/cartline/{product_id}"
+            patch: "/api/v1/cart/{user_id}/cartline/{product_id}"
             body: "*"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -227,7 +260,7 @@ service Gateway {
 
     rpc DeleteCartline(cart.DeleteCartlineRequest) returns (cart.DeleteCartlineResponse) {
         option (google.api.http) = {
-            delete: "/api/v1/user/{user_id}/cartline/{product_id}"
+            delete: "/api/v1/cart/{user_id}/cartline/{product_id}"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             summary: "Delete cartline";
@@ -238,7 +271,7 @@ service Gateway {
 
     rpc DeleteCartCartlines(cart.DeleteCartCartlinesRequest) returns (cart.DeleteCartCartlinesResponse) {
         option (google.api.http) = {
-            delete: "/api/v1/user/{user_id}/cartline"
+            delete: "/api/v1/cart/{user_id}/cartline"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             summary: "Delete all cart cartlines";

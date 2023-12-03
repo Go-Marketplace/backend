@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/Go-Marketplace/backend/product/internal"
 	"github.com/Go-Marketplace/backend/product/internal/api/grpc/dto"
 	"github.com/Go-Marketplace/backend/product/internal/model"
 	"github.com/Go-Marketplace/backend/product/internal/usecase"
@@ -27,21 +28,10 @@ func GetProducts(ctx context.Context, productUsecase usecase.IProductUsecase, re
 		}
 	}
 
-	productIDs := make([]uuid.UUID, 0, len(req.ProductIds))
-	for _, productIDStr := range req.ProductIds {
-		productID, err := uuid.Parse(productIDStr)
-		if err != nil {
-			return nil, status.Errorf(codes.InvalidArgument, "Invalid product id: %s", err)
-		}
-
-		productIDs = append(productIDs, productID)
-	}
-
 	searchParams := dto.SearchProductsDTO{
 		UserID:     userID,
 		CategoryID: req.CategoryId,
 		Moderated:  req.Moderated,
-		ProductIDs: productIDs,
 	}
 
 	products, err := productUsecase.GetProducts(ctx, searchParams)
@@ -117,11 +107,11 @@ func UpdateProduct(ctx context.Context, productUsecase usecase.IProductUsecase, 
 
 	newProduct := model.Product{
 		ID:          productID,
-		CategoryID:  req.CategoryId,
-		Name:        req.Name,
-		Description: req.Description,
-		Price:       req.Price,
-		Quantity:    req.Quantity,
+		CategoryID:  internal.Unwrap(req.CategoryId),
+		Name:        internal.Unwrap(req.Name),
+		Description: internal.Unwrap(req.Description),
+		Price:       internal.Unwrap(req.Price),
+		Quantity:    internal.Unwrap(req.Quantity),
 	}
 
 	product, err := productUsecase.UpdateProduct(ctx, newProduct)
@@ -147,11 +137,11 @@ func UpdateProducts(ctx context.Context, productUsecase usecase.IProductUsecase,
 
 		products = append(products, model.Product{
 			ID:          productID,
-			CategoryID:  reqProduct.CategoryId,
-			Name:        reqProduct.Name,
-			Description: reqProduct.Description,
-			Price:       reqProduct.Price,
-			Quantity:    reqProduct.Quantity,
+			CategoryID:  internal.Unwrap(reqProduct.CategoryId),
+			Name:        internal.Unwrap(reqProduct.Name),
+			Description: internal.Unwrap(reqProduct.Description),
+			Price:       internal.Unwrap(reqProduct.Price),
+			Quantity:    internal.Unwrap(reqProduct.Quantity),
 		})
 	}
 

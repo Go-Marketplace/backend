@@ -91,24 +91,36 @@ func (router *gatewayRoutes) DeleteUser(ctx context.Context, req *pbUser.DeleteU
 
 // Order
 
-func (router *gatewayRoutes) CreateOrder(ctx context.Context, req *pbOrder.CreateOrderRequest) (*pbOrder.OrderResponse, error) {
-	return router.orderClient.CreateOrder(ctx, req)
-}
-
 func (router *gatewayRoutes) GetOrder(ctx context.Context, req *pbOrder.GetOrderRequest) (*pbOrder.OrderResponse, error) {
 	return router.orderClient.GetOrder(ctx, req)
 }
 
-func (router *gatewayRoutes) GetAllUserOrders(ctx context.Context, req *pbOrder.GetAllUserOrdersRequest) (*pbOrder.GetAllUserOrdersResponse, error) {
-	return router.orderClient.GetAllUserOrders(ctx, req)
+func (router *gatewayRoutes) GetOrders(ctx context.Context, req *pbOrder.GetOrdersRequest) (*pbOrder.OrdersResponse, error) {
+	return router.orderClient.GetOrders(ctx, req)
+}
+
+func (router *gatewayRoutes) GetUserOrders(ctx context.Context, req *pbOrder.GetOrdersRequest) (*pbOrder.OrdersResponse, error) {
+	return router.orderClient.GetOrders(ctx, req)
+}
+
+func (router *gatewayRoutes) CreateOrder(ctx context.Context, req *pbOrder.CreateOrderRequest) (*pbOrder.OrderResponse, error) {
+	return router.orderClient.CreateOrder(ctx, req)
 }
 
 func (router *gatewayRoutes) DeleteOrder(ctx context.Context, req *pbOrder.DeleteOrderRequest) (*pbOrder.DeleteOrderResponse, error) {
 	return router.orderClient.DeleteOrder(ctx, req)
 }
 
-func (router *gatewayRoutes) UpdateOrderline(ctx context.Context, req *pbOrder.UpdateOrderlineRequest) (*pbOrder.OrderResponse, error) {
+func (router *gatewayRoutes) GetOrderline(ctx context.Context, req *pbOrder.GetOrderlineRequest) (*pbOrder.OrderlineResponse, error) {
+	return router.orderClient.GetOrderline(ctx, req)
+}
+
+func (router *gatewayRoutes) UpdateOrderline(ctx context.Context, req *pbOrder.UpdateOrderlineRequest) (*pbOrder.OrderlineResponse, error) {
 	return router.orderClient.UpdateOrderline(ctx, req)
+}
+
+func (router *gatewayRoutes) DeleteOrderline(ctx context.Context, req *pbOrder.DeleteOrderlineRequest) (*pbOrder.DeleteOrderlineResponse, error) {
+	return router.orderClient.DeleteOrderline(ctx, req)
 }
 
 // Cart
@@ -139,7 +151,7 @@ func (router *gatewayRoutes) GetProduct(ctx context.Context, req *pbProduct.GetP
 	return router.productClient.GetProduct(ctx, req)
 }
 
-func (router *gatewayRoutes) GetAllProduct(ctx context.Context, req *pbProduct.GetProductsRequest) (*pbProduct.ProductsResponse, error) {
+func (router *gatewayRoutes) GetProducts(ctx context.Context, req *pbProduct.GetProductsRequest) (*pbProduct.ProductsResponse, error) {
 	return router.productClient.GetProducts(ctx, req)
 }
 

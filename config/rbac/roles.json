@@ -3,15 +3,14 @@
         "RegisterUser",
         "Login",
 
-        "GetAllProducts",
+        "GetProducts",
         "GetProduct",
-        "GetAllCategoryProducts",
 
         "GetAllCategories",
         "GetCategory"
     ],
     "USER": [
-        "GetAllUserProducts",
+        "GetUserProducts",
         "CreateProduct",
         "UpdateProduct",
         "DeleteProduct",
@@ -23,9 +22,14 @@
         "UpdateUser",
         "DeleteUser",
 
+        "GetOrderline",
+        "UpdateOrderline",
+        "DeleteOrderline",
+    
+        "CreateOrder",
         "GetOrder",
-        "GetAllUserOrders",
-        "CancelOrder",
+        "GetUserOrders",
+        "DeleteOrder",
 
         "GetUserCart",
 
@@ -34,12 +38,18 @@
         "DeleteCartline"
     ],
     "ADMIN": [
+        "ModerateProduct",
+
         "GetCart",
         "DeleteCart",
         "DeleteCartCartlines",
 
         "GetUserByEmail",
-        "GetAllUsers"
+        "GetAllUsers",
+
+        "GetOrders"
     ],
-    "SUPERADMIN": []
+    "SUPERADMIN": [
+        "ChangeUserRole"
+    ]
 }

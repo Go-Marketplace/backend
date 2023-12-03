@@ -28,14 +28,12 @@ message CreateCartRequest {
 message CreateCartlineRequest {
     string user_id = 1;
     string product_id = 2;
-    string name = 3;
 }
 
 message UpdateCartlineRequest {
     string user_id = 1;
     string product_id = 2;
-    string name = 3;
-    int64 quantity = 4;
+    int64 quantity = 3;
 }
 
 message DeleteCartlineRequest {

@@ -99,9 +99,10 @@ func CreateCartline(
 		return nil, status.Errorf(codes.Internal, "Failed to create cartline: %s", err)
 	}
 
+	newQuantity := productResp.Quantity - 1
 	if _, err = productClient.UpdateProduct(ctx, &pbProduct.UpdateProductRequest{
 		ProductId: req.ProductId,
-		Quantity:  productResp.Quantity - 1,
+		Quantity:  &newQuantity,
 	}); err != nil {
 		if err = cartUsecase.DeleteCartline(ctx, cartline.UserID, cartline.ProductID); err != nil {
 			return nil, status.Errorf(codes.Internal, "Failed to delete cartline: %s", err)
@@ -112,29 +113,49 @@ func CreateCartline(
 	return cartline, nil
 }
 
+func getProducts(ctx context.Context, productClient pbProduct.ProductClient, productIDs []string) ([]*pbProduct.ProductResponse, error) {
+	products := make([]*pbProduct.ProductResponse, len(productIDs))
+	for i, productID := range productIDs {
+		productResp, err := productClient.GetProduct(ctx, &pbProduct.GetProductRequest{
+			ProductId: productID,
+		})
+		if err != nil {
+			statusErr, ok := status.FromError(err)
+			if !ok {
+				return nil, fmt.Errorf("failed to get status from err: %w", err)
+			}
+
+			if statusErr.Code() != codes.NotFound {
+				return nil, fmt.Errorf("failed to get product %s: %w", productID, err)
+			}
+		}
+
+		products[i] = productResp
+	}
+
+	return products, nil
+}
+
 func returnProducts(ctx context.Context, productClient pbProduct.ProductClient, cartlines ...*model.CartLine) error {
 	productIDs := make([]string, 0, len(cartlines))
 	for _, cartline := range cartlines {
 		productIDs = append(productIDs, cartline.ProductID.String())
 	}
 
-	productsResp, err := productClient.GetProducts(ctx, &pbProduct.GetProductsRequest{
-		ProductIds: productIDs,
-	})
+	products, err := getProducts(ctx, productClient, productIDs)
 	if err != nil {
 		return fmt.Errorf("failed to get products: %w", err)
 	}
 
-	if len(productIDs) != len(productsResp.Products) {
-		return fmt.Errorf("cartline doesn't match with product")
-	}
-
 	updateProductRequests := make([]*pbProduct.UpdateProductRequest, 0, len(cartlines))
 	for i, cartline := range cartlines {
-		updateProductRequests = append(updateProductRequests, &pbProduct.UpdateProductRequest{
-			ProductId: cartline.ProductID.String(),
-			Quantity:  productsResp.Products[i].Quantity + cartline.Quantity,
-		})
+		if products[i] != nil {
+			newQuantity := products[i].Quantity + cartline.Quantity
+			updateProductRequests = append(updateProductRequests, &pbProduct.UpdateProductRequest{
+				ProductId: cartline.ProductID.String(),
+				Quantity:  &newQuantity,
+			})
+		}
 	}
 
 	if _, err = productClient.UpdateProducts(ctx, &pbProduct.UpdateProductsRequest{
@@ -178,7 +199,6 @@ func UpdateCartline(
 	newCartline := model.CartLine{
 		UserID:    userID,
 		ProductID: productID,
-		Name:      req.Name,
 		Quantity:  req.Quantity,
 	}
 
@@ -197,9 +217,10 @@ func UpdateCartline(
 			return nil, status.Errorf(codes.Internal, "Failed to get product: %s", err)
 		}
 
+		newQuantity := productResp.Quantity + diff
 		if _, err = productClient.UpdateProduct(ctx, &pbProduct.UpdateProductRequest{
 			ProductId: req.ProductId,
-			Quantity:  productResp.Quantity + diff,
+			Quantity:  &newQuantity,
 		}); err != nil {
 			if _, err = cartUsecase.UpdateCartline(ctx, *oldCartline); err != nil {
 				return nil, status.Errorf(codes.Internal, "Failed to update cartline: %s", err)

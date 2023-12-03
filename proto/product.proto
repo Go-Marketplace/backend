@@ -26,7 +26,6 @@ message GetProductsRequest {
     string user_id = 1;
     int32 category_id = 2;
     bool moderated = 3;
-    repeated string product_ids = 4;
 }
 
 message GetProductRequest {
@@ -44,11 +43,11 @@ message CreateProductRequest {
 
 message UpdateProductRequest {
     string product_id = 1;
-    int32 category_id = 2;
-    string name = 3;
-    string description = 4;
-    int64 price = 5;
-    int64 quantity = 6;
+    optional int32 category_id = 2;
+    optional string name = 3;
+    optional string description = 4;
+    optional int64 price = 5;
+    optional int64 quantity = 6;
 }
 
 message UpdateProductsRequest {

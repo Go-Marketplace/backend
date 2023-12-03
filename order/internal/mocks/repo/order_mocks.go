@@ -8,6 +8,7 @@ import (
 	context "context"
 	reflect "reflect"
 
+	dto "github.com/Go-Marketplace/backend/order/internal/api/grpc/dto"
 	model "github.com/Go-Marketplace/backend/order/internal/model"
 	gomock "github.com/golang/mock/gomock"
 	uuid "github.com/google/uuid"
@@ -37,7 +38,7 @@ func (m *MockOrderRepo) EXPECT() *MockOrderRepoMockRecorder {
 }
 
 // CreateOrder mocks base method.
-func (m *MockOrderRepo) CreateOrder(ctx context.Context, order model.Order) error {
+func (m *MockOrderRepo) CreateOrder(ctx context.Context, order *model.Order) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateOrder", ctx, order)
 	ret0, _ := ret[0].(error)
@@ -50,46 +51,103 @@ func (mr *MockOrderRepoMockRecorder) CreateOrder(ctx, order interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateOrder", reflect.TypeOf((*MockOrderRepo)(nil).CreateOrder), ctx, order)
 }
 
-// DeleteOrder mocks base method.
-func (m *MockOrderRepo) DeleteOrder(ctx context.Context, id uuid.UUID) error {
+// CreateOrderline mocks base method.
+func (m *MockOrderRepo) CreateOrderline(ctx context.Context, orderline *model.Orderline) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteOrder", ctx, id)
+	ret := m.ctrl.Call(m, "CreateOrderline", ctx, orderline)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateOrderline indicates an expected call of CreateOrderline.
+func (mr *MockOrderRepoMockRecorder) CreateOrderline(ctx, orderline interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateOrderline", reflect.TypeOf((*MockOrderRepo)(nil).CreateOrderline), ctx, orderline)
+}
+
+// DeleteOrder mocks base method.
+func (m *MockOrderRepo) DeleteOrder(ctx context.Context, orderID uuid.UUID) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteOrder", ctx, orderID)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // DeleteOrder indicates an expected call of DeleteOrder.
-func (mr *MockOrderRepoMockRecorder) DeleteOrder(ctx, id interface{}) *gomock.Call {
+func (mr *MockOrderRepoMockRecorder) DeleteOrder(ctx, orderID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteOrder", reflect.TypeOf((*MockOrderRepo)(nil).DeleteOrder), ctx, id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteOrder", reflect.TypeOf((*MockOrderRepo)(nil).DeleteOrder), ctx, orderID)
 }
 
-// GetAllUserOrders mocks base method.
-func (m *MockOrderRepo) GetAllUserOrders(ctx context.Context, userID uuid.UUID) ([]*model.Order, error) {
+// DeleteOrderline mocks base method.
+func (m *MockOrderRepo) DeleteOrderline(ctx context.Context, orderID, productID uuid.UUID) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAllUserOrders", ctx, userID)
-	ret0, _ := ret[0].([]*model.Order)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret := m.ctrl.Call(m, "DeleteOrderline", ctx, orderID, productID)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-// GetAllUserOrders indicates an expected call of GetAllUserOrders.
-func (mr *MockOrderRepoMockRecorder) GetAllUserOrders(ctx, userID interface{}) *gomock.Call {
+// DeleteOrderline indicates an expected call of DeleteOrderline.
+func (mr *MockOrderRepoMockRecorder) DeleteOrderline(ctx, orderID, productID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllUserOrders", reflect.TypeOf((*MockOrderRepo)(nil).GetAllUserOrders), ctx, userID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteOrderline", reflect.TypeOf((*MockOrderRepo)(nil).DeleteOrderline), ctx, orderID, productID)
 }
 
 // GetOrder mocks base method.
-func (m *MockOrderRepo) GetOrder(ctx context.Context, id uuid.UUID) (*model.Order, error) {
+func (m *MockOrderRepo) GetOrder(ctx context.Context, orderID uuid.UUID) (*model.Order, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetOrder", ctx, id)
+	ret := m.ctrl.Call(m, "GetOrder", ctx, orderID)
 	ret0, _ := ret[0].(*model.Order)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetOrder indicates an expected call of GetOrder.
-func (mr *MockOrderRepoMockRecorder) GetOrder(ctx, id interface{}) *gomock.Call {
+func (mr *MockOrderRepoMockRecorder) GetOrder(ctx, orderID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOrder", reflect.TypeOf((*MockOrderRepo)(nil).GetOrder), ctx, id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOrder", reflect.TypeOf((*MockOrderRepo)(nil).GetOrder), ctx, orderID)
+}
+
+// GetOrderline mocks base method.
+func (m *MockOrderRepo) GetOrderline(ctx context.Context, orderID, productID uuid.UUID) (*model.Orderline, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetOrderline", ctx, orderID, productID)
+	ret0, _ := ret[0].(*model.Orderline)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetOrderline indicates an expected call of GetOrderline.
+func (mr *MockOrderRepoMockRecorder) GetOrderline(ctx, orderID, productID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOrderline", reflect.TypeOf((*MockOrderRepo)(nil).GetOrderline), ctx, orderID, productID)
+}
+
+// GetOrders mocks base method.
+func (m *MockOrderRepo) GetOrders(ctx context.Context, searchParams dto.SearchOrderDTO) ([]*model.Order, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetOrders", ctx, searchParams)
+	ret0, _ := ret[0].([]*model.Order)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetOrders indicates an expected call of GetOrders.
+func (mr *MockOrderRepoMockRecorder) GetOrders(ctx, searchParams interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOrders", reflect.TypeOf((*MockOrderRepo)(nil).GetOrders), ctx, searchParams)
+}
+
+// UpdateOrderline mocks base method.
+func (m *MockOrderRepo) UpdateOrderline(ctx context.Context, order *model.Orderline) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateOrderline", ctx, order)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateOrderline indicates an expected call of UpdateOrderline.
+func (mr *MockOrderRepoMockRecorder) UpdateOrderline(ctx, order interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateOrderline", reflect.TypeOf((*MockOrderRepo)(nil).UpdateOrderline), ctx, order)
 }

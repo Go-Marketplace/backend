@@ -96,6 +96,165 @@
         "security": []
       }
     },
+    "/api/v1/cart/{userId}/cartline": {
+      "delete": {
+        "summary": "Delete all cart cartlines",
+        "operationId": "deleteCartCartlines",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/cartDeleteCartCartlinesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "cart"
+        ]
+      },
+      "post": {
+        "summary": "Create cartline",
+        "operationId": "createCartline",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/cartCartlineResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "productId": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "tags": [
+          "cart"
+        ]
+      }
+    },
+    "/api/v1/cart/{userId}/cartline/{productId}": {
+      "delete": {
+        "summary": "Delete cartline",
+        "operationId": "deleteCartline",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/cartDeleteCartlineResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "cart"
+        ]
+      },
+      "patch": {
+        "summary": "Update cartline",
+        "operationId": "updateCartline",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/cartCartlineResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "quantity": {
+                  "type": "string",
+                  "format": "int64"
+                }
+              }
+            }
+          }
+        ],
+        "tags": [
+          "cart"
+        ]
+      }
+    },
     "/api/v1/category": {
       "get": {
         "summary": "Get all categories",
@@ -154,6 +313,35 @@
       }
     },
     "/api/v1/order": {
+      "get": {
+        "summary": "Get filtered orders",
+        "operationId": "getOrders",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/orderOrdersResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "order"
+        ]
+      },
       "post": {
         "summary": "Create order",
         "operationId": "createOrder",
@@ -173,7 +361,7 @@
         },
         "parameters": [
           {
-            "name": "cartId",
+            "name": "userId",
             "in": "query",
             "required": false,
             "type": "string"
@@ -244,15 +432,15 @@
         ]
       }
     },
-    "/api/v1/order/{orderId}/orderline/{orderlineId}": {
-      "patch": {
-        "summary": "Update orderline",
-        "operationId": "updateOrderline",
+    "/api/v1/order/{orderId}/orderline/{productId}": {
+      "get": {
+        "summary": "Get orderline",
+        "operationId": "getOrderline",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/orderOrderResponse"
+              "$ref": "#/definitions/orderOrderlineResponse"
             }
           },
           "default": {
@@ -270,7 +458,77 @@
             "type": "string"
           },
           {
-            "name": "orderlineId",
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "order"
+        ]
+      },
+      "delete": {
+        "summary": "Delete orderline",
+        "operationId": "deleteOrderline",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/orderDeleteOrderlineResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "order"
+        ]
+      },
+      "patch": {
+        "summary": "Update orderline",
+        "operationId": "updateOrderline",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/orderOrderlineResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "productId",
             "in": "path",
             "required": true,
             "type": "string"
@@ -331,16 +589,6 @@
             "in": "query",
             "required": false,
             "type": "boolean"
-          },
-          {
-            "name": "productIds",
-            "in": "query",
-            "required": false,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "collectionFormat": "multi"
           }
         ],
         "tags": [
@@ -740,184 +988,19 @@
           }
         ],
         "tags": [
-          "cart"
+          "user"
         ]
       }
     },
-    "/api/v1/user/{userId}/cartline": {
-      "delete": {
-        "summary": "Delete all cart cartlines",
-        "operationId": "deleteCartCartlines",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/cartDeleteCartCartlinesResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "cart"
-        ]
-      },
-      "post": {
-        "summary": "Create cartline",
-        "operationId": "createCartline",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/cartCartlineResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "productId": {
-                  "type": "string"
-                },
-                "name": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        ],
-        "tags": [
-          "cart"
-        ]
-      }
-    },
-    "/api/v1/user/{userId}/cartline/{productId}": {
-      "delete": {
-        "summary": "Delete cartline",
-        "operationId": "deleteCartline",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/cartDeleteCartlineResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "productId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "cart"
-        ]
-      },
-      "patch": {
-        "summary": "Update cartline",
-        "operationId": "updateCartline",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/cartCartlineResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "productId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string"
-                },
-                "quantity": {
-                  "type": "string",
-                  "format": "int64"
-                }
-              }
-            }
-          }
-        ],
-        "tags": [
-          "cart"
-        ]
-      }
-    },
-    "/api/v1/user/{userId}/orders": {
+    "/api/v1/user/{userId}/order": {
       "get": {
-        "summary": "Get all user orders",
+        "summary": "Get user orders",
         "operationId": "getUserOrders",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/orderGetAllUserOrdersResponse"
+              "$ref": "#/definitions/orderOrdersResponse"
             }
           },
           "default": {
@@ -977,16 +1060,6 @@
             "in": "query",
             "required": false,
             "type": "boolean"
-          },
-          {
-            "name": "productIds",
-            "in": "query",
-            "required": false,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "collectionFormat": "multi"
           }
         ],
         "tags": [
@@ -1145,17 +1218,8 @@
     "orderDeleteOrderResponse": {
       "type": "object"
     },
-    "orderGetAllUserOrdersResponse": {
-      "type": "object",
-      "properties": {
-        "orders": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/orderOrderResponse"
-          }
-        }
-      }
+    "orderDeleteOrderlineResponse": {
+      "type": "object"
     },
     "orderOrderResponse": {
       "type": "object",
@@ -1170,12 +1234,8 @@
           "type": "array",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/orderOrderline"
+            "$ref": "#/definitions/orderOrderlineResponse"
           }
-        },
-        "totalPrice": {
-          "type": "string",
-          "format": "int64"
         },
         "createdAt": {
           "type": "string",
@@ -1187,12 +1247,9 @@
         }
       }
     },
-    "orderOrderline": {
+    "orderOrderlineResponse": {
       "type": "object",
       "properties": {
-        "orderlineId": {
-          "type": "string"
-        },
         "orderId": {
           "type": "string"
         },
@@ -1232,6 +1289,18 @@
         "RECIEVED"
       ],
       "default": "CANCELED"
+    },
+    "orderOrdersResponse": {
+      "type": "object",
+      "properties": {
+        "orders": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/orderOrderResponse"
+          }
+        }
+      }
     },
     "productCategoriesResponse": {
       "type": "object",

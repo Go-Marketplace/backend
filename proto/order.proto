@@ -7,55 +7,69 @@ option go_package = "github.com/Go-Marketplace/backend/proto/gen/order;order";
 package order;
 
 service Order {
-    rpc CreateOrder(CreateOrderRequest) returns (OrderResponse);
     rpc GetOrder(GetOrderRequest) returns (OrderResponse);
-    rpc GetAllUserOrders(GetAllUserOrdersRequest) returns (GetAllUserOrdersResponse);
+    rpc GetOrders(GetOrdersRequest) returns (OrdersResponse);
+    rpc CreateOrder(CreateOrderRequest) returns (OrderResponse);
     rpc DeleteOrder(DeleteOrderRequest) returns (DeleteOrderResponse);
 
-    rpc UpdateOrderline(UpdateOrderlineRequest) returns (OrderResponse);
+    rpc GetOrderline(GetOrderlineRequest) returns (OrderlineResponse);
+    rpc UpdateOrderline(UpdateOrderlineRequest) returns (OrderlineResponse);
+    rpc DeleteOrderline(DeleteOrderlineRequest) returns (DeleteOrderlineResponse);
 }
 
 message CreateOrderRequest {
-    string cart_id = 1;
+    string user_id = 1;
 }
 
 message GetOrderRequest {
     string order_id = 1;
 }
 
+message GetOrdersRequest {
+    string user_id = 1;
+}
+
 message DeleteOrderRequest {
     string order_id = 1;
 }
 
-message GetAllUserOrdersRequest {
-    string user_id = 1;
-}
-
 message UpdateOrderlineRequest {
     string order_id = 1;
-    string orderline_id = 2;
+    string product_id = 2;
     OrderlineStatus status = 3;
+}
+
+message GetOrderlineRequest {
+    string order_id = 1;
+    string product_id = 2;
+}
+
+message DeleteOrderlineRequest {
+    string order_id = 1;
+    string product_id = 2;
 }
 
 message OrderResponse {
     string order_id = 1;
     string user_id = 2;
-    repeated Orderline orderlines = 3;
-    int64 total_price = 4;
-    google.protobuf.Timestamp created_at = 5;
-    google.protobuf.Timestamp updated_at = 6;
+    repeated OrderlineResponse orderlines = 3;
+    google.protobuf.Timestamp created_at = 4;
+    google.protobuf.Timestamp updated_at = 5;
 }
 
-message Orderline {
-    string orderline_id = 1;
-    string order_id = 2;
-    string product_id = 3;
-    string name = 4;
-    int64 price = 5;
-    int64 quantity = 6;
-    OrderlineStatus status = 7;
-    google.protobuf.Timestamp created_at = 8;
-    google.protobuf.Timestamp updated_at = 9;
+message OrdersResponse {
+    repeated OrderResponse orders = 1;
+}
+
+message OrderlineResponse {
+    string order_id = 1;
+    string product_id = 2;
+    string name = 3;
+    int64 price = 4;
+    int64 quantity = 5;
+    OrderlineStatus status = 6;
+    google.protobuf.Timestamp created_at = 7;
+    google.protobuf.Timestamp updated_at = 8;
 }
 
 enum OrderlineStatus {
@@ -65,8 +79,6 @@ enum OrderlineStatus {
     RECIEVED = 3;
 }
 
-message GetAllUserOrdersResponse {
-    repeated OrderResponse orders = 1;
-}
-
 message DeleteOrderResponse {}
+
+message DeleteOrderlineResponse {}

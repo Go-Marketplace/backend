@@ -52,12 +52,6 @@ func searchProductsQuery(searchParams dto.SearchProductsDTO) sq.SelectBuilder {
 		})
 	}
 
-	if len(searchParams.ProductIDs) != 0 {
-		query = query.Where(sq.Eq{
-			"product_id": searchParams.ProductIDs,
-		})
-	}
-
 	return query
 }
 
