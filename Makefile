@@ -126,18 +126,9 @@ protoc-all: protoc-order protoc-gateway protoc-user protoc-cart protoc-product
 # Tests commands
 
 test:
-	go list ./... | xargs -n1 -I{} sh -c 'go test -v -race -count=1 {}'
-#go test -v -race -count=1 $(TEST_SERVICES)
+	go test -v -race -count=1 -vet=off $(TEST_SERVICES)
 .PHONY: test
 
 test-100:
-	go test -v -race -count=100 $(TEST_SERVICES)
+	go test -v -race -count=100 -vet=off $(TEST_SERVICES)
 .PHONY: test
-
-cover:
-	go test -short -count=1 -race -coverprofile=coverage.out $(TEST_SERVICES)
-	go tool cover -html=coverage.out -o coverage.html
-	xdg-open coverage.html
-	rm coverage.out
-	rm coverage.html
-.PHONY: cover

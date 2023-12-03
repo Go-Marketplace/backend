@@ -14,4 +14,4 @@ jobs:
           go-version-file: go.mod
 
       - name: Run linter
-        run: make precommit
+        run: make lint
