@@ -30,4 +30,4 @@ jobs:
             with:
               file: ./${{matrix.services}}/Dockerfile
               push: true
-              tags: Go-Marketplace/${{matrix.services}}-nightly:${{env.DOCKER_TAG}},Go-Marketplace/${{matrix.services}}-nightly:latest
+              tags: go-marketplace/${{matrix.services}}-nightly:${{env.DOCKER_TAG}},go-marketplace/${{matrix.services}}-nightly:latest
