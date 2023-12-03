@@ -119,3 +119,22 @@ protoc-gateway:
 protoc-all: protoc-order protoc-gateway protoc-user protoc-cart protoc-product
 	@echo All Protobufs Generated
 .PHONY: protoc-all
+
+# ==============================================================================
+# Tests commands
+
+test:
+	go test -v -race -count=1 ./.../internal/...
+.PHONY: test
+
+test-100:
+	go test -v -race -count=100 ./.../internal/...
+.PHONY: test
+
+cover:
+	go test -short -count=1 -race -coverprofile=coverage.out ./.../internal/...
+	go tool cover -html=coverage.out -o coverage.html
+	xdg-open coverage.html
+	rm coverage.out
+	rm coverage.html
+.PHONY: cover

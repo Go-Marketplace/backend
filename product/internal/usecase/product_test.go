@@ -31,8 +31,6 @@ func productHelper(t *testing.T) (*usecase.ProductUsecase, *mocks.MockProductRep
 }
 
 func TestGetProduct(t *testing.T) {
-	t.Parallel()
-
 	type args struct {
 		ctx       context.Context
 		productID uuid.UUID
@@ -104,8 +102,6 @@ func TestGetProduct(t *testing.T) {
 		testcase := testcase
 
 		t.Run(testcase.name, func(t *testing.T) {
-			t.Parallel()
-
 			productUsecase, productRepo, discountRepo := productHelper(t)
 			testcase.mock(productRepo, discountRepo)
 
@@ -121,8 +117,6 @@ func TestGetProduct(t *testing.T) {
 }
 
 func TestGetProducts(t *testing.T) {
-	t.Parallel()
-
 	type args struct {
 		ctx          context.Context
 		searchParams dto.SearchProductsDTO
@@ -195,8 +189,6 @@ func TestGetProducts(t *testing.T) {
 		testcase := testcase
 
 		t.Run(testcase.name, func(t *testing.T) {
-			t.Parallel()
-
 			productUsecase, productRepo, discountRepo := productHelper(t)
 			testcase.mock(productRepo, discountRepo)
 
