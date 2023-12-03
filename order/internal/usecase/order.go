@@ -39,6 +39,10 @@ func (usecase *OrderUsecase) DeleteOrder(ctx context.Context, orderID uuid.UUID)
 	return usecase.repo.DeleteOrder(ctx, orderID)
 }
 
+func (usecase *OrderUsecase) DeleteUserOrders(ctx context.Context, userID uuid.UUID) error {
+	return usecase.repo.DeleteUserOrders(ctx, userID)
+}
+
 func (usecase *OrderUsecase) GetOrderline(ctx context.Context, orderID, productID uuid.UUID) (*model.Orderline, error) {
 	return usecase.repo.GetOrderline(ctx, orderID, productID)
 }

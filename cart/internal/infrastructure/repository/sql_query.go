@@ -117,7 +117,7 @@ func createCartlineQuery(cartline *model.CartLine) sq.InsertBuilder {
 
 func updateCartlineQuery(cartline model.CartLine) sq.UpdateBuilder {
 	query := psql.Update("cartlines")
-	
+
 	if cartline.Name != "" {
 		query = query.Set("name", cartline.Name)
 	}
@@ -154,6 +154,13 @@ func deleteCartlineQuery(userID uuid.UUID, productID uuid.UUID) sq.DeleteBuilder
 			sq.Eq{
 				"product_id": productID,
 			},
+		})
+}
+
+func deleteProductCartlinesQuery(productID uuid.UUID) sq.DeleteBuilder {
+	return psql.Delete("cartlines").
+		Where(sq.Eq{
+			"product_id": productID,
 		})
 }
 

@@ -303,13 +303,13 @@ func (repo *CartRepo) DeleteCart(ctx context.Context, userID uuid.UUID) error {
 func (repo *CartRepo) DeleteCartline(ctx context.Context, userID uuid.UUID, productID uuid.UUID) error {
 	conn, err := repo.pg.Pool.Acquire(ctx)
 	if err != nil {
-		return fmt.Errorf("failed to Acquire in UpdateCartline: %w", err)
+		return fmt.Errorf("failed to Acquire in DeleteCartline: %w", err)
 	}
 	defer conn.Release()
 
 	tx, err := conn.BeginTx(ctx, pgx.TxOptions{})
 	if err != nil {
-		return fmt.Errorf("failed to begin UpdateCartline transaction: %w", err)
+		return fmt.Errorf("failed to begin DeleteCartline transaction: %w", err)
 	}
 	defer func() {
 		if err != nil {
@@ -336,6 +336,21 @@ func (repo *CartRepo) DeleteCartline(ctx context.Context, userID uuid.UUID, prod
 
 	if err = updateCartInTx(ctx, tx, userID); err != nil {
 		return fmt.Errorf("failed to update cart in transaction: %w", err)
+	}
+
+	return nil
+}
+
+func (repo *CartRepo) DeleteProductCartlines(ctx context.Context, productID uuid.UUID) error {
+	query := deleteProductCartlinesQuery(productID)
+
+	sqlQuery, args, err := query.ToSql()
+	if err != nil {
+		return fmt.Errorf("failed to get sql query")
+	}
+
+	if _, err = repo.pg.Pool.Exec(ctx, sqlQuery, args...); err != nil {
+		return fmt.Errorf("failed to Exec deleteProductCartlines: %w", err)
 	}
 
 	return nil

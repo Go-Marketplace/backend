@@ -8,6 +8,7 @@ import (
 	"github.com/Go-Marketplace/backend/product/internal/api/grpc/dto"
 	"github.com/Go-Marketplace/backend/product/internal/model"
 	"github.com/Go-Marketplace/backend/product/internal/usecase"
+	pbCart "github.com/Go-Marketplace/backend/proto/gen/cart"
 	pbProduct "github.com/Go-Marketplace/backend/proto/gen/product"
 	"github.com/google/uuid"
 	"google.golang.org/grpc/codes"
@@ -152,19 +153,78 @@ func UpdateProducts(ctx context.Context, productUsecase usecase.IProductUsecase,
 	return nil
 }
 
-func DeleteProduct(ctx context.Context, productUsecase usecase.IProductUsecase, req *pbProduct.DeleteProductRequest) error {
+func DeleteProduct(
+	ctx context.Context,
+	productUsecase usecase.IProductUsecase,
+	cartClient pbCart.CartClient,
+	req *pbProduct.DeleteProductRequest,
+) error {
 	if req == nil {
 		return status.Errorf(codes.InvalidArgument, "Invalid request")
 	}
 
-	id, err := uuid.Parse(req.ProductId)
+	productID, err := uuid.Parse(req.ProductId)
 	if err != nil {
 		return status.Errorf(codes.InvalidArgument, "Invalid id: %s", err)
 	}
 
-	err = productUsecase.DeleteProduct(ctx, id)
+	product, err := productUsecase.GetProduct(ctx, productID)
 	if err != nil {
+		return status.Errorf(codes.Internal, "Failed to get product: %s", err)
+	}
+
+	if product == nil {
+		return status.Errorf(codes.NotFound, "Product not found")
+	}
+
+	if err = productUsecase.DeleteProduct(ctx, productID); err != nil {
 		return status.Errorf(codes.Internal, "Internal error: %s", err)
+	}
+
+	if _, err = cartClient.DeleteProductCartlines(ctx, &pbCart.DeleteProductCartlinesRequest{
+		ProductId: req.ProductId,
+	}); err != nil {
+		if errCreate := productUsecase.CreateProduct(ctx, *product); errCreate != nil {
+			return status.Errorf(codes.Internal, "Failed to create product: %s", err)
+		}
+		return status.Errorf(codes.Internal, "Failed to delete product cartlines: %s", err)
+	}
+
+	return nil
+}
+
+func DeleteUserProducts(
+	ctx context.Context,
+	productUsecase usecase.IProductUsecase,
+	cartClient pbCart.CartClient,
+	req *pbProduct.DeleteUserProductsRequest,
+) error {
+	if req == nil {
+		return status.Errorf(codes.InvalidArgument, "Invalid request")
+	}
+
+	userID, err := uuid.Parse(req.UserId)
+	if err != nil {
+		return status.Errorf(codes.InvalidArgument, "Invalid user id: %s", err)
+	}
+
+	products, err := productUsecase.GetProducts(ctx, dto.SearchProductsDTO{
+		UserID: userID,
+	})
+	if err != nil {
+		return status.Errorf(codes.Internal, "Failed to get products: %s", err)
+	}
+
+	if err = productUsecase.DeleteUserProducts(ctx, userID); err != nil {
+		return status.Errorf(codes.Internal, "Failed to delete user products: %s", err)
+	}
+
+	for _, product := range products {
+		if _, err = cartClient.DeleteProductCartlines(ctx, &pbCart.DeleteProductCartlinesRequest{
+			ProductId: product.ID.String(),
+		}); err != nil {
+			return status.Errorf(codes.Internal, "Failed to delete product cartlines: %s", err)
+		}
 	}
 
 	return nil

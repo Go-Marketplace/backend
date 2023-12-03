@@ -145,7 +145,7 @@ func CreateOrder(
 		return nil, status.Errorf(codes.Internal, "Failed to create order: %s", err)
 	}
 
-	if _, err = cartClient.DeleteCartCartlines(ctx, &pbCart.DeleteCartCartlinesRequest{
+	if _, err = cartClient.PrepareOrder(ctx, &pbCart.PrepareOrderRequest{
 		UserId: cartResp.UserId,
 	}); err != nil {
 		if errDelete := orderUsecase.DeleteOrder(ctx, order.ID); errDelete != nil {
@@ -212,6 +212,46 @@ func DeleteOrder(
 		if _, errCreate := orderUsecase.CreateOrder(ctx, order); errCreate != nil {
 			return status.Errorf(codes.Internal, "Failed to recreate order: %s", errCreate)
 		}
+		return status.Errorf(codes.Internal, "Failed to return products: %s", err)
+	}
+
+	return nil
+}
+
+func DeleteUserOrders(
+	ctx context.Context,
+	orderUsecase *usecase.OrderUsecase,
+	productClient pbProduct.ProductClient,
+	req *pbOrder.DeleteUserOrdersRequest,
+) error {
+	userID, err := uuid.Parse(req.UserId)
+	if err != nil {
+		return status.Errorf(codes.InvalidArgument, "Invalid order id: %s", err)
+	}
+
+	orders, err := orderUsecase.GetOrders(ctx, dto.SearchOrderDTO{
+		UserID: userID,
+	})
+	if err != nil {
+		return status.Errorf(codes.Internal, "Failed to get user orders: %s", err)
+	}
+
+	orderlines := make([]*model.Orderline, 0)
+	for _, order := range orders {
+		orderlines = append(orderlines, order.Orderlines...)
+	}
+
+	if err = orderUsecase.DeleteUserOrders(ctx, userID); err != nil {
+		return status.Errorf(codes.Internal, "Failed to delete user orders: %s", err)
+	}
+
+	if err = returnProducts(ctx, productClient, orderlines...); err != nil {
+		for _, order := range orders {
+			if _, errCreate := orderUsecase.CreateOrder(ctx, order); errCreate != nil {
+				return status.Errorf(codes.Internal, "Failed to recreate order: %s", errCreate)
+			}
+		}
+
 		return status.Errorf(codes.Internal, "Failed to return products: %s", err)
 	}
 

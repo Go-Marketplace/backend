@@ -829,13 +829,13 @@
     },
     "/api/v1/user": {
       "get": {
-        "summary": "Get all users",
-        "operationId": "getAllUsers",
+        "summary": "Get users",
+        "operationId": "getUsers",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/userGetAllUsersResponse"
+              "$ref": "#/definitions/userUsersResponse"
             }
           },
           "default": {
@@ -1047,19 +1047,6 @@
             "in": "path",
             "required": true,
             "type": "string"
-          },
-          {
-            "name": "categoryId",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "moderated",
-            "in": "query",
-            "required": false,
-            "type": "boolean"
           }
         ],
         "tags": [
@@ -1501,18 +1488,6 @@
     "userDeleteUserResponse": {
       "type": "object"
     },
-    "userGetAllUsersResponse": {
-      "type": "object",
-      "properties": {
-        "users": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/userUserResponse"
-          }
-        }
-      }
-    },
     "userUserResponse": {
       "type": "object",
       "properties": {
@@ -1559,6 +1534,18 @@
         "SUPERADMIN"
       ],
       "default": "GUEST"
+    },
+    "userUsersResponse": {
+      "type": "object",
+      "properties": {
+        "users": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/userUserResponse"
+          }
+        }
+      }
     }
   },
   "securityDefinitions": {

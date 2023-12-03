@@ -8,17 +8,19 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/Go-Marketplace/backend/product/internal/api/grpc/interceptors"
 	"github.com/Go-Marketplace/backend/config"
 	"github.com/Go-Marketplace/backend/pkg/grpcserver"
 	"github.com/Go-Marketplace/backend/pkg/logger"
 	"github.com/Go-Marketplace/backend/pkg/postgres"
 	"github.com/Go-Marketplace/backend/pkg/redis"
 	"github.com/Go-Marketplace/backend/product/internal/api/grpc/handler"
+	"github.com/Go-Marketplace/backend/product/internal/api/grpc/interceptors"
 	"github.com/Go-Marketplace/backend/product/internal/infrastructure/repository"
 	"github.com/Go-Marketplace/backend/product/internal/usecase"
+	pbCart "github.com/Go-Marketplace/backend/proto/gen/cart"
 	pbProduct "github.com/Go-Marketplace/backend/proto/gen/product"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
 )
 
@@ -39,10 +41,22 @@ func Run(cfg *config.Config) {
 	}
 	defer pg.Close()
 
+	// Create cart client
+	cartConn, err := grpc.Dial(
+		fmt.Sprintf("%s:%v", cfg.CartConfig.GRPC.Host, cfg.CartConfig.GRPC.Port),
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
+	if err != nil {
+		log.Fatalf("failed to create cartConn: %v", err)
+	}
+	defer cartConn.Close()
+
+	cartClient := pbCart.NewCartClient(cartConn)
+
 	discountRepo := repository.NewDiscountRepo(redis, logger)
 	productRepo := repository.NewProductRepo(pg, logger)
 	productUsecase := usecase.NewProductUsecase(productRepo, discountRepo, logger)
-	productHandler := handler.NewProductRoutes(productUsecase, logger)
+	productHandler := handler.NewProductRoutes(productUsecase, cartClient, logger)
 
 	interceptor := interceptors.NewInterceptorManager(logger)
 	grpcServer, err := grpcserver.New(

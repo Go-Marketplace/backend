@@ -73,8 +73,8 @@ func (router *gatewayRoutes) GetUser(ctx context.Context, req *pbUser.GetUserReq
 	return router.userClient.GetUser(ctx, req)
 }
 
-func (router *gatewayRoutes) GetAllUsers(ctx context.Context, req *pbUser.GetAllUsersRequest) (*pbUser.GetAllUsersResponse, error) {
-	return router.userClient.GetAllUsers(ctx, req)
+func (router *gatewayRoutes) GetUsers(ctx context.Context, req *pbUser.GetUsersRequest) (*pbUser.UsersResponse, error) {
+	return router.userClient.GetUsers(ctx, req)
 }
 
 func (router *gatewayRoutes) UpdateUser(ctx context.Context, req *pbUser.UpdateUserRequest) (*pbUser.UserResponse, error) {
@@ -99,8 +99,10 @@ func (router *gatewayRoutes) GetOrders(ctx context.Context, req *pbOrder.GetOrde
 	return router.orderClient.GetOrders(ctx, req)
 }
 
-func (router *gatewayRoutes) GetUserOrders(ctx context.Context, req *pbOrder.GetOrdersRequest) (*pbOrder.OrdersResponse, error) {
-	return router.orderClient.GetOrders(ctx, req)
+func (router *gatewayRoutes) GetUserOrders(ctx context.Context, req *pbGateway.GetUserOrdersRequest) (*pbOrder.OrdersResponse, error) {
+	return router.orderClient.GetOrders(ctx, &pbOrder.GetOrdersRequest{
+		UserId: req.UserId,
+	})
 }
 
 func (router *gatewayRoutes) CreateOrder(ctx context.Context, req *pbOrder.CreateOrderRequest) (*pbOrder.OrderResponse, error) {
@@ -155,8 +157,10 @@ func (router *gatewayRoutes) GetProducts(ctx context.Context, req *pbProduct.Get
 	return router.productClient.GetProducts(ctx, req)
 }
 
-func (router *gatewayRoutes) GetUserProducts(ctx context.Context, req *pbProduct.GetProductsRequest) (*pbProduct.ProductsResponse, error) {
-	return router.productClient.GetProducts(ctx, req)
+func (router *gatewayRoutes) GetUserProducts(ctx context.Context, req *pbGateway.GetUserProductsRequest) (*pbProduct.ProductsResponse, error) {
+	return router.productClient.GetProducts(ctx, &pbProduct.GetProductsRequest{
+		UserId: req.UserId,
+	})
 }
 
 func (router *gatewayRoutes) CreateProduct(ctx context.Context, req *pbProduct.CreateProductRequest) (*pbProduct.ProductResponse, error) {

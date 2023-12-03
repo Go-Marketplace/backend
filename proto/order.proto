@@ -11,6 +11,7 @@ service Order {
     rpc GetOrders(GetOrdersRequest) returns (OrdersResponse);
     rpc CreateOrder(CreateOrderRequest) returns (OrderResponse);
     rpc DeleteOrder(DeleteOrderRequest) returns (DeleteOrderResponse);
+    rpc DeleteUserOrders(DeleteUserOrdersRequest) returns (DeleteUserOrdersResponse);
 
     rpc GetOrderline(GetOrderlineRequest) returns (OrderlineResponse);
     rpc UpdateOrderline(UpdateOrderlineRequest) returns (OrderlineResponse);
@@ -31,6 +32,10 @@ message GetOrdersRequest {
 
 message DeleteOrderRequest {
     string order_id = 1;
+}
+
+message DeleteUserOrdersRequest {
+    string user_id = 1;
 }
 
 message UpdateOrderlineRequest {
@@ -82,3 +87,5 @@ enum OrderlineStatus {
 message DeleteOrderResponse {}
 
 message DeleteOrderlineResponse {}
+
+message DeleteUserOrdersResponse {}

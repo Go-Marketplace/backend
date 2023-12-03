@@ -11,13 +11,13 @@ import (
 )
 
 type IUserUsecase interface {
-	GetAllUsers(ctx context.Context) ([]*model.User, error)
-	GetUser(ctx context.Context, id uuid.UUID) (*model.User, error)
+	GetUsers(ctx context.Context) ([]*model.User, error)
+	GetUser(ctx context.Context, userID uuid.UUID) (*model.User, error)
 	GetUserByEmail(ctx context.Context, email string) (*model.User, error)
-	CreateUser(ctx context.Context, user model.User) error
-	UpdateUser(ctx context.Context, user model.User) (*model.User, error)
-	ChangeUserRole(ctx context.Context, user model.User) (*model.User, error)
-	DeleteUser(ctx context.Context, id uuid.UUID) error
+	CreateUser(ctx context.Context, user *model.User) (*model.User, error)
+	UpdateUser(ctx context.Context, user *model.User) (*model.User, error)
+	ChangeUserRole(ctx context.Context, userID uuid.UUID, role model.UserRoles) (*model.User, error)
+	DeleteUser(ctx context.Context, userID uuid.UUID) error
 }
 
 type UserUsecase struct {
@@ -32,27 +32,31 @@ func NewUserUsecase(repo interfaces.UserRepo, logger *logger.Logger) *UserUsecas
 	}
 }
 
-func (usecase *UserUsecase) GetUser(ctx context.Context, id uuid.UUID) (*model.User, error) {
-	return usecase.repo.GetUser(ctx, id)
+func (usecase *UserUsecase) GetUser(ctx context.Context, userID uuid.UUID) (*model.User, error) {
+	return usecase.repo.GetUser(ctx, userID)
 }
 
 func (usecase *UserUsecase) GetUserByEmail(ctx context.Context, email string) (*model.User, error) {
 	return usecase.repo.GetUserByEmail(ctx, email)
 }
 
-func (usecase *UserUsecase) GetAllUsers(ctx context.Context) ([]*model.User, error) {
-	return usecase.repo.GetAllUsers(ctx)
+func (usecase *UserUsecase) GetUsers(ctx context.Context) ([]*model.User, error) {
+	return usecase.repo.GetUsers(ctx)
 }
 
-func (usecase *UserUsecase) CreateUser(ctx context.Context, user model.User) error {
-	return usecase.repo.CreateUser(ctx, user)
+func (usecase *UserUsecase) CreateUser(ctx context.Context, user *model.User) (*model.User, error) {
+	if err := usecase.repo.CreateUser(ctx, user); err != nil {
+		return nil, err
+	}
+
+	return usecase.GetUser(ctx, user.ID)
 }
 
-func (usecase *UserUsecase) DeleteUser(ctx context.Context, id uuid.UUID) error {
-	return usecase.repo.DeleteUser(ctx, id)
+func (usecase *UserUsecase) DeleteUser(ctx context.Context, userID uuid.UUID) error {
+	return usecase.repo.DeleteUser(ctx, userID)
 }
 
-func (usecase *UserUsecase) UpdateUser(ctx context.Context, user model.User) (*model.User, error) {
+func (usecase *UserUsecase) UpdateUser(ctx context.Context, user *model.User) (*model.User, error) {
 	if err := usecase.repo.UpdateUser(ctx, user); err != nil {
 		return nil, fmt.Errorf("failed to update user: %w", err)
 	}
@@ -60,10 +64,10 @@ func (usecase *UserUsecase) UpdateUser(ctx context.Context, user model.User) (*m
 	return usecase.repo.GetUser(ctx, user.ID)
 }
 
-func (usecase *UserUsecase) ChangeUserRole(ctx context.Context, user model.User) (*model.User, error) {
-	if err := usecase.repo.ChangeUserRole(ctx, user); err != nil {
+func (usecase *UserUsecase) ChangeUserRole(ctx context.Context, userID uuid.UUID, role model.UserRoles) (*model.User, error) {
+	if err := usecase.repo.ChangeUserRole(ctx, userID, role); err != nil {
 		return nil, fmt.Errorf("failed to change user role: %w", err)
 	}
 
-	return usecase.repo.GetUser(ctx, user.ID)
+	return usecase.repo.GetUser(ctx, userID)
 }

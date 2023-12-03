@@ -21,7 +21,7 @@ const _ = grpc.SupportPackageIsVersion7
 const (
 	User_GetUser_FullMethodName        = "/user.User/GetUser"
 	User_GetUserByEmail_FullMethodName = "/user.User/GetUserByEmail"
-	User_GetAllUsers_FullMethodName    = "/user.User/GetAllUsers"
+	User_GetUsers_FullMethodName       = "/user.User/GetUsers"
 	User_CreateUser_FullMethodName     = "/user.User/CreateUser"
 	User_UpdateUser_FullMethodName     = "/user.User/UpdateUser"
 	User_ChangeUserRole_FullMethodName = "/user.User/ChangeUserRole"
@@ -34,8 +34,8 @@ const (
 type UserClient interface {
 	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*UserResponse, error)
 	GetUserByEmail(ctx context.Context, in *GetUserByEmailRequest, opts ...grpc.CallOption) (*UserResponse, error)
-	GetAllUsers(ctx context.Context, in *GetAllUsersRequest, opts ...grpc.CallOption) (*GetAllUsersResponse, error)
-	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
+	GetUsers(ctx context.Context, in *GetUsersRequest, opts ...grpc.CallOption) (*UsersResponse, error)
+	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*UserResponse, error)
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UserResponse, error)
 	ChangeUserRole(ctx context.Context, in *ChangeUserRoleRequest, opts ...grpc.CallOption) (*UserResponse, error)
 	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserResponse, error)
@@ -67,17 +67,17 @@ func (c *userClient) GetUserByEmail(ctx context.Context, in *GetUserByEmailReque
 	return out, nil
 }
 
-func (c *userClient) GetAllUsers(ctx context.Context, in *GetAllUsersRequest, opts ...grpc.CallOption) (*GetAllUsersResponse, error) {
-	out := new(GetAllUsersResponse)
-	err := c.cc.Invoke(ctx, User_GetAllUsers_FullMethodName, in, out, opts...)
+func (c *userClient) GetUsers(ctx context.Context, in *GetUsersRequest, opts ...grpc.CallOption) (*UsersResponse, error) {
+	out := new(UsersResponse)
+	err := c.cc.Invoke(ctx, User_GetUsers_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userClient) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error) {
-	out := new(CreateUserResponse)
+func (c *userClient) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*UserResponse, error) {
+	out := new(UserResponse)
 	err := c.cc.Invoke(ctx, User_CreateUser_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -118,8 +118,8 @@ func (c *userClient) DeleteUser(ctx context.Context, in *DeleteUserRequest, opts
 type UserServer interface {
 	GetUser(context.Context, *GetUserRequest) (*UserResponse, error)
 	GetUserByEmail(context.Context, *GetUserByEmailRequest) (*UserResponse, error)
-	GetAllUsers(context.Context, *GetAllUsersRequest) (*GetAllUsersResponse, error)
-	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
+	GetUsers(context.Context, *GetUsersRequest) (*UsersResponse, error)
+	CreateUser(context.Context, *CreateUserRequest) (*UserResponse, error)
 	UpdateUser(context.Context, *UpdateUserRequest) (*UserResponse, error)
 	ChangeUserRole(context.Context, *ChangeUserRoleRequest) (*UserResponse, error)
 	DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error)
@@ -136,10 +136,10 @@ func (UnimplementedUserServer) GetUser(context.Context, *GetUserRequest) (*UserR
 func (UnimplementedUserServer) GetUserByEmail(context.Context, *GetUserByEmailRequest) (*UserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserByEmail not implemented")
 }
-func (UnimplementedUserServer) GetAllUsers(context.Context, *GetAllUsersRequest) (*GetAllUsersResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAllUsers not implemented")
+func (UnimplementedUserServer) GetUsers(context.Context, *GetUsersRequest) (*UsersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUsers not implemented")
 }
-func (UnimplementedUserServer) CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error) {
+func (UnimplementedUserServer) CreateUser(context.Context, *CreateUserRequest) (*UserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
 }
 func (UnimplementedUserServer) UpdateUser(context.Context, *UpdateUserRequest) (*UserResponse, error) {
@@ -200,20 +200,20 @@ func _User_GetUserByEmail_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_GetAllUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetAllUsersRequest)
+func _User_GetUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUsersRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServer).GetAllUsers(ctx, in)
+		return srv.(UserServer).GetUsers(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: User_GetAllUsers_FullMethodName,
+		FullMethod: User_GetUsers_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).GetAllUsers(ctx, req.(*GetAllUsersRequest))
+		return srv.(UserServer).GetUsers(ctx, req.(*GetUsersRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -306,8 +306,8 @@ var User_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _User_GetUserByEmail_Handler,
 		},
 		{
-			MethodName: "GetAllUsers",
-			Handler:    _User_GetAllUsers_Handler,
+			MethodName: "GetUsers",
+			Handler:    _User_GetUsers_Handler,
 		},
 		{
 			MethodName: "CreateUser",

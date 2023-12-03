@@ -11,12 +11,16 @@ import (
 	"github.com/Go-Marketplace/backend/pkg/grpcserver"
 	"github.com/Go-Marketplace/backend/pkg/logger"
 	"github.com/Go-Marketplace/backend/pkg/postgres"
+	pbCart "github.com/Go-Marketplace/backend/proto/gen/cart"
+	pbOrder "github.com/Go-Marketplace/backend/proto/gen/order"
+	pbProduct "github.com/Go-Marketplace/backend/proto/gen/product"
 	pbUser "github.com/Go-Marketplace/backend/proto/gen/user"
 	"github.com/Go-Marketplace/backend/user/internal/api/grpc/handler"
 	"github.com/Go-Marketplace/backend/user/internal/api/grpc/interceptors"
 	"github.com/Go-Marketplace/backend/user/internal/infrastructure/repository"
 	"github.com/Go-Marketplace/backend/user/internal/usecase"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
 )
 
@@ -29,9 +33,51 @@ func Run(cfg *config.Config) {
 	}
 	defer pg.Close()
 
+	// Create order client
+	orderConn, err := grpc.Dial(
+		fmt.Sprintf("%s:%v", cfg.OrderConfig.GRPC.Host, cfg.OrderConfig.GRPC.Port),
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
+	if err != nil {
+		log.Fatalf("failed to create orderConn: %s", err)
+	}
+	defer orderConn.Close()
+
+	orderClient := pbOrder.NewOrderClient(orderConn)
+
+	// Create cart client
+	cartConn, err := grpc.Dial(
+		fmt.Sprintf("%s:%v", cfg.CartConfig.GRPC.Host, cfg.CartConfig.GRPC.Port),
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
+	if err != nil {
+		log.Fatalf("failed to create cartConn: %v", err)
+	}
+	defer cartConn.Close()
+
+	cartClient := pbCart.NewCartClient(cartConn)
+
+	// Create product client
+	productConn, err := grpc.Dial(
+		fmt.Sprintf("%s:%v", cfg.ProductConfig.GRPC.Host, cfg.ProductConfig.GRPC.Port),
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
+	if err != nil {
+		log.Fatalf("failed to create productConn: %v", err)
+	}
+	defer productConn.Close()
+
+	productClient := pbProduct.NewProductClient(productConn)
+
 	userRepo := repository.NewUserRepo(pg, logger)
 	userUsecase := usecase.NewUserUsecase(userRepo, logger)
-	userHandler := handler.NewUserRoutes(userUsecase, logger)
+	userHandler := handler.NewUserRoutes(
+		userUsecase,
+		productClient,
+		orderClient,
+		cartClient,
+		logger,
+	)
 
 	interceptor := interceptors.NewInterceptorManager(logger)
 	grpcServer, err := grpcserver.New(

@@ -82,10 +82,26 @@ func (router *cartRoutes) DeleteCartline(ctx context.Context, req *pbCart.Delete
 	return &pbCart.DeleteCartlineResponse{}, nil
 }
 
+func (router *cartRoutes) DeleteProductCartlines(ctx context.Context, req *pbCart.DeleteProductCartlinesRequest) (*pbCart.DeleteProductCartlinesResponse, error) {
+	if err := controller.DeleteProductCartlines(ctx, router.cartUsecase, req); err != nil {
+		return nil, err
+	}
+
+	return &pbCart.DeleteProductCartlinesResponse{}, nil
+}
+
 func (router *cartRoutes) DeleteCartCartlines(ctx context.Context, req *pbCart.DeleteCartCartlinesRequest) (*pbCart.DeleteCartCartlinesResponse, error) {
 	if err := controller.DeleteCartCartlines(ctx, router.cartUsecase, router.productClient, req); err != nil {
 		return nil, err
 	}
 
 	return &pbCart.DeleteCartCartlinesResponse{}, nil
+}
+
+func (router *cartRoutes) PrepareOrder(ctx context.Context, req *pbCart.PrepareOrderRequest) (*pbCart.PrepareOrderResponse, error) {
+	if err := controller.PrepareOrder(ctx, router.cartUsecase, router.productClient, req); err != nil {
+		return nil, err
+	}
+
+	return &pbCart.PrepareOrderResponse{}, nil
 }

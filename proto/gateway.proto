@@ -86,13 +86,13 @@ service Gateway {
         };
     }
 
-    rpc GetAllUsers(user.GetAllUsersRequest) returns (user.GetAllUsersResponse) {
+    rpc GetUsers(user.GetUsersRequest) returns (user.UsersResponse) {
         option (google.api.http) = {
             get: "/api/v1/user"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-            summary: "Get all users";
-            operation_id: "getAllUsers";
+            summary: "Get users";
+            operation_id: "getUsers";
             tags: "user";
         };
     }
@@ -166,7 +166,7 @@ service Gateway {
         };
     }
 
-    rpc GetUserOrders(order.GetOrdersRequest) returns (order.OrdersResponse) {
+    rpc GetUserOrders(GetUserOrdersRequest) returns (order.OrdersResponse) {
         option (google.api.http) = {
             get: "/api/v1/user/{user_id}/order"
         };
@@ -222,7 +222,6 @@ service Gateway {
     }
 
     // Cart
-
     rpc GetUserCart(cart.GetUserCartRequest) returns (cart.CartResponse) {
         option (google.api.http) = {
             get: "/api/v1/user/{user_id}/cart"
@@ -305,7 +304,7 @@ service Gateway {
         };
     }
 
-    rpc GetUserProducts(product.GetProductsRequest) returns (product.ProductsResponse) {
+    rpc GetUserProducts(GetUserProductsRequest) returns (product.ProductsResponse) {
         option (google.api.http) = {
             get: "/api/v1/user/{user_id}/products"
         };
@@ -429,4 +428,12 @@ message LoginRequest {
 
 message LoginResponse {
     string access_token = 1;
+}
+
+message GetUserOrdersRequest {
+    string user_id = 1;
+}
+
+message GetUserProductsRequest {
+    string user_id = 1;
 }

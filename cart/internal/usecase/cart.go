@@ -75,6 +75,10 @@ func (usecase *CartUsecase) DeleteCartline(ctx context.Context, userID uuid.UUID
 	return usecase.cartRepo.DeleteCartline(ctx, userID, productID)
 }
 
+func (usecase *CartUsecase) DeleteProductCartlines(ctx context.Context, productID uuid.UUID) error {
+	return usecase.cartRepo.DeleteProductCartlines(ctx, productID)
+}
+
 func (usecase *CartUsecase) DeleteCartCartlines(ctx context.Context, userID uuid.UUID) error {
 	return usecase.cartRepo.DeleteCartCartlines(ctx, userID)
 }

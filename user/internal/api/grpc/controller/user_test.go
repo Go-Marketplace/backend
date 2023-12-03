@@ -36,6 +36,7 @@ func TestChangeUserRole(t *testing.T) {
 
 	ctx := context.Background()
 	userID := uuid.New()
+	var role model.UserRoles = 1
 
 	expectedUserFromRepo := &model.User{
 		ID:        userID,
@@ -58,11 +59,11 @@ func TestChangeUserRole(t *testing.T) {
 				ctx: ctx,
 				req: &pbUser.ChangeUserRoleRequest{
 					UserId: userID.String(),
-					Role:   pbUser.UserRole(1),
+					Role:   pbUser.UserRole(role),
 				},
 			},
 			mock: func(usecase *mocks.MockIUserUsecase) {
-				usecase.EXPECT().ChangeUserRole(ctx, gomock.Any()).Return(expectedUserFromRepo, nil).Times(1)
+				usecase.EXPECT().ChangeUserRole(ctx, userID, role).Return(expectedUserFromRepo, nil).Times(1)
 			},
 			expectedUser: expectedUserFromRepo,
 			expectedErr:  nil,
@@ -73,7 +74,7 @@ func TestChangeUserRole(t *testing.T) {
 				ctx: ctx,
 				req: &pbUser.ChangeUserRoleRequest{
 					UserId: "123",
-					Role:   pbUser.UserRole(1),
+					Role:   pbUser.UserRole(role),
 				},
 			},
 			mock:         func(usecase *mocks.MockIUserUsecase) {},
@@ -99,14 +100,14 @@ func TestChangeUserRole(t *testing.T) {
 				ctx: ctx,
 				req: &pbUser.ChangeUserRoleRequest{
 					UserId: userID.String(),
-					Role:   pbUser.UserRole(1),
+					Role:   pbUser.UserRole(role),
 				},
 			},
 			mock: func(usecase *mocks.MockIUserUsecase) {
-				usecase.EXPECT().ChangeUserRole(ctx, gomock.Any()).Return(nil, expectedErrFromUsecase).Times(1)
+				usecase.EXPECT().ChangeUserRole(ctx, userID, role).Return(nil, expectedErrFromUsecase).Times(1)
 			},
 			expectedUser: nil,
-			expectedErr:  status.Errorf(codes.Internal, "Internal error: %s", expectedErrFromUsecase),
+			expectedErr:  status.Errorf(codes.Internal, "Failed to change user role: %s", expectedErrFromUsecase),
 		},
 	}
 

@@ -18,4 +18,5 @@ type CartRepo interface {
 	CreateCartlines(ctx context.Context, cartlines []*model.CartLine) error
 	UpdateCartline(ctx context.Context, cartline model.CartLine) error
 	DeleteCartline(ctx context.Context, userID uuid.UUID, productID uuid.UUID) error
+	DeleteProductCartlines(ctx context.Context, productID uuid.UUID) error
 }

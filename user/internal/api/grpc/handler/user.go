@@ -4,6 +4,9 @@ import (
 	"context"
 
 	"github.com/Go-Marketplace/backend/pkg/logger"
+	pbCart "github.com/Go-Marketplace/backend/proto/gen/cart"
+	pbOrder "github.com/Go-Marketplace/backend/proto/gen/order"
+	pbProduct "github.com/Go-Marketplace/backend/proto/gen/product"
 	pbUser "github.com/Go-Marketplace/backend/proto/gen/user"
 	"github.com/Go-Marketplace/backend/user/internal/api/grpc/controller"
 	"github.com/Go-Marketplace/backend/user/internal/usecase"
@@ -12,14 +15,26 @@ import (
 type userRoutes struct {
 	pbUser.UnimplementedUserServer
 
-	userUsecase *usecase.UserUsecase
-	logger      *logger.Logger
+	userUsecase   *usecase.UserUsecase
+	productClient pbProduct.ProductClient
+	orderClient   pbOrder.OrderClient
+	cartClient    pbCart.CartClient
+	logger        *logger.Logger
 }
 
-func NewUserRoutes(userUsecase *usecase.UserUsecase, logger *logger.Logger) *userRoutes {
+func NewUserRoutes(
+	userUsecase *usecase.UserUsecase,
+	productClient pbProduct.ProductClient,
+	orderClient pbOrder.OrderClient,
+	cartClient pbCart.CartClient,
+	logger *logger.Logger,
+) *userRoutes {
 	return &userRoutes{
-		userUsecase: userUsecase,
-		logger:      logger,
+		userUsecase:   userUsecase,
+		productClient: productClient,
+		orderClient:   orderClient,
+		cartClient:    cartClient,
+		logger:        logger,
 	}
 }
 
@@ -41,8 +56,8 @@ func (router *userRoutes) GetUserByEmail(ctx context.Context, req *pbUser.GetUse
 	return user.ToProto(), nil
 }
 
-func (router *userRoutes) GetAllUsers(ctx context.Context, req *pbUser.GetAllUsersRequest) (*pbUser.GetAllUsersResponse, error) {
-	users, err := controller.GetAllUsers(ctx, router.userUsecase, req)
+func (router *userRoutes) GetUsers(ctx context.Context, req *pbUser.GetUsersRequest) (*pbUser.UsersResponse, error) {
+	users, err := controller.GetUsers(ctx, router.userUsecase, req)
 	if err != nil {
 		return nil, err
 	}
@@ -52,19 +67,18 @@ func (router *userRoutes) GetAllUsers(ctx context.Context, req *pbUser.GetAllUse
 		protoUsers = append(protoUsers, user.ToProto())
 	}
 
-	return &pbUser.GetAllUsersResponse{
+	return &pbUser.UsersResponse{
 		Users: protoUsers,
 	}, nil
 }
 
-func (router *userRoutes) CreateUser(ctx context.Context, req *pbUser.CreateUserRequest) (*pbUser.CreateUserResponse, error) {
-	if err := controller.CreateUser(ctx, router.userUsecase, req); err != nil {
+func (router *userRoutes) CreateUser(ctx context.Context, req *pbUser.CreateUserRequest) (*pbUser.UserResponse, error) {
+	user, err := controller.CreateUser(ctx, router.userUsecase, router.cartClient, req)
+	if err != nil {
 		return nil, err
 	}
 
-	return &pbUser.CreateUserResponse{
-		UserId: req.UserId,
-	}, nil
+	return user.ToProto(), nil
 }
 
 func (router *userRoutes) UpdateUser(ctx context.Context, req *pbUser.UpdateUserRequest) (*pbUser.UserResponse, error) {
@@ -77,8 +91,14 @@ func (router *userRoutes) UpdateUser(ctx context.Context, req *pbUser.UpdateUser
 }
 
 func (router *userRoutes) DeleteUser(ctx context.Context, req *pbUser.DeleteUserRequest) (*pbUser.DeleteUserResponse, error) {
-	err := controller.DeleteUser(ctx, router.userUsecase, req)
-	if err != nil {
+	if err := controller.DeleteUser(
+		ctx,
+		router.userUsecase,
+		router.orderClient,
+		router.productClient,
+		router.cartClient,
+		req,
+	); err != nil {
 		return nil, err
 	}
 

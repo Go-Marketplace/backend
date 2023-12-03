@@ -37,21 +37,21 @@ func (m *MockUserRepo) EXPECT() *MockUserRepoMockRecorder {
 }
 
 // ChangeUserRole mocks base method.
-func (m *MockUserRepo) ChangeUserRole(ctx context.Context, user model.User) error {
+func (m *MockUserRepo) ChangeUserRole(ctx context.Context, userID uuid.UUID, role model.UserRoles) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ChangeUserRole", ctx, user)
+	ret := m.ctrl.Call(m, "ChangeUserRole", ctx, userID, role)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // ChangeUserRole indicates an expected call of ChangeUserRole.
-func (mr *MockUserRepoMockRecorder) ChangeUserRole(ctx, user interface{}) *gomock.Call {
+func (mr *MockUserRepoMockRecorder) ChangeUserRole(ctx, userID, role interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ChangeUserRole", reflect.TypeOf((*MockUserRepo)(nil).ChangeUserRole), ctx, user)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ChangeUserRole", reflect.TypeOf((*MockUserRepo)(nil).ChangeUserRole), ctx, userID, role)
 }
 
 // CreateUser mocks base method.
-func (m *MockUserRepo) CreateUser(ctx context.Context, user model.User) error {
+func (m *MockUserRepo) CreateUser(ctx context.Context, user *model.User) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateUser", ctx, user)
 	ret0, _ := ret[0].(error)
@@ -65,47 +65,32 @@ func (mr *MockUserRepoMockRecorder) CreateUser(ctx, user interface{}) *gomock.Ca
 }
 
 // DeleteUser mocks base method.
-func (m *MockUserRepo) DeleteUser(ctx context.Context, id uuid.UUID) error {
+func (m *MockUserRepo) DeleteUser(ctx context.Context, userID uuid.UUID) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteUser", ctx, id)
+	ret := m.ctrl.Call(m, "DeleteUser", ctx, userID)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // DeleteUser indicates an expected call of DeleteUser.
-func (mr *MockUserRepoMockRecorder) DeleteUser(ctx, id interface{}) *gomock.Call {
+func (mr *MockUserRepoMockRecorder) DeleteUser(ctx, userID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUser", reflect.TypeOf((*MockUserRepo)(nil).DeleteUser), ctx, id)
-}
-
-// GetAllUsers mocks base method.
-func (m *MockUserRepo) GetAllUsers(ctx context.Context) ([]*model.User, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAllUsers", ctx)
-	ret0, _ := ret[0].([]*model.User)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetAllUsers indicates an expected call of GetAllUsers.
-func (mr *MockUserRepoMockRecorder) GetAllUsers(ctx interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllUsers", reflect.TypeOf((*MockUserRepo)(nil).GetAllUsers), ctx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUser", reflect.TypeOf((*MockUserRepo)(nil).DeleteUser), ctx, userID)
 }
 
 // GetUser mocks base method.
-func (m *MockUserRepo) GetUser(ctx context.Context, id uuid.UUID) (*model.User, error) {
+func (m *MockUserRepo) GetUser(ctx context.Context, userID uuid.UUID) (*model.User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetUser", ctx, id)
+	ret := m.ctrl.Call(m, "GetUser", ctx, userID)
 	ret0, _ := ret[0].(*model.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetUser indicates an expected call of GetUser.
-func (mr *MockUserRepoMockRecorder) GetUser(ctx, id interface{}) *gomock.Call {
+func (mr *MockUserRepoMockRecorder) GetUser(ctx, userID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUser", reflect.TypeOf((*MockUserRepo)(nil).GetUser), ctx, id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUser", reflect.TypeOf((*MockUserRepo)(nil).GetUser), ctx, userID)
 }
 
 // GetUserByEmail mocks base method.
@@ -123,8 +108,23 @@ func (mr *MockUserRepoMockRecorder) GetUserByEmail(ctx, email interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserByEmail", reflect.TypeOf((*MockUserRepo)(nil).GetUserByEmail), ctx, email)
 }
 
+// GetUsers mocks base method.
+func (m *MockUserRepo) GetUsers(ctx context.Context) ([]*model.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUsers", ctx)
+	ret0, _ := ret[0].([]*model.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUsers indicates an expected call of GetUsers.
+func (mr *MockUserRepoMockRecorder) GetUsers(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUsers", reflect.TypeOf((*MockUserRepo)(nil).GetUsers), ctx)
+}
+
 // UpdateUser mocks base method.
-func (m *MockUserRepo) UpdateUser(ctx context.Context, user model.User) error {
+func (m *MockUserRepo) UpdateUser(ctx context.Context, user *model.User) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateUser", ctx, user)
 	ret0, _ := ret[0].(error)

@@ -52,17 +52,31 @@ func (mr *MockProductRepoMockRecorder) CreateProduct(ctx, product interface{}) *
 }
 
 // DeleteProduct mocks base method.
-func (m *MockProductRepo) DeleteProduct(ctx context.Context, id uuid.UUID) error {
+func (m *MockProductRepo) DeleteProduct(ctx context.Context, productID uuid.UUID) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteProduct", ctx, id)
+	ret := m.ctrl.Call(m, "DeleteProduct", ctx, productID)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // DeleteProduct indicates an expected call of DeleteProduct.
-func (mr *MockProductRepoMockRecorder) DeleteProduct(ctx, id interface{}) *gomock.Call {
+func (mr *MockProductRepoMockRecorder) DeleteProduct(ctx, productID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteProduct", reflect.TypeOf((*MockProductRepo)(nil).DeleteProduct), ctx, id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteProduct", reflect.TypeOf((*MockProductRepo)(nil).DeleteProduct), ctx, productID)
+}
+
+// DeleteUserProducts mocks base method.
+func (m *MockProductRepo) DeleteUserProducts(ctx context.Context, userID uuid.UUID) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteUserProducts", ctx, userID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteUserProducts indicates an expected call of DeleteUserProducts.
+func (mr *MockProductRepoMockRecorder) DeleteUserProducts(ctx, userID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUserProducts", reflect.TypeOf((*MockProductRepo)(nil).DeleteUserProducts), ctx, userID)
 }
 
 // GetAllCategories mocks base method.
@@ -81,33 +95,33 @@ func (mr *MockProductRepoMockRecorder) GetAllCategories(ctx interface{}) *gomock
 }
 
 // GetCategory mocks base method.
-func (m *MockProductRepo) GetCategory(ctx context.Context, id int32) (*model.Category, error) {
+func (m *MockProductRepo) GetCategory(ctx context.Context, categoryID int32) (*model.Category, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetCategory", ctx, id)
+	ret := m.ctrl.Call(m, "GetCategory", ctx, categoryID)
 	ret0, _ := ret[0].(*model.Category)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetCategory indicates an expected call of GetCategory.
-func (mr *MockProductRepoMockRecorder) GetCategory(ctx, id interface{}) *gomock.Call {
+func (mr *MockProductRepoMockRecorder) GetCategory(ctx, categoryID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCategory", reflect.TypeOf((*MockProductRepo)(nil).GetCategory), ctx, id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCategory", reflect.TypeOf((*MockProductRepo)(nil).GetCategory), ctx, categoryID)
 }
 
 // GetProduct mocks base method.
-func (m *MockProductRepo) GetProduct(ctx context.Context, id uuid.UUID) (*model.Product, error) {
+func (m *MockProductRepo) GetProduct(ctx context.Context, productID uuid.UUID) (*model.Product, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetProduct", ctx, id)
+	ret := m.ctrl.Call(m, "GetProduct", ctx, productID)
 	ret0, _ := ret[0].(*model.Product)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetProduct indicates an expected call of GetProduct.
-func (mr *MockProductRepoMockRecorder) GetProduct(ctx, id interface{}) *gomock.Call {
+func (mr *MockProductRepoMockRecorder) GetProduct(ctx, productID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProduct", reflect.TypeOf((*MockProductRepo)(nil).GetProduct), ctx, id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProduct", reflect.TypeOf((*MockProductRepo)(nil).GetProduct), ctx, productID)
 }
 
 // GetProducts mocks base method.

@@ -13,11 +13,12 @@ import (
 type IProductUsecase interface {
 	// Product
 	GetProducts(ctx context.Context, searchParams dto.SearchProductsDTO) ([]*model.Product, error)
-	GetProduct(ctx context.Context, id uuid.UUID) (*model.Product, error)
+	GetProduct(ctx context.Context, productID uuid.UUID) (*model.Product, error)
 	CreateProduct(ctx context.Context, product model.Product) error
 	UpdateProduct(ctx context.Context, product model.Product) (*model.Product, error)
 	UpdateProducts(ctx context.Context, products []model.Product) error
-	DeleteProduct(ctx context.Context, id uuid.UUID) error
+	DeleteProduct(ctx context.Context, productID uuid.UUID) error
+	DeleteUserProducts(ctx context.Context, userID uuid.UUID) error
 
 	// Category
 	GetCategory(ctx context.Context, id int32) (*model.Category, error)
@@ -54,8 +55,8 @@ func (usecase *ProductUsecase) setProductsDiscount(ctx context.Context, products
 	return nil
 }
 
-func (usecase *ProductUsecase) GetProduct(ctx context.Context, id uuid.UUID) (*model.Product, error) {
-	product, err := usecase.productRepo.GetProduct(ctx, id)
+func (usecase *ProductUsecase) GetProduct(ctx context.Context, productID uuid.UUID) (*model.Product, error) {
+	product, err := usecase.productRepo.GetProduct(ctx, productID)
 	if err != nil {
 		return nil, err
 	}
@@ -98,12 +99,16 @@ func (usecase *ProductUsecase) UpdateProduct(ctx context.Context, product model.
 	return usecase.GetProduct(ctx, product.ID)
 }
 
-func (usecase *ProductUsecase) DeleteProduct(ctx context.Context, id uuid.UUID) error {
-	return usecase.productRepo.DeleteProduct(ctx, id)
+func (usecase *ProductUsecase) DeleteProduct(ctx context.Context, productID uuid.UUID) error {
+	return usecase.productRepo.DeleteProduct(ctx, productID)
 }
 
-func (usecase *ProductUsecase) GetCategory(ctx context.Context, id int32) (*model.Category, error) {
-	return usecase.productRepo.GetCategory(ctx, id)
+func (usecase *ProductUsecase) DeleteUserProducts(ctx context.Context, userID uuid.UUID) error {
+	return usecase.productRepo.DeleteUserProducts(ctx, userID)
+}
+
+func (usecase *ProductUsecase) GetCategory(ctx context.Context, categoryID int32) (*model.Category, error) {
+	return usecase.productRepo.GetCategory(ctx, categoryID)
 }
 
 func (usecase *ProductUsecase) GetAllCategories(ctx context.Context) ([]*model.Category, error) {

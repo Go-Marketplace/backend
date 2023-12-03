@@ -19,17 +19,18 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Product_GetProducts_FullMethodName      = "/product.Product/GetProducts"
-	Product_GetProduct_FullMethodName       = "/product.Product/GetProduct"
-	Product_CreateProduct_FullMethodName    = "/product.Product/CreateProduct"
-	Product_UpdateProducts_FullMethodName   = "/product.Product/UpdateProducts"
-	Product_UpdateProduct_FullMethodName    = "/product.Product/UpdateProduct"
-	Product_ModerateProduct_FullMethodName  = "/product.Product/ModerateProduct"
-	Product_DeleteProduct_FullMethodName    = "/product.Product/DeleteProduct"
-	Product_GetCategory_FullMethodName      = "/product.Product/GetCategory"
-	Product_GetAllCategories_FullMethodName = "/product.Product/GetAllCategories"
-	Product_CreateDiscount_FullMethodName   = "/product.Product/CreateDiscount"
-	Product_DeleteDiscount_FullMethodName   = "/product.Product/DeleteDiscount"
+	Product_GetProducts_FullMethodName        = "/product.Product/GetProducts"
+	Product_GetProduct_FullMethodName         = "/product.Product/GetProduct"
+	Product_CreateProduct_FullMethodName      = "/product.Product/CreateProduct"
+	Product_UpdateProducts_FullMethodName     = "/product.Product/UpdateProducts"
+	Product_UpdateProduct_FullMethodName      = "/product.Product/UpdateProduct"
+	Product_ModerateProduct_FullMethodName    = "/product.Product/ModerateProduct"
+	Product_DeleteProduct_FullMethodName      = "/product.Product/DeleteProduct"
+	Product_DeleteUserProducts_FullMethodName = "/product.Product/DeleteUserProducts"
+	Product_GetCategory_FullMethodName        = "/product.Product/GetCategory"
+	Product_GetAllCategories_FullMethodName   = "/product.Product/GetAllCategories"
+	Product_CreateDiscount_FullMethodName     = "/product.Product/CreateDiscount"
+	Product_DeleteDiscount_FullMethodName     = "/product.Product/DeleteDiscount"
 )
 
 // ProductClient is the client API for Product service.
@@ -43,6 +44,7 @@ type ProductClient interface {
 	UpdateProduct(ctx context.Context, in *UpdateProductRequest, opts ...grpc.CallOption) (*ProductResponse, error)
 	ModerateProduct(ctx context.Context, in *ModerateProductRequest, opts ...grpc.CallOption) (*ProductResponse, error)
 	DeleteProduct(ctx context.Context, in *DeleteProductRequest, opts ...grpc.CallOption) (*DeleteProductResponse, error)
+	DeleteUserProducts(ctx context.Context, in *DeleteUserProductsRequest, opts ...grpc.CallOption) (*DeleteUserProductsResponse, error)
 	GetCategory(ctx context.Context, in *GetCategoryRequest, opts ...grpc.CallOption) (*CategoryResponse, error)
 	GetAllCategories(ctx context.Context, in *GetAllCategoriesRequest, opts ...grpc.CallOption) (*CategoriesResponse, error)
 	CreateDiscount(ctx context.Context, in *CreateDiscountRequest, opts ...grpc.CallOption) (*ProductResponse, error)
@@ -120,6 +122,15 @@ func (c *productClient) DeleteProduct(ctx context.Context, in *DeleteProductRequ
 	return out, nil
 }
 
+func (c *productClient) DeleteUserProducts(ctx context.Context, in *DeleteUserProductsRequest, opts ...grpc.CallOption) (*DeleteUserProductsResponse, error) {
+	out := new(DeleteUserProductsResponse)
+	err := c.cc.Invoke(ctx, Product_DeleteUserProducts_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *productClient) GetCategory(ctx context.Context, in *GetCategoryRequest, opts ...grpc.CallOption) (*CategoryResponse, error) {
 	out := new(CategoryResponse)
 	err := c.cc.Invoke(ctx, Product_GetCategory_FullMethodName, in, out, opts...)
@@ -167,6 +178,7 @@ type ProductServer interface {
 	UpdateProduct(context.Context, *UpdateProductRequest) (*ProductResponse, error)
 	ModerateProduct(context.Context, *ModerateProductRequest) (*ProductResponse, error)
 	DeleteProduct(context.Context, *DeleteProductRequest) (*DeleteProductResponse, error)
+	DeleteUserProducts(context.Context, *DeleteUserProductsRequest) (*DeleteUserProductsResponse, error)
 	GetCategory(context.Context, *GetCategoryRequest) (*CategoryResponse, error)
 	GetAllCategories(context.Context, *GetAllCategoriesRequest) (*CategoriesResponse, error)
 	CreateDiscount(context.Context, *CreateDiscountRequest) (*ProductResponse, error)
@@ -198,6 +210,9 @@ func (UnimplementedProductServer) ModerateProduct(context.Context, *ModerateProd
 }
 func (UnimplementedProductServer) DeleteProduct(context.Context, *DeleteProductRequest) (*DeleteProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteProduct not implemented")
+}
+func (UnimplementedProductServer) DeleteUserProducts(context.Context, *DeleteUserProductsRequest) (*DeleteUserProductsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteUserProducts not implemented")
 }
 func (UnimplementedProductServer) GetCategory(context.Context, *GetCategoryRequest) (*CategoryResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCategory not implemented")
@@ -350,6 +365,24 @@ func _Product_DeleteProduct_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Product_DeleteUserProducts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteUserProductsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductServer).DeleteUserProducts(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Product_DeleteUserProducts_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductServer).DeleteUserProducts(ctx, req.(*DeleteUserProductsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Product_GetCategory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetCategoryRequest)
 	if err := dec(in); err != nil {
@@ -456,6 +489,10 @@ var Product_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteProduct",
 			Handler:    _Product_DeleteProduct_Handler,
+		},
+		{
+			MethodName: "DeleteUserProducts",
+			Handler:    _Product_DeleteUserProducts_Handler,
 		},
 		{
 			MethodName: "GetCategory",

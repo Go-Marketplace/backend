@@ -93,6 +93,20 @@ func (mr *MockOrderRepoMockRecorder) DeleteOrderline(ctx, orderID, productID int
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteOrderline", reflect.TypeOf((*MockOrderRepo)(nil).DeleteOrderline), ctx, orderID, productID)
 }
 
+// DeleteUserOrders mocks base method.
+func (m *MockOrderRepo) DeleteUserOrders(ctx context.Context, userID uuid.UUID) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteUserOrders", ctx, userID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteUserOrders indicates an expected call of DeleteUserOrders.
+func (mr *MockOrderRepoMockRecorder) DeleteUserOrders(ctx, userID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUserOrders", reflect.TypeOf((*MockOrderRepo)(nil).DeleteUserOrders), ctx, userID)
+}
+
 // GetOrder mocks base method.
 func (m *MockOrderRepo) GetOrder(ctx context.Context, orderID uuid.UUID) (*model.Order, error) {
 	m.ctrl.T.Helper()

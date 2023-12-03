@@ -38,153 +38,141 @@ func scanUser(rows pgx.Rows, user *model.User) error {
 	)
 }
 
-func (repo *UserRepo) GetUser(ctx context.Context, id uuid.UUID) (*model.User, error) {
-	rows, err := repo.pg.Pool.Query(ctx, getUserByID, id)
+func (repo *UserRepo) GetUser(ctx context.Context, userID uuid.UUID) (*model.User, error) {
+	query := getUserQuery(userID)
+
+	sqlQuery, args, err := query.ToSql()
 	if err != nil {
-		return nil, fmt.Errorf("failed to Query getUserByID: %w", err)
+		return nil, fmt.Errorf("failed to get sql query: %w", err)
 	}
 
-	user := &model.User{}
-	found := false
+	rows, err := repo.pg.Pool.Query(ctx, sqlQuery, args...)
+	if err != nil {
+		return nil, fmt.Errorf("failed to Query getUser: %w", err)
+	}
+
+	userMap := make(map[string]*model.User)
 	for rows.Next() {
-		err := scanUser(rows, user)
-		if err != nil {
+		user := &model.User{}
+
+		if err = scanUser(rows, user); err != nil {
 			return nil, fmt.Errorf("failed to scan user: %w", err)
 		}
-		found = true
+
+		userMap[user.ID.String()] = user
 	}
 
-	if !found {
-		return nil, nil
-	}
-
-	return user, nil
+	return userMap[userID.String()], nil
 }
 
 func (repo *UserRepo) GetUserByEmail(ctx context.Context, email string) (*model.User, error) {
-	rows, err := repo.pg.Pool.Query(ctx, getUserByEmail, email)
+	query := getUserByEmailQuery(email)
+
+	sqlQuery, args, err := query.ToSql()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get sql query: %w", err)
+	}
+
+	rows, err := repo.pg.Pool.Query(ctx, sqlQuery, args...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to Query getUserByEmail: %w", err)
 	}
 
-	user := &model.User{}
-	found := false
+	userMap := make(map[string]*model.User)
 	for rows.Next() {
-		err := scanUser(rows, user)
-		if err != nil {
+		user := &model.User{}
+
+		if err = scanUser(rows, user); err != nil {
 			return nil, fmt.Errorf("failed to scan user: %w", err)
 		}
-		found = true
+
+		userMap[user.Email] = user
 	}
 
-	if !found {
-		return nil, nil
-	}
-
-	return user, nil
+	return userMap[email], nil
 }
 
-func (repo *UserRepo) GetAllUsers(ctx context.Context) ([]*model.User, error) {
-	conn, err := repo.pg.Pool.Acquire(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("failed to Acquire in GetAllUsers: %w", err)
-	}
-	defer conn.Release()
+func (repo *UserRepo) GetUsers(ctx context.Context) ([]*model.User, error) {
+	query := getUsersQuery()
 
-	tx, err := conn.BeginTx(ctx, pgx.TxOptions{})
+	sqlQuery, args, err := query.ToSql()
 	if err != nil {
-		return nil, fmt.Errorf("failed to begin GetAllUsers transaction: %w", err)
+		return nil, fmt.Errorf("failed to get sql query: %w", err)
 	}
 
-	defer func() {
-		if err != nil {
-			if err := tx.Rollback(ctx); err != nil {
-				repo.logger.Error("failed to rollback transaction", err)
-			}
-		} else {
-			if err := tx.Commit(ctx); err != nil {
-				repo.logger.Error("failed to commit transaction", err)
-			}
-		}
-	}()
-
-	rows, err := tx.Query(ctx, getAllUsers)
+	rows, err := repo.pg.Pool.Query(ctx, sqlQuery, args...)
 	if err != nil {
-		return nil, fmt.Errorf("failed to Query getAllUsers: %w", err)
+		return nil, fmt.Errorf("failed to Query getUsers: %w", err)
 	}
 	defer rows.Close()
 
 	users := make([]*model.User, 0)
 	for rows.Next() {
 		user := &model.User{}
-		err := scanUser(rows, user)
-		if err != nil {
+		if err = scanUser(rows, user); err != nil {
 			return nil, fmt.Errorf("failed to scan user: %w", err)
 		}
+
 		users = append(users, user)
 	}
 
 	return users, nil
 }
 
-func (repo *UserRepo) CreateUser(ctx context.Context, user model.User) error {
-	_, err := repo.pg.Pool.Exec(
-		ctx,
-		createUser,
-		user.ID,
-		user.FirstName,
-		user.LastName,
-		user.Password,
-		user.Email,
-		user.Address,
-		user.Phone,
-		user.Role,
-		user.CreatedAt,
-		user.UpdatedAt,
-	)
+func (repo *UserRepo) CreateUser(ctx context.Context, user *model.User) error {
+	query := createUserQuery(user)
+
+	sqlQuery, args, err := query.ToSql()
 	if err != nil {
+		return fmt.Errorf("failed to get sql query: %w", err)
+	}
+
+	if _, err = repo.pg.Pool.Exec(ctx, sqlQuery, args...); err != nil {
 		return fmt.Errorf("failed to Exec createUser: %w", err)
 	}
 
 	return nil
 }
 
-func (repo *UserRepo) UpdateUser(ctx context.Context, user model.User) error {
-	_, err := repo.pg.Pool.Exec(
-		ctx,
-		updateUser,
-		user.FirstName,
-		user.LastName,
-		user.Address,
-		user.Phone,
-		user.UpdatedAt,
-		user.ID,
-	)
+func (repo *UserRepo) UpdateUser(ctx context.Context, user *model.User) error {
+	query := updateUserQuery(user)
+
+	sqlQuery, args, err := query.ToSql()
 	if err != nil {
+		return fmt.Errorf("failed to get sql query: %w", err)
+	}
+
+	if _, err = repo.pg.Pool.Exec(ctx, sqlQuery, args...); err != nil {
 		return fmt.Errorf("failed to Exec updateUser: %w", err)
 	}
 
 	return nil
 }
 
-func (repo *UserRepo) ChangeUserRole(ctx context.Context, user model.User) error {
-	_, err := repo.pg.Pool.Exec(
-		ctx,
-		changeUserRole,
-		user.Role,
-		user.UpdatedAt,
-		user.ID,
-	)
+func (repo *UserRepo) ChangeUserRole(ctx context.Context, userID uuid.UUID, role model.UserRoles) error {
+	query := changeUserRoleQuery(userID, role)
+
+	sqlQuery, args, err := query.ToSql()
 	if err != nil {
+		return fmt.Errorf("failed to get sql query: %w", err)
+	}
+
+	if _, err = repo.pg.Pool.Exec(ctx, sqlQuery, args...); err != nil {
 		return fmt.Errorf("failed to Exec changeUserRole: %w", err)
 	}
 
 	return nil
 }
 
-func (repo *UserRepo) DeleteUser(ctx context.Context, id uuid.UUID) error {
-	_, err := repo.pg.Pool.Exec(ctx, deleteUser, id)
+func (repo *UserRepo) DeleteUser(ctx context.Context, userID uuid.UUID) error {
+	query := deleteUserQuery(userID)
+
+	sqlQuery, args, err := query.ToSql()
 	if err != nil {
+		return fmt.Errorf("failed to get sql query: %w", err)
+	}
+
+	if _, err = repo.pg.Pool.Exec(ctx, sqlQuery, args...); err != nil {
 		return fmt.Errorf("failed to Exec deleteUser: %w", err)
 	}
 

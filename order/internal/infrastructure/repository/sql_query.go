@@ -80,6 +80,13 @@ func deleteOrderQuery(orderID uuid.UUID) sq.DeleteBuilder {
 		})
 }
 
+func deleteUserOrdersQuery(userID uuid.UUID) sq.DeleteBuilder {
+	return psql.Delete("orders").
+		Where(sq.Eq{
+			"user_id": userID,
+		})
+}
+
 func getOrderlinesQuery() sq.SelectBuilder {
 	return psql.Select(
 		"order_id",

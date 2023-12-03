@@ -13,6 +13,7 @@ type OrderRepo interface {
 	GetOrders(ctx context.Context, searchParams dto.SearchOrderDTO) ([]*model.Order, error)
 	CreateOrder(ctx context.Context, order *model.Order) error
 	DeleteOrder(ctx context.Context, orderID uuid.UUID) error
+	DeleteUserOrders(ctx context.Context, userID uuid.UUID) error
 
 	CreateOrderline(ctx context.Context, orderline *model.Orderline) error
 	GetOrderline(ctx context.Context, orderID, productID uuid.UUID) (*model.Orderline, error)

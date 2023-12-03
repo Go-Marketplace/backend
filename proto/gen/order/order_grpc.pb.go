@@ -19,13 +19,14 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Order_GetOrder_FullMethodName        = "/order.Order/GetOrder"
-	Order_GetOrders_FullMethodName       = "/order.Order/GetOrders"
-	Order_CreateOrder_FullMethodName     = "/order.Order/CreateOrder"
-	Order_DeleteOrder_FullMethodName     = "/order.Order/DeleteOrder"
-	Order_GetOrderline_FullMethodName    = "/order.Order/GetOrderline"
-	Order_UpdateOrderline_FullMethodName = "/order.Order/UpdateOrderline"
-	Order_DeleteOrderline_FullMethodName = "/order.Order/DeleteOrderline"
+	Order_GetOrder_FullMethodName         = "/order.Order/GetOrder"
+	Order_GetOrders_FullMethodName        = "/order.Order/GetOrders"
+	Order_CreateOrder_FullMethodName      = "/order.Order/CreateOrder"
+	Order_DeleteOrder_FullMethodName      = "/order.Order/DeleteOrder"
+	Order_DeleteUserOrders_FullMethodName = "/order.Order/DeleteUserOrders"
+	Order_GetOrderline_FullMethodName     = "/order.Order/GetOrderline"
+	Order_UpdateOrderline_FullMethodName  = "/order.Order/UpdateOrderline"
+	Order_DeleteOrderline_FullMethodName  = "/order.Order/DeleteOrderline"
 )
 
 // OrderClient is the client API for Order service.
@@ -36,6 +37,7 @@ type OrderClient interface {
 	GetOrders(ctx context.Context, in *GetOrdersRequest, opts ...grpc.CallOption) (*OrdersResponse, error)
 	CreateOrder(ctx context.Context, in *CreateOrderRequest, opts ...grpc.CallOption) (*OrderResponse, error)
 	DeleteOrder(ctx context.Context, in *DeleteOrderRequest, opts ...grpc.CallOption) (*DeleteOrderResponse, error)
+	DeleteUserOrders(ctx context.Context, in *DeleteUserOrdersRequest, opts ...grpc.CallOption) (*DeleteUserOrdersResponse, error)
 	GetOrderline(ctx context.Context, in *GetOrderlineRequest, opts ...grpc.CallOption) (*OrderlineResponse, error)
 	UpdateOrderline(ctx context.Context, in *UpdateOrderlineRequest, opts ...grpc.CallOption) (*OrderlineResponse, error)
 	DeleteOrderline(ctx context.Context, in *DeleteOrderlineRequest, opts ...grpc.CallOption) (*DeleteOrderlineResponse, error)
@@ -85,6 +87,15 @@ func (c *orderClient) DeleteOrder(ctx context.Context, in *DeleteOrderRequest, o
 	return out, nil
 }
 
+func (c *orderClient) DeleteUserOrders(ctx context.Context, in *DeleteUserOrdersRequest, opts ...grpc.CallOption) (*DeleteUserOrdersResponse, error) {
+	out := new(DeleteUserOrdersResponse)
+	err := c.cc.Invoke(ctx, Order_DeleteUserOrders_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *orderClient) GetOrderline(ctx context.Context, in *GetOrderlineRequest, opts ...grpc.CallOption) (*OrderlineResponse, error) {
 	out := new(OrderlineResponse)
 	err := c.cc.Invoke(ctx, Order_GetOrderline_FullMethodName, in, out, opts...)
@@ -120,6 +131,7 @@ type OrderServer interface {
 	GetOrders(context.Context, *GetOrdersRequest) (*OrdersResponse, error)
 	CreateOrder(context.Context, *CreateOrderRequest) (*OrderResponse, error)
 	DeleteOrder(context.Context, *DeleteOrderRequest) (*DeleteOrderResponse, error)
+	DeleteUserOrders(context.Context, *DeleteUserOrdersRequest) (*DeleteUserOrdersResponse, error)
 	GetOrderline(context.Context, *GetOrderlineRequest) (*OrderlineResponse, error)
 	UpdateOrderline(context.Context, *UpdateOrderlineRequest) (*OrderlineResponse, error)
 	DeleteOrderline(context.Context, *DeleteOrderlineRequest) (*DeleteOrderlineResponse, error)
@@ -141,6 +153,9 @@ func (UnimplementedOrderServer) CreateOrder(context.Context, *CreateOrderRequest
 }
 func (UnimplementedOrderServer) DeleteOrder(context.Context, *DeleteOrderRequest) (*DeleteOrderResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteOrder not implemented")
+}
+func (UnimplementedOrderServer) DeleteUserOrders(context.Context, *DeleteUserOrdersRequest) (*DeleteUserOrdersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteUserOrders not implemented")
 }
 func (UnimplementedOrderServer) GetOrderline(context.Context, *GetOrderlineRequest) (*OrderlineResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetOrderline not implemented")
@@ -236,6 +251,24 @@ func _Order_DeleteOrder_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Order_DeleteUserOrders_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteUserOrdersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrderServer).DeleteUserOrders(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Order_DeleteUserOrders_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrderServer).DeleteUserOrders(ctx, req.(*DeleteUserOrdersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Order_GetOrderline_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetOrderlineRequest)
 	if err := dec(in); err != nil {
@@ -312,6 +345,10 @@ var Order_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteOrder",
 			Handler:    _Order_DeleteOrder_Handler,
+		},
+		{
+			MethodName: "DeleteUserOrders",
+			Handler:    _Order_DeleteUserOrders_Handler,
 		},
 		{
 			MethodName: "GetOrderline",

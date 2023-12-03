@@ -50,6 +50,11 @@ type (
 		AccessTokenMaxAge     string `env-required:"false" yaml:"access_token_max_age" env:"ACCESS_TOKEN_MAX_AGE"`
 	}
 
+	CartTaskWorker struct {
+		CartTTL  string `env-required:"false" yaml:"cart_ttl" env:"CART_TTL"`
+		Interval string `env-required:"false" yaml:"cart_task_worker_interval" env:"CART_TASK_WORKER_INTERVAL"`
+	}
+
 	GatewayConfig struct {
 		App  `yaml:"app"`
 		GRPC `yaml:"grpc"`
@@ -73,11 +78,12 @@ type (
 	}
 
 	CartConfig struct {
-		App   `yaml:"app"`
-		GRPC  `yaml:"grpc"`
-		Redis `yaml:"redis"`
-		PG    `yaml:"postgres"`
-		Log   `yaml:"logger"`
+		App            `yaml:"app"`
+		GRPC           `yaml:"grpc"`
+		Redis          `yaml:"redis"`
+		PG             `yaml:"postgres"`
+		CartTaskWorker `yaml:"worker"`
+		Log            `yaml:"logger"`
 	}
 
 	ProductConfig struct {

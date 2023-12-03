@@ -128,6 +128,14 @@ func deleteProductQuery(productID uuid.UUID) sq.DeleteBuilder {
 		})
 }
 
+func deleteUserProductsQuery(userID uuid.UUID) sq.DeleteBuilder {
+	return psql.
+		Delete("products").
+		Where(sq.Eq{
+			"user_id": userID,
+		})
+}
+
 func getAllCategoriesQuery() sq.SelectBuilder {
 	return psql.
 		Select(

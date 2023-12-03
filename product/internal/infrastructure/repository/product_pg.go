@@ -174,6 +174,21 @@ func (repo *ProductRepo) DeleteProduct(ctx context.Context, productID uuid.UUID)
 	return nil
 }
 
+func (repo *ProductRepo) DeleteUserProducts(ctx context.Context, userID uuid.UUID) error {
+	query := deleteUserProductsQuery(userID)
+
+	sqlQuery, args, err := query.ToSql()
+	if err != nil {
+		return fmt.Errorf("failed to get sql query: %w", err)
+	}
+
+	if _, err = repo.pg.Pool.Exec(ctx, sqlQuery, args...); err != nil {
+		return fmt.Errorf("failed to Exec deleteUserProducts: %w", err)
+	}
+
+	return nil
+}
+
 func (repo *ProductRepo) GetCategory(ctx context.Context, categoryID int32) (*model.Category, error) {
 	query := getCategory(categoryID)
 

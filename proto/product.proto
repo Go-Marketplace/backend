@@ -14,6 +14,7 @@ service Product {
     rpc UpdateProduct(UpdateProductRequest) returns (ProductResponse);
     rpc ModerateProduct(ModerateProductRequest) returns (ProductResponse);
     rpc DeleteProduct(DeleteProductRequest) returns (DeleteProductResponse);
+    rpc DeleteUserProducts(DeleteUserProductsRequest) returns (DeleteUserProductsResponse);
 
     rpc GetCategory(GetCategoryRequest) returns (CategoryResponse);
     rpc GetAllCategories(GetAllCategoriesRequest) returns (CategoriesResponse);
@@ -79,6 +80,10 @@ message DeleteDiscountRequest {
     string product_id = 1;
 }
 
+message DeleteUserProductsRequest {
+    string user_id = 1;
+}
+
 message ProductResponse {
     string product_id = 1;
     string user_id = 2;
@@ -119,3 +124,5 @@ message CategoriesResponse {
 message DeleteDiscountResponse {}
 
 message UpdateProductsResponse {}
+
+message DeleteUserProductsResponse {}

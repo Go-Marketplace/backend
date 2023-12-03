@@ -6,6 +6,7 @@ import (
 	"github.com/Go-Marketplace/backend/pkg/logger"
 	"github.com/Go-Marketplace/backend/product/internal/api/grpc/controller"
 	"github.com/Go-Marketplace/backend/product/internal/usecase"
+	pbCart "github.com/Go-Marketplace/backend/proto/gen/cart"
 	pbProduct "github.com/Go-Marketplace/backend/proto/gen/product"
 )
 
@@ -13,12 +14,18 @@ type productRoutes struct {
 	pbProduct.UnimplementedProductServer
 
 	productUsecase *usecase.ProductUsecase
+	cartClient     pbCart.CartClient
 	logger         *logger.Logger
 }
 
-func NewProductRoutes(productUsecase *usecase.ProductUsecase, logger *logger.Logger) *productRoutes {
+func NewProductRoutes(
+	productUsecase *usecase.ProductUsecase,
+	cartClient pbCart.CartClient,
+	logger *logger.Logger,
+) *productRoutes {
 	return &productRoutes{
 		productUsecase: productUsecase,
+		cartClient:     cartClient,
 		logger:         logger,
 	}
 }
@@ -79,12 +86,19 @@ func (routes *productRoutes) UpdateProducts(ctx context.Context, req *pbProduct.
 }
 
 func (routes *productRoutes) DeleteProduct(ctx context.Context, req *pbProduct.DeleteProductRequest) (*pbProduct.DeleteProductResponse, error) {
-	err := controller.DeleteProduct(ctx, routes.productUsecase, req)
-	if err != nil {
+	if err := controller.DeleteProduct(ctx, routes.productUsecase, routes.cartClient, req); err != nil {
 		return nil, err
 	}
 
 	return &pbProduct.DeleteProductResponse{}, nil
+}
+
+func (routes *productRoutes) DeleteUserProducts(ctx context.Context, req *pbProduct.DeleteUserProductsRequest) (*pbProduct.DeleteUserProductsResponse, error) {
+	if err := controller.DeleteUserProducts(ctx, routes.productUsecase, routes.cartClient, req); err != nil {
+		return nil, err
+	}
+
+	return &pbProduct.DeleteUserProductsResponse{}, nil
 }
 
 func (routes *productRoutes) ModerateProduct(ctx context.Context, req *pbProduct.ModerateProductRequest) (*pbProduct.ProductResponse, error) {

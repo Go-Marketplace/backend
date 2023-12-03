@@ -20,6 +20,7 @@ import (
 	"github.com/Go-Marketplace/backend/pkg/redis"
 	pbCart "github.com/Go-Marketplace/backend/proto/gen/cart"
 	pbProduct "github.com/Go-Marketplace/backend/proto/gen/product"
+	"github.com/xiam/to"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
@@ -78,7 +79,16 @@ func Run(cfg *config.Config) {
 	defer grpcServer.Shutdown()
 	logger.Info("GRPC server started")
 
-	cartTaskWorker := worker.NewCartTaskWorker(cartTaskRepo, cartUsecase, logger)
+	cartTaskWorker := worker.NewCartTaskWorker(
+		cartTaskRepo,
+		cartUsecase,
+		productClient,
+		worker.CartTaskWorkerConfig{
+			CartTTL:                to.Duration(cfg.CartConfig.CartTaskWorker.CartTTL),
+			CartTaskWorkerInterval: to.Duration(cfg.CartConfig.CartTaskWorker.Interval),
+		},
+		logger,
+	)
 	cartTaskWorker.Run(ctx)
 	defer func() {
 		if err = cartTaskWorker.Stop(); err != nil {

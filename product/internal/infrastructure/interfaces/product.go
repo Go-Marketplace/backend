@@ -10,12 +10,13 @@ import (
 
 type ProductRepo interface {
 	GetProducts(ctx context.Context, searchParams dto.SearchProductsDTO) ([]*model.Product, error)
-	GetProduct(ctx context.Context, id uuid.UUID) (*model.Product, error)
+	GetProduct(ctx context.Context, productID uuid.UUID) (*model.Product, error)
 	CreateProduct(ctx context.Context, product model.Product) error
 	UpdateProduct(ctx context.Context, product model.Product) error
 	UpdateProducts(ctx context.Context, products []model.Product) error
-	DeleteProduct(ctx context.Context, id uuid.UUID) error
+	DeleteProduct(ctx context.Context, productID uuid.UUID) error
+	DeleteUserProducts(ctx context.Context, userID uuid.UUID) error
 
 	GetAllCategories(ctx context.Context) ([]*model.Category, error)
-	GetCategory(ctx context.Context, id int32) (*model.Category, error)
+	GetCategory(ctx context.Context, categoryID int32) (*model.Category, error)
 }

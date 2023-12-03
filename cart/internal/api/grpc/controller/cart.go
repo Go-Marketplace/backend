@@ -26,7 +26,7 @@ func GetUserCart(ctx context.Context, cartUsecase *usecase.CartUsecase, req *pbC
 
 	cart, err := cartUsecase.GetUserCart(ctx, userID)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "Internal error: %s", err)
+		return nil, status.Errorf(codes.Internal, "Failed to get user cart: %s", err)
 	}
 
 	if cart == nil {
@@ -53,7 +53,7 @@ func CreateCart(ctx context.Context, cartUsecase *usecase.CartUsecase, req *pbCa
 	}
 
 	if err = cartUsecase.CreateCart(ctx, cart); err != nil {
-		return nil, status.Errorf(codes.Internal, "Internal error: %s", err)
+		return nil, status.Errorf(codes.Internal, "Failed to create cart: %s", err)
 	}
 
 	return &cart, nil
@@ -104,8 +104,8 @@ func CreateCartline(
 		ProductId: req.ProductId,
 		Quantity:  &newQuantity,
 	}); err != nil {
-		if err = cartUsecase.DeleteCartline(ctx, cartline.UserID, cartline.ProductID); err != nil {
-			return nil, status.Errorf(codes.Internal, "Failed to delete cartline: %s", err)
+		if errDelete := cartUsecase.DeleteCartline(ctx, cartline.UserID, cartline.ProductID); errDelete != nil {
+			return nil, status.Errorf(codes.Internal, "Failed to delete cartline: %s", errDelete)
 		}
 		return nil, status.Errorf(codes.Internal, "Failed to update product: %s", err)
 	}
@@ -189,7 +189,7 @@ func UpdateCartline(
 
 	oldCartline, err := cartUsecase.GetCartline(ctx, userID, productID)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "Internal error: %s", err)
+		return nil, status.Errorf(codes.Internal, "Failed to get cartline: %s", err)
 	}
 
 	if oldCartline == nil {
@@ -222,8 +222,8 @@ func UpdateCartline(
 			ProductId: req.ProductId,
 			Quantity:  &newQuantity,
 		}); err != nil {
-			if _, err = cartUsecase.UpdateCartline(ctx, *oldCartline); err != nil {
-				return nil, status.Errorf(codes.Internal, "Failed to update cartline: %s", err)
+			if _, errUpdate := cartUsecase.UpdateCartline(ctx, *oldCartline); errUpdate != nil {
+				return nil, status.Errorf(codes.Internal, "Failed to update cartline: %s", errUpdate)
 			}
 			return nil, status.Errorf(codes.Internal, "Failed to update product: %s", err)
 		}
@@ -261,11 +261,11 @@ func DeleteCart(
 	}
 
 	if err = returnProducts(ctx, productClient, cart.Cartlines...); err != nil {
-		if err = cartUsecase.CreateCart(ctx, *cart); err != nil {
-			return status.Errorf(codes.Internal, "Failed to create cart: %s", err)
+		if errCreate := cartUsecase.CreateCart(ctx, *cart); errCreate != nil {
+			return status.Errorf(codes.Internal, "Failed to create cart: %s", errCreate)
 		}
-		if err = cartUsecase.CreateCartlines(ctx, cart.Cartlines); err != nil {
-			return status.Errorf(codes.Internal, "Failed to create cartlines: %s", err)
+		if errCreate := cartUsecase.CreateCartlines(ctx, cart.Cartlines); err != nil {
+			return status.Errorf(codes.Internal, "Failed to create cartlines: %s", errCreate)
 		}
 		return status.Errorf(codes.Internal, "Failed to return products: %s", err)
 	}
@@ -303,10 +303,23 @@ func DeleteCartline(
 	}
 
 	if err = returnProducts(ctx, productClient, cartline); err != nil {
-		if err = cartUsecase.CreateCartline(ctx, cartline); err != nil {
-			return status.Errorf(codes.Internal, "Failed to create cartline: %s", err)
+		if errCreate := cartUsecase.CreateCartline(ctx, cartline); errCreate != nil {
+			return status.Errorf(codes.Internal, "Failed to create cartline: %s", errCreate)
 		}
 		return status.Errorf(codes.Internal, "Failed to return products: %s", err)
+	}
+
+	return nil
+}
+
+func DeleteProductCartlines(ctx context.Context, cartUsecase *usecase.CartUsecase, req *pbCart.DeleteProductCartlinesRequest) error {
+	productID, err := uuid.Parse(req.ProductId)
+	if err != nil {
+		return status.Errorf(codes.InvalidArgument, "Invalid product id: %s", err)
+	}
+
+	if err = cartUsecase.DeleteProductCartlines(ctx, productID); err != nil {
+		return status.Errorf(codes.Internal, "Failed to delete product cartlines: %s", err)
 	}
 
 	return nil
@@ -329,7 +342,7 @@ func DeleteCartCartlines(
 
 	cart, err := cartUsecase.GetUserCart(ctx, userID)
 	if err != nil {
-		return status.Errorf(codes.Internal, "Internal error: %s", err)
+		return status.Errorf(codes.Internal, "Failed to get user cart: %s", err)
 	}
 
 	if cart == nil {
@@ -337,14 +350,36 @@ func DeleteCartCartlines(
 	}
 
 	if err = cartUsecase.DeleteCartCartlines(ctx, userID); err != nil {
-		return status.Errorf(codes.Internal, "Internal error: %s", err)
+		return status.Errorf(codes.Internal, "Failed to delete cart cartlines: %s", err)
 	}
 
 	if err = returnProducts(ctx, productClient, cart.Cartlines...); err != nil {
-		if err = cartUsecase.CreateCartlines(ctx, cart.Cartlines); err != nil {
-			return status.Errorf(codes.Internal, "Failed to create cartlines: %s", err)
+		if errCreate := cartUsecase.CreateCartlines(ctx, cart.Cartlines); errCreate != nil {
+			return status.Errorf(codes.Internal, "Failed to create cartlines: %s", errCreate)
 		}
 		return status.Errorf(codes.Internal, "Failed to return products: %s", err)
+	}
+
+	return nil
+}
+
+func PrepareOrder(
+	ctx context.Context,
+	cartUsecase *usecase.CartUsecase,
+	productClient pbProduct.ProductClient,
+	req *pbCart.PrepareOrderRequest,
+) error {
+	if req == nil {
+		return status.Errorf(codes.InvalidArgument, "Invalid request")
+	}
+
+	userID, err := uuid.Parse(req.UserId)
+	if err != nil {
+		return status.Errorf(codes.InvalidArgument, "Invalid user id: %s", err)
+	}
+
+	if err = cartUsecase.DeleteCartCartlines(ctx, userID); err != nil {
+		return status.Errorf(codes.Internal, "Failed to delete cart cartlines: %s", err)
 	}
 
 	return nil

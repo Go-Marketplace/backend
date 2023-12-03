@@ -264,6 +264,21 @@ func (repo *OrderRepo) DeleteOrder(ctx context.Context, orderID uuid.UUID) error
 	return nil
 }
 
+func (repo *OrderRepo) DeleteUserOrders(ctx context.Context, userID uuid.UUID) error {
+	query := deleteUserOrdersQuery(userID)
+
+	sqlQuery, args, err := query.ToSql()
+	if err != nil {
+		return fmt.Errorf("failed to get sql query: %w", err)
+	}
+
+	if _, err := repo.pg.Pool.Exec(ctx, sqlQuery, args...); err != nil {
+		return fmt.Errorf("failed to Exec deleteUserOrders: %w", err)
+	}
+
+	return nil
+}
+
 func (repo *OrderRepo) GetOrderline(ctx context.Context, orderID, productID uuid.UUID) (*model.Orderline, error) {
 	query := getOrderlineQuery(orderID, productID)
 

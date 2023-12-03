@@ -136,7 +136,7 @@ func TestGetAllUsers(t *testing.T) {
 				ctx: ctx,
 			},
 			mock: func(repo *mocks.MockUserRepo) {
-				repo.EXPECT().GetAllUsers(ctx).Return(expectedUsersFromRepo, nil).Times(1)
+				repo.EXPECT().GetUsers(ctx).Return(expectedUsersFromRepo, nil).Times(1)
 			},
 			expectedUsers: expectedUsersFromRepo,
 			expectedErr:   nil,
@@ -147,7 +147,7 @@ func TestGetAllUsers(t *testing.T) {
 				ctx: ctx,
 			},
 			mock: func(repo *mocks.MockUserRepo) {
-				repo.EXPECT().GetAllUsers(ctx).Return(nil, expectedErrFromRepo).Times(1)
+				repo.EXPECT().GetUsers(ctx).Return(nil, expectedErrFromRepo).Times(1)
 			},
 			expectedUsers: nil,
 			expectedErr:   expectedErrFromRepo,
@@ -163,7 +163,7 @@ func TestGetAllUsers(t *testing.T) {
 			userUsecase, userRepo := userHelper(t)
 			testcase.mock(userRepo)
 
-			actualUsers, actualErr := userUsecase.GetAllUsers(
+			actualUsers, actualErr := userUsecase.GetUsers(
 				testcase.args.ctx,
 			)
 
@@ -251,24 +251,30 @@ func TestCreateUser(t *testing.T) {
 
 	type args struct {
 		ctx  context.Context
-		user model.User
+		user *model.User
 	}
 
 	ctx := context.Background()
 	userID := uuid.New()
-	testUser := model.User{
+	testUser := &model.User{
 		ID:    userID,
 		Email: "test@test.ru",
 		Role:  1,
 	}
 
+	expectedUserFromRepo := &model.User{
+		ID:        userID,
+		FirstName: "test",
+		LastName:  "test",
+	}
 	expectedErrFromRepo := errors.New("test error")
 
 	testcases := []struct {
-		name        string
-		args        args
-		mock        func(repo *mocks.MockUserRepo)
-		expectedErr error
+		name         string
+		args         args
+		mock         func(repo *mocks.MockUserRepo)
+		expectedUser *model.User
+		expectedErr  error
 	}{
 		{
 			name: "Successfully create user",
@@ -278,8 +284,10 @@ func TestCreateUser(t *testing.T) {
 			},
 			mock: func(repo *mocks.MockUserRepo) {
 				repo.EXPECT().CreateUser(ctx, testUser).Return(nil).Times(1)
+				repo.EXPECT().GetUser(ctx, userID).Return(expectedUserFromRepo, nil).Times(1)
 			},
-			expectedErr: nil,
+			expectedUser: expectedUserFromRepo,
+			expectedErr:  nil,
 		},
 		{
 			name: "Got error when create user",
@@ -290,7 +298,21 @@ func TestCreateUser(t *testing.T) {
 			mock: func(repo *mocks.MockUserRepo) {
 				repo.EXPECT().CreateUser(ctx, testUser).Return(expectedErrFromRepo).Times(1)
 			},
-			expectedErr: expectedErrFromRepo,
+			expectedUser: nil,
+			expectedErr:  expectedErrFromRepo,
+		},
+		{
+			name: "Got error when get user",
+			args: args{
+				ctx:  ctx,
+				user: testUser,
+			},
+			mock: func(repo *mocks.MockUserRepo) {
+				repo.EXPECT().CreateUser(ctx, testUser).Return(nil).Times(1)
+				repo.EXPECT().GetUser(ctx, userID).Return(nil, expectedErrFromRepo).Times(1)
+			},
+			expectedUser: nil,
+			expectedErr:  expectedErrFromRepo,
 		},
 	}
 
@@ -303,11 +325,12 @@ func TestCreateUser(t *testing.T) {
 			userUsecase, userRepo := userHelper(t)
 			testcase.mock(userRepo)
 
-			actualErr := userUsecase.CreateUser(
+			actualUser, actualErr := userUsecase.CreateUser(
 				testcase.args.ctx,
 				testcase.args.user,
 			)
 
+			assert.Equal(t, testcase.expectedUser, actualUser)
 			assert.Equal(t, testcase.expectedErr, actualErr)
 		})
 	}
@@ -380,13 +403,13 @@ func TestUpdateUser(t *testing.T) {
 
 	type args struct {
 		ctx  context.Context
-		user model.User
+		user *model.User
 	}
 
 	ctx := context.Background()
 
 	userID, _ := uuid.Parse("3e7cbbcf-ebe3-4808-b895-fe5eaf41be22")
-	testUser := model.User{
+	testUser := &model.User{
 		ID:      userID,
 		Address: "test",
 		Role:    1,
@@ -472,25 +495,22 @@ func TestChangeUserRole(t *testing.T) {
 	t.Parallel()
 
 	type args struct {
-		ctx  context.Context
-		user model.User
+		ctx    context.Context
+		userID uuid.UUID
+		role   model.UserRoles
 	}
 
 	ctx := context.Background()
 
-	userID, _ := uuid.Parse("3e7cbbcf-ebe3-4808-b895-fe5eaf41be22")
-	testUser := model.User{
-		ID:      userID,
-		Address: "test",
-		Role:    1,
-	}
+	userID := uuid.New()
+	var role model.UserRoles = 1
 
 	expectedUserFromRepo := &model.User{
 		ID:        userID,
 		FirstName: "test",
 		LastName:  "test",
 		Address:   "test",
-		Role:      1,
+		Role:      role,
 	}
 	expectedErrFromRepo := errors.New("test error")
 
@@ -504,11 +524,12 @@ func TestChangeUserRole(t *testing.T) {
 		{
 			name: "Successfully change user role",
 			args: args{
-				ctx:  ctx,
-				user: testUser,
+				ctx:    ctx,
+				userID: userID,
+				role:   role,
 			},
 			mock: func(repo *mocks.MockUserRepo) {
-				repo.EXPECT().ChangeUserRole(ctx, testUser).Return(nil).Times(1)
+				repo.EXPECT().ChangeUserRole(ctx, userID, role).Return(nil).Times(1)
 				repo.EXPECT().GetUser(ctx, userID).Return(expectedUserFromRepo, nil).Times(1)
 			},
 			expectedUser: expectedUserFromRepo,
@@ -517,11 +538,12 @@ func TestChangeUserRole(t *testing.T) {
 		{
 			name: "Got error when change user role",
 			args: args{
-				ctx:  ctx,
-				user: testUser,
+				ctx:    ctx,
+				userID: userID,
+				role:   role,
 			},
 			mock: func(repo *mocks.MockUserRepo) {
-				repo.EXPECT().ChangeUserRole(ctx, testUser).Return(expectedErrFromRepo).Times(1)
+				repo.EXPECT().ChangeUserRole(ctx, userID, role).Return(expectedErrFromRepo).Times(1)
 			},
 			expectedUser: nil,
 			expectedErr:  fmt.Errorf("failed to change user role: %w", expectedErrFromRepo),
@@ -529,11 +551,12 @@ func TestChangeUserRole(t *testing.T) {
 		{
 			name: "Got error when get user",
 			args: args{
-				ctx:  ctx,
-				user: testUser,
+				ctx:    ctx,
+				userID: userID,
+				role:   role,
 			},
 			mock: func(repo *mocks.MockUserRepo) {
-				repo.EXPECT().ChangeUserRole(ctx, testUser).Return(nil).Times(1)
+				repo.EXPECT().ChangeUserRole(ctx, userID, role).Return(nil).Times(1)
 				repo.EXPECT().GetUser(ctx, userID).Return(nil, expectedErrFromRepo).Times(1)
 			},
 			expectedUser: nil,
@@ -552,7 +575,8 @@ func TestChangeUserRole(t *testing.T) {
 
 			actualUser, actualErr := userUsecase.ChangeUserRole(
 				testcase.args.ctx,
-				testcase.args.user,
+				testcase.args.userID,
+				testcase.args.role,
 			)
 
 			assert.Equal(t, testcase.expectedUser, actualUser)

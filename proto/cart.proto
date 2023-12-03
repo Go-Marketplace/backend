@@ -11,10 +11,12 @@ service Cart {
     rpc CreateCart(CreateCartRequest) returns (CartResponse);
     rpc DeleteCart(DeleteCartRequest) returns (DeleteCartResponse);
     rpc DeleteCartCartlines(DeleteCartCartlinesRequest) returns (DeleteCartCartlinesResponse);
+    rpc PrepareOrder(PrepareOrderRequest) returns (PrepareOrderResponse);
 
     rpc CreateCartline(CreateCartlineRequest) returns (CartlineResponse);
     rpc UpdateCartline(UpdateCartlineRequest) returns (CartlineResponse);
     rpc DeleteCartline(DeleteCartlineRequest) returns (DeleteCartlineResponse);
+    rpc DeleteProductCartlines(DeleteProductCartlinesRequest) returns (DeleteProductCartlinesResponse);
 }
 
 message GetUserCartRequest {
@@ -49,6 +51,14 @@ message DeleteCartCartlinesRequest {
     string user_id = 1;
 }
 
+message DeleteProductCartlinesRequest {
+    string product_id = 1;
+}
+
+message PrepareOrderRequest {
+    string user_id = 1;
+}
+
 message CartResponse {
     string user_id = 1;
     repeated CartlineResponse cartlines = 2;
@@ -70,3 +80,7 @@ message DeleteCartResponse {}
 message DeleteCartlineResponse {}
 
 message DeleteCartCartlinesResponse {}
+
+message DeleteProductCartlinesResponse {}
+
+message PrepareOrderResponse {}
