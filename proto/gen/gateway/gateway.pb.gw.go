@@ -1905,7 +1905,7 @@ func RegisterGatewayHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/GetUserOrders", runtime.WithHTTPPathPattern("/api/v1/user/{user_id}/order"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gateway.Gateway/GetUserOrders", runtime.WithHTTPPathPattern("/api/v1/user/{user_id}/orders"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2689,7 +2689,7 @@ func RegisterGatewayHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/GetUserOrders", runtime.WithHTTPPathPattern("/api/v1/user/{user_id}/order"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gateway.Gateway/GetUserOrders", runtime.WithHTTPPathPattern("/api/v1/user/{user_id}/orders"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -3169,7 +3169,7 @@ var (
 
 	pattern_Gateway_GetOrders_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "v1", "order"}, ""))
 
-	pattern_Gateway_GetUserOrders_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"api", "v1", "user", "user_id", "order"}, ""))
+	pattern_Gateway_GetUserOrders_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"api", "v1", "user", "user_id", "orders"}, ""))
 
 	pattern_Gateway_DeleteOrder_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "order", "order_id"}, ""))
 
