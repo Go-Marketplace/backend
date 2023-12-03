@@ -20,7 +20,7 @@ jobs:
             name: Login to DockerHub
             with:
               username: ${{ secrets.DOCKERHUB_USERNAME }}
-              password: ${{ secrets.DOCKERHUB_PASSWORD }}
+              password: ${{ secrets.DOCKERHUB_TOKEN }}
 
           - name: Build docker tag
             run: echo "DOCKER_TAG=$(echo $(date '+%Y-%m-%d').${GITHUB_SHA:0:7})" >> $GITHUB_ENV
