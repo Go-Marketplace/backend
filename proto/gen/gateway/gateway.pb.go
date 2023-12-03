@@ -7,6 +7,9 @@
 package gateway
 
 import (
+	reflect "reflect"
+	sync "sync"
+
 	cart "github.com/Go-Marketplace/backend/proto/gen/cart"
 	order "github.com/Go-Marketplace/backend/proto/gen/order"
 	product "github.com/Go-Marketplace/backend/proto/gen/product"
@@ -15,8 +18,6 @@ import (
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	reflect "reflect"
-	sync "sync"
 )
 
 const (

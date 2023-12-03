@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
-	"github.com/Go-Marketplace/backend/gateway/internal/app"
 	"github.com/Go-Marketplace/backend/config"
+	"github.com/Go-Marketplace/backend/gateway/internal/app"
 )
 
 func main() {

@@ -200,7 +200,7 @@ func (repo *CartRepo) GetCartline(ctx context.Context, userID, productID uuid.UU
 	cartlineMap := make(map[string]*model.CartLine)
 	for rows.Next() {
 		cartline := &model.CartLine{}
-		
+
 		if err = scanCartline(rows, cartline); err != nil {
 			return nil, fmt.Errorf("failed to scan cartline: %w", err)
 		}

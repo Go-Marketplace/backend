@@ -100,7 +100,7 @@ func TestGetProduct(t *testing.T) {
 					ProductId: "123",
 				},
 			},
-			mock: func(usecase *mocks.MockIProductUsecase) {},
+			mock:            func(usecase *mocks.MockIProductUsecase) {},
 			expectedProduct: nil,
 			expectedErr:     status.Errorf(codes.InvalidArgument, "Invalid id: invalid UUID length: 3"),
 		},

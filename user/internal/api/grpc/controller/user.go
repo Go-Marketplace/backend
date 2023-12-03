@@ -4,10 +4,10 @@ import (
 	"context"
 	"time"
 
-	pbUser "github.com/Go-Marketplace/backend/proto/gen/user"
+	pbCart "github.com/Go-Marketplace/backend/proto/gen/cart"
 	pbOrder "github.com/Go-Marketplace/backend/proto/gen/order"
 	pbProduct "github.com/Go-Marketplace/backend/proto/gen/product"
-	pbCart "github.com/Go-Marketplace/backend/proto/gen/cart"
+	pbUser "github.com/Go-Marketplace/backend/proto/gen/user"
 	"github.com/Go-Marketplace/backend/user/internal"
 	"github.com/Go-Marketplace/backend/user/internal/model"
 	"github.com/Go-Marketplace/backend/user/internal/usecase"

@@ -11,11 +11,11 @@ import (
 	"github.com/Go-Marketplace/backend/pkg/logger"
 	pbUser "github.com/Go-Marketplace/backend/proto/gen/user"
 	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
+	"github.com/mitchellh/mapstructure"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
-	"github.com/mitchellh/mapstructure"
 )
 
 type interceptorManager struct {

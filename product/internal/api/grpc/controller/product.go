@@ -324,7 +324,7 @@ func DeleteDiscount(ctx context.Context, productUsecase usecase.IProductUsecase,
 
 	product, err := productUsecase.DeleteDiscount(ctx, productID)
 	if err != nil {
-		status.Errorf(codes.Internal, "Internal error: %s", err)
+		return nil, status.Errorf(codes.Internal, "Internal error: %s", err)
 	}
 
 	if product == nil {

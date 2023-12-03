@@ -6,6 +6,8 @@ LINTVER=v1.51.2
 LINTBIN=${BINDIR}/lint_${GOVER}_${LINTVER}
 MOCKGEN=${BINDIR}/mockgen_${GOVER}
 PROTOCBIN=${BINDIR}/protoc_${GOVER}
+TEST_SERVICES := ./cart/internal/... ./order/internal/... ./user/internal/... ./product/internal/... ./gateway/internal/...
+MOCK_SERVICES := ./cart/internal/mocks ./order/internal/mocks ./user/internal/mocks ./product/internal/mocks ./gateway/internal/mocks
 
 # ==============================================================================
 # Tools commands
@@ -52,7 +54,7 @@ install-smartimports: bindir
 .PHONY: install-smartimports
 
 format: install-smartimports
-	${SMARTIMPORTS} -exclude internal/mocks
+	${SMARTIMPORTS} -exclude $(MOCK_SERVICES)
 .PHONY: format
 
 install-protoc: bindir
@@ -124,15 +126,15 @@ protoc-all: protoc-order protoc-gateway protoc-user protoc-cart protoc-product
 # Tests commands
 
 test:
-	go test -v -race -count=1 ./.../internal/...
+	go test -v -race -count=1 $(TEST_SERVICES)
 .PHONY: test
 
 test-100:
-	go test -v -race -count=100 ./.../internal/...
+	go test -v -race -count=100 $(TEST_SERVICES)
 .PHONY: test
 
 cover:
-	go test -short -count=1 -race -coverprofile=coverage.out ./.../internal/...
+	go test -short -count=1 -race -coverprofile=coverage.out $(TEST_SERVICES)
 	go tool cover -html=coverage.out -o coverage.html
 	xdg-open coverage.html
 	rm coverage.out

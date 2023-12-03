@@ -12,9 +12,6 @@ import (
 	"path/filepath"
 	"syscall"
 
-	"github.com/mikespook/gorbac"
-	"github.com/xiam/to"
-
 	"github.com/Go-Marketplace/backend/config"
 	"github.com/Go-Marketplace/backend/gateway/internal/api/grpc/handler"
 	"github.com/Go-Marketplace/backend/gateway/internal/api/grpc/interceptors"
@@ -30,6 +27,8 @@ import (
 	pbUser "github.com/Go-Marketplace/backend/proto/gen/user"
 	"github.com/flowchartsman/swaggerui"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/mikespook/gorbac"
+	"github.com/xiam/to"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
@@ -72,9 +71,13 @@ func getRBAC(rolesPath string, inheritancePath string) (*model.RBACManager, erro
 			if _, ok := permissions[permissionID]; !ok {
 				permissions[permissionID] = gorbac.NewStdPermission(permissionID)
 			}
-			role.Assign(permissions[permissionID])
+			if err = role.Assign(permissions[permissionID]); err != nil {
+				return nil, fmt.Errorf("failed to assign role permission: %s", permissionID)
+			}
 		}
-		rbac.Add(role)
+		if err = rbac.Add(role); err != nil {
+			return nil, fmt.Errorf("failed to add role: %s", role.ID())
+		}
 	}
 
 	for roleID, parentIDs := range inheritance {
@@ -210,7 +213,11 @@ func Run(cfg *config.Config) {
 
 	httpServer := httpserver.New(httpMux)
 	httpServer.Start()
-	defer httpServer.Shutdown()
+	defer func() {
+		if err = httpServer.Shutdown(); err != nil {
+			logger.Error("failed to shutdown http server: %s", err)
+		}
+	}()
 	logger.Info("HTTP server started")
 
 	// Waiting signal

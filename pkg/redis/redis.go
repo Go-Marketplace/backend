@@ -16,7 +16,7 @@ const (
 )
 
 type Redis struct {
-	Client       *redis.Client
+	Client *redis.Client
 
 	connAttempts int
 	connTimeout  time.Duration

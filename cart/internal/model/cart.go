@@ -49,11 +49,11 @@ func (cartline *CartLine) Validate() error {
 
 func (cartline *CartLine) ToProto() *pbCart.CartlineResponse {
 	return &pbCart.CartlineResponse{
-		UserId:     cartline.UserID.String(),
-		ProductId:  cartline.ProductID.String(),
-		Name:       cartline.Name,
-		Quantity:   cartline.Quantity,
-		CreatedAt:  timestamppb.New(cartline.CreatedAt),
-		UpdatedAt:  timestamppb.New(cartline.UpdatedAt),
+		UserId:    cartline.UserID.String(),
+		ProductId: cartline.ProductID.String(),
+		Name:      cartline.Name,
+		Quantity:  cartline.Quantity,
+		CreatedAt: timestamppb.New(cartline.CreatedAt),
+		UpdatedAt: timestamppb.New(cartline.UpdatedAt),
 	}
 }
