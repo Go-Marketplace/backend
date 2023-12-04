@@ -89,7 +89,6 @@ func CreateCartline(
 	cartline := &model.CartLine{
 		UserID:    userID,
 		ProductID: productID,
-		Name:      productResp.Name,
 		Quantity:  1,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),

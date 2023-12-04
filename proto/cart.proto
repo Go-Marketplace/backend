@@ -69,10 +69,9 @@ message CartResponse {
 message CartlineResponse {
     string user_id = 1;
     string product_id = 2;
-    string name = 3;
-    int64 quantity = 4;
-    google.protobuf.Timestamp created_at = 5;
-    google.protobuf.Timestamp updated_at = 6;
+    int64 quantity = 3;
+    google.protobuf.Timestamp created_at = 4;
+    google.protobuf.Timestamp updated_at = 5;
 }
 
 message DeleteCartResponse {}

@@ -21,7 +21,6 @@ VALUES
 CREATE TABLE IF NOT EXISTS cartlines (
     user_id UUID NOT NULL,
     product_id UUID NOT NULL,
-    name TEXT NOT NULL,
     quantity BIGINT NOT NULL,
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL,

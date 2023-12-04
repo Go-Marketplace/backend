@@ -26,7 +26,6 @@ func getFullCartsQuery() sq.SelectBuilder {
 		"carts.updated_at",
 		"cartlines.user_id",
 		"cartlines.product_id",
-		"cartlines.name",
 		"cartlines.quantity",
 		"cartlines.created_at",
 		"cartlines.updated_at",
@@ -75,7 +74,6 @@ func getCartlines() sq.SelectBuilder {
 	return psql.Select(
 		"user_id",
 		"product_id",
-		"name",
 		"quantity",
 		"created_at",
 		"updated_at",
@@ -100,7 +98,6 @@ func createCartlineQuery(cartline *model.CartLine) sq.InsertBuilder {
 		Columns(
 			"user_id",
 			"product_id",
-			"name",
 			"quantity",
 			"created_at",
 			"updated_at",
@@ -108,7 +105,6 @@ func createCartlineQuery(cartline *model.CartLine) sq.InsertBuilder {
 		Values(
 			cartline.UserID,
 			cartline.ProductID,
-			cartline.Name,
 			cartline.Quantity,
 			cartline.CreatedAt,
 			cartline.UpdatedAt,
@@ -117,10 +113,6 @@ func createCartlineQuery(cartline *model.CartLine) sq.InsertBuilder {
 
 func updateCartlineQuery(cartline model.CartLine) sq.UpdateBuilder {
 	query := psql.Update("cartlines")
-
-	if cartline.Name != "" {
-		query = query.Set("name", cartline.Name)
-	}
 
 	if cartline.Quantity != 0 {
 		query = query.Set("quantity", cartline.Quantity)

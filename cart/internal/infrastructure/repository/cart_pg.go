@@ -38,7 +38,6 @@ func scanFullCart(rows pgx.Rows, cart *model.Cart, cartline *model.CartLine) err
 		&cart.UpdatedAt,
 		&cartline.UserID,
 		&cartline.ProductID,
-		&cartline.Name,
 		&cartline.Quantity,
 		&cartline.CreatedAt,
 		&cartline.UpdatedAt,
@@ -49,7 +48,6 @@ func scanCartline(rows pgx.Rows, cartline *model.CartLine) error {
 	return rows.Scan(
 		&cartline.UserID,
 		&cartline.ProductID,
-		&cartline.Name,
 		&cartline.Quantity,
 		&cartline.CreatedAt,
 		&cartline.UpdatedAt,

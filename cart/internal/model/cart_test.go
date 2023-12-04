@@ -1,7 +1,6 @@
 package model_test
 
 import (
-	"strings"
 	"testing"
 
 	"github.com/Go-Marketplace/backend/cart/internal/model"
@@ -19,23 +18,13 @@ func TestValidate(t *testing.T) {
 		{
 			name: "Cartline is valid",
 			cartline: &model.CartLine{
-				Name:     "test",
 				Quantity: 10,
 			},
 			wasError: false,
 		},
 		{
-			name: "Too long name",
-			cartline: &model.CartLine{
-				Name:     strings.Repeat("t", 129),
-				Quantity: 10,
-			},
-			wasError: true,
-		},
-		{
 			name: "Too big quantity",
 			cartline: &model.CartLine{
-				Name:     "test",
 				Quantity: 100000000,
 			},
 			wasError: true,

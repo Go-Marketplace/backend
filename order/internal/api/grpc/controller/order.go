@@ -129,7 +129,7 @@ func CreateOrder(
 		orderline := &model.Orderline{
 			OrderID:   newOrder.ID,
 			ProductID: productID,
-			Name:      cartline.Name,
+			Name:      products[i].Name,
 			Quantity:  cartline.Quantity,
 			Price:     products[i].Price,
 			Status:    model.PendingPayment,

@@ -36,7 +36,6 @@ func (cart *Cart) ToProto() *pbCart.CartResponse {
 type CartLine struct {
 	UserID    uuid.UUID `json:"user_id"`
 	ProductID uuid.UUID `json:"product_id"`
-	Name      string    `json:"name" validate:"max=128"`
 	Quantity  int64     `json:"quantity" validate:"min=0,max=10000000"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
@@ -51,7 +50,6 @@ func (cartline *CartLine) ToProto() *pbCart.CartlineResponse {
 	return &pbCart.CartlineResponse{
 		UserId:    cartline.UserID.String(),
 		ProductId: cartline.ProductID.String(),
-		Name:      cartline.Name,
 		Quantity:  cartline.Quantity,
 		CreatedAt: timestamppb.New(cartline.CreatedAt),
 		UpdatedAt: timestamppb.New(cartline.UpdatedAt),
