@@ -30,4 +30,4 @@ jobs:
             with:
               file: ./${{matrix.services}}/Dockerfile
               push: true
-              tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.repository }}-${{matrix.services}}-nightly:${{env.DOCKER_TAG}},${{ secrets.DOCKERHUB_USERNAME }}/${{ github.repository }}-${{matrix.services}}-nightly:latest
+              tags: ${{ secrets.DOCKERHUB_USERNAME }}/go-marketplace-${{matrix.services}}-nightly:${{env.DOCKER_TAG}},${{ secrets.DOCKERHUB_USERNAME }}/go-marketplace-${{matrix.services}}-nightly:latest
