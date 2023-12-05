@@ -20,13 +20,17 @@ install-mockgen: bindir
 
 gen-mocks: install-mockgen
 	rm -r order/internal/mocks/repo/
-	${MOCKGEN} -source=order/internal/infrastructure/interfaces/order.go -destination=order/internal/mocks/repo/order_mocks.go
 	${MOCKGEN} -source=user/internal/infrastructure/interfaces/user.go -destination=user/internal/mocks/repo/user_mocks.go
 	${MOCKGEN} -source=product/internal/infrastructure/interfaces/product.go -destination=product/internal/mocks/repo/product_mocks.go
 	${MOCKGEN} -source=product/internal/infrastructure/interfaces/discount.go -destination=product/internal/mocks/repo/discount_mocks.go
+	${MOCKGEN} -source=cart/internal/infrastructure/interfaces/cart.go -destination=cart/internal/mocks/repo/cart_mocks.go
+	${MOCKGEN} -source=cart/internal/infrastructure/interfaces/cart_task.go -destination=cart/internal/mocks/repo/cart_task_mocks.go
+	${MOCKGEN} -source=order/internal/infrastructure/interfaces/order.go -destination=order/internal/mocks/repo/order_mocks.go
 
 	${MOCKGEN} -source=user/internal/usecase/user.go -destination=user/internal/mocks/usecase/user_mocks.go
 	${MOCKGEN} -source=product/internal/usecase/product.go -destination=product/internal/mocks/usecase/product_mocks.go
+	${MOCKGEN} -source=cart/internal/usecase/cart.go -destination=cart/internal/mocks/usecase/cart_mocks.go
+	${MOCKGEN} -source=order/internal/usecase/order.go -destination=order/internal/mocks/usecase/order_mocks.go
 .PHONY: gen-mocks
 
 install-lint: bindir

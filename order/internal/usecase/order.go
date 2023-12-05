@@ -9,6 +9,19 @@ import (
 	"github.com/google/uuid"
 )
 
+type IOrderUsecase interface {
+	GetOrder(ctx context.Context, orderID uuid.UUID) (*model.Order, error)
+	GetOrders(ctx context.Context, searchParams dto.SearchOrderDTO) ([]*model.Order, error)
+	CreateOrder(ctx context.Context, order *model.Order) (*model.Order, error)
+	DeleteOrder(ctx context.Context, orderID uuid.UUID) error
+	DeleteUserOrders(ctx context.Context, userID uuid.UUID) error
+
+	GetOrderline(ctx context.Context, orderID, productID uuid.UUID) (*model.Orderline, error)
+	CreateOrderline(ctx context.Context, orderline *model.Orderline) error
+	UpdateOrderline(ctx context.Context, orderline *model.Orderline) (*model.Orderline, error)
+	DeleteOrderline(ctx context.Context, orderID, productID uuid.UUID) error
+}
+
 type OrderUsecase struct {
 	repo interfaces.OrderRepo
 }

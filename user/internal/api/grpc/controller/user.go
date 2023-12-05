@@ -78,6 +78,10 @@ func CreateUser(
 		UpdatedAt: time.Now(),
 	}
 
+	if err = newUser.Validate(); err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid request user: %s", err)
+	}
+
 	user, err := userUsecase.CreateUser(ctx, newUser)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Failed to create user: %s", err)
@@ -108,6 +112,10 @@ func UpdateUser(ctx context.Context, userUsecase usecase.IUserUsecase, req *pbUs
 		Address:   internal.Unwrap(req.Address),
 		Phone:     internal.Unwrap(req.Phone),
 		UpdatedAt: time.Now(),
+	}
+
+	if err = newUser.Validate(); err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid request user: %s", err)
 	}
 
 	user, err := userUsecase.UpdateUser(ctx, newUser)
@@ -184,11 +192,8 @@ func ChangeUserRole(ctx context.Context, userUsecase usecase.IUserUsecase, req *
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid user id: %s", err)
 	}
 
-	toValidate := model.User{
-		Role: model.UserRoles(req.Role),
-	}
-	if err = toValidate.Validate(); err != nil {
-		return nil, status.Errorf(codes.InvalidArgument, "Invalid request: %s", err)
+	if req.Role == pbUser.UserRole_SUPERADMIN || req.Role == pbUser.UserRole_GUEST {
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid role request: %s", err)
 	}
 
 	user, err := userUsecase.ChangeUserRole(ctx, userID, model.UserRoles(req.Role))

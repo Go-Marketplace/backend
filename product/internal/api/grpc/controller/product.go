@@ -88,6 +88,10 @@ func CreateProduct(ctx context.Context, productUsecase usecase.IProductUsecase, 
 		UpdatedAt:   time.Now(),
 	}
 
+	if err = product.Validate(); err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid product request: %s", err)
+	}
+
 	err = productUsecase.CreateProduct(ctx, product)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Internal error: %s", err)
@@ -115,6 +119,10 @@ func UpdateProduct(ctx context.Context, productUsecase usecase.IProductUsecase, 
 		Quantity:    internal.Unwrap(req.Quantity),
 	}
 
+	if err = newProduct.Validate(); err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid product request: %s", err)
+	}
+
 	product, err := productUsecase.UpdateProduct(ctx, newProduct)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Internal error: %s", err)
@@ -136,14 +144,20 @@ func UpdateProducts(ctx context.Context, productUsecase usecase.IProductUsecase,
 			return status.Errorf(codes.InvalidArgument, "Invalid product id: %s", err)
 		}
 
-		products = append(products, model.Product{
+		product := model.Product{
 			ID:          productID,
 			CategoryID:  internal.Unwrap(reqProduct.CategoryId),
 			Name:        internal.Unwrap(reqProduct.Name),
 			Description: internal.Unwrap(reqProduct.Description),
 			Price:       internal.Unwrap(reqProduct.Price),
 			Quantity:    internal.Unwrap(reqProduct.Quantity),
-		})
+		}
+
+		if err = product.Validate(); err != nil {
+			return status.Errorf(codes.InvalidArgument, "Invalid product request: %s", err)
+		}
+
+		products = append(products, product)
 	}
 
 	if err := productUsecase.UpdateProducts(ctx, products); err != nil {
@@ -302,6 +316,10 @@ func CreateDiscount(ctx context.Context, productUsecase usecase.IProductUsecase,
 		Percent:   req.Percent,
 		CreatedAt: time.Now(),
 		EndedAt:   req.EndedAt.AsTime(),
+	}
+
+	if err = discount.Validate(); err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid discount request: %s", err)
 	}
 
 	product, err := productUsecase.CreateDiscount(ctx, discount)
