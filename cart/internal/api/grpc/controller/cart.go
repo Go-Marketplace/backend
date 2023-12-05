@@ -14,7 +14,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func GetUserCart(ctx context.Context, cartUsecase *usecase.CartUsecase, req *pbCart.GetUserCartRequest) (*model.Cart, error) {
+func GetUserCart(ctx context.Context, cartUsecase usecase.ICartUsecase, req *pbCart.GetUserCartRequest) (*model.Cart, error) {
 	if req == nil {
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid request")
 	}
@@ -36,7 +36,7 @@ func GetUserCart(ctx context.Context, cartUsecase *usecase.CartUsecase, req *pbC
 	return cart, nil
 }
 
-func CreateCart(ctx context.Context, cartUsecase *usecase.CartUsecase, req *pbCart.CreateCartRequest) (*model.Cart, error) {
+func CreateCart(ctx context.Context, cartUsecase usecase.ICartUsecase, req *pbCart.CreateCartRequest) (*model.Cart, error) {
 	if req == nil {
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid request")
 	}
@@ -61,7 +61,7 @@ func CreateCart(ctx context.Context, cartUsecase *usecase.CartUsecase, req *pbCa
 
 func CreateCartline(
 	ctx context.Context,
-	cartUsecase *usecase.CartUsecase,
+	cartUsecase usecase.ICartUsecase,
 	productClient pbProduct.ProductClient,
 	req *pbCart.CreateCartlineRequest,
 ) (*model.CartLine, error) {
@@ -168,7 +168,7 @@ func returnProducts(ctx context.Context, productClient pbProduct.ProductClient, 
 
 func UpdateCartline(
 	ctx context.Context,
-	cartUsecase *usecase.CartUsecase,
+	cartUsecase usecase.ICartUsecase,
 	productClient pbProduct.ProductClient,
 	req *pbCart.UpdateCartlineRequest,
 ) (*model.CartLine, error) {
@@ -199,6 +199,10 @@ func UpdateCartline(
 		UserID:    userID,
 		ProductID: productID,
 		Quantity:  req.Quantity,
+	}
+
+	if err = newCartline.Validate(); err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid cartline request: %s", err)
 	}
 
 	cartline, err := cartUsecase.UpdateCartline(ctx, newCartline)
@@ -233,7 +237,7 @@ func UpdateCartline(
 
 func DeleteCart(
 	ctx context.Context,
-	cartUsecase *usecase.CartUsecase,
+	cartUsecase usecase.ICartUsecase,
 	productClient pbProduct.ProductClient,
 	req *pbCart.DeleteCartRequest,
 ) error {
@@ -274,7 +278,7 @@ func DeleteCart(
 
 func DeleteCartline(
 	ctx context.Context,
-	cartUsecase *usecase.CartUsecase,
+	cartUsecase usecase.ICartUsecase,
 	productClient pbProduct.ProductClient,
 	req *pbCart.DeleteCartlineRequest,
 ) error {
@@ -311,7 +315,7 @@ func DeleteCartline(
 	return nil
 }
 
-func DeleteProductCartlines(ctx context.Context, cartUsecase *usecase.CartUsecase, req *pbCart.DeleteProductCartlinesRequest) error {
+func DeleteProductCartlines(ctx context.Context, cartUsecase usecase.ICartUsecase, req *pbCart.DeleteProductCartlinesRequest) error {
 	productID, err := uuid.Parse(req.ProductId)
 	if err != nil {
 		return status.Errorf(codes.InvalidArgument, "Invalid product id: %s", err)
@@ -326,7 +330,7 @@ func DeleteProductCartlines(ctx context.Context, cartUsecase *usecase.CartUsecas
 
 func DeleteCartCartlines(
 	ctx context.Context,
-	cartUsecase *usecase.CartUsecase,
+	cartUsecase usecase.ICartUsecase,
 	productClient pbProduct.ProductClient,
 	req *pbCart.DeleteCartCartlinesRequest,
 ) error {
@@ -364,7 +368,7 @@ func DeleteCartCartlines(
 
 func PrepareOrder(
 	ctx context.Context,
-	cartUsecase *usecase.CartUsecase,
+	cartUsecase usecase.ICartUsecase,
 	productClient pbProduct.ProductClient,
 	req *pbCart.PrepareOrderRequest,
 ) error {

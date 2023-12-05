@@ -4,6 +4,7 @@ import (
 	"time"
 
 	pbOrder "github.com/Go-Marketplace/backend/proto/gen/order"
+	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -47,16 +48,21 @@ const (
 	Recieved
 )
 
-// Represents one line with a product in a shopping cart in the database
+// Represents one line with a product in a order in the database
 type Orderline struct {
 	OrderID   uuid.UUID       `json:"order_id"`
 	ProductID uuid.UUID       `json:"product_id"`
-	Name      string          `json:"name"`
-	Price     int64           `json:"price"`
-	Quantity  int64           `json:"quantity"`
-	Status    OrderlineStatus `json:"status"`
+	Name      string          `json:"name" validate:"max=128"`
+	Price     int64           `json:"price" validate:"min=0,max=1000000000"`
+	Quantity  int64           `json:"quantity" validate:"min=0,max=10000000"`
+	Status    OrderlineStatus `json:"status" validate:"min=0,max=3"`
 	CreatedAt time.Time       `json:"created_at"`
 	UpdatedAt time.Time       `json:"updated_at"`
+}
+
+func (orderline *Orderline) Validate() error {
+	validate := validator.New()
+	return validate.Struct(orderline)
 }
 
 func (orderline *Orderline) ToProto() *pbOrder.OrderlineResponse {

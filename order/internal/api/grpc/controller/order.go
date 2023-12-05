@@ -16,7 +16,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func GetOrder(ctx context.Context, orderUsecase *usecase.OrderUsecase, req *pbOrder.GetOrderRequest) (*model.Order, error) {
+func GetOrder(ctx context.Context, orderUsecase usecase.IOrderUsecase, req *pbOrder.GetOrderRequest) (*model.Order, error) {
 	orderID, err := uuid.Parse(req.OrderId)
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid order id: %s", err)
@@ -34,7 +34,7 @@ func GetOrder(ctx context.Context, orderUsecase *usecase.OrderUsecase, req *pbOr
 	return order, nil
 }
 
-func GetOrders(ctx context.Context, orderUsecase *usecase.OrderUsecase, req *pbOrder.GetOrdersRequest) ([]*model.Order, error) {
+func GetOrders(ctx context.Context, orderUsecase usecase.IOrderUsecase, req *pbOrder.GetOrdersRequest) ([]*model.Order, error) {
 	var err error
 	var userID uuid.UUID
 	if req.UserId != "" {
@@ -81,7 +81,7 @@ func getProducts(ctx context.Context, productClient pbProduct.ProductClient, pro
 
 func CreateOrder(
 	ctx context.Context,
-	orderUsecase *usecase.OrderUsecase,
+	orderUsecase usecase.IOrderUsecase,
 	cartClient pbCart.CartClient,
 	productClient pbProduct.ProductClient,
 	req *pbOrder.CreateOrderRequest,
@@ -190,7 +190,7 @@ func returnProducts(ctx context.Context, productClient pbProduct.ProductClient, 
 
 func DeleteOrder(
 	ctx context.Context,
-	orderUsecase *usecase.OrderUsecase,
+	orderUsecase usecase.IOrderUsecase,
 	productClient pbProduct.ProductClient,
 	req *pbOrder.DeleteOrderRequest,
 ) error {
@@ -220,7 +220,7 @@ func DeleteOrder(
 
 func DeleteUserOrders(
 	ctx context.Context,
-	orderUsecase *usecase.OrderUsecase,
+	orderUsecase usecase.IOrderUsecase,
 	productClient pbProduct.ProductClient,
 	req *pbOrder.DeleteUserOrdersRequest,
 ) error {
@@ -258,7 +258,7 @@ func DeleteUserOrders(
 	return nil
 }
 
-func GetOrderline(ctx context.Context, orderUsecase *usecase.OrderUsecase, req *pbOrder.GetOrderlineRequest) (*model.Orderline, error) {
+func GetOrderline(ctx context.Context, orderUsecase usecase.IOrderUsecase, req *pbOrder.GetOrderlineRequest) (*model.Orderline, error) {
 	orderID, err := uuid.Parse(req.OrderId)
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid order id: %s", err)
@@ -277,7 +277,7 @@ func GetOrderline(ctx context.Context, orderUsecase *usecase.OrderUsecase, req *
 	return orderline, nil
 }
 
-func UpdateOrderline(ctx context.Context, orderUsecase *usecase.OrderUsecase, req *pbOrder.UpdateOrderlineRequest) (*model.Orderline, error) {
+func UpdateOrderline(ctx context.Context, orderUsecase usecase.IOrderUsecase, req *pbOrder.UpdateOrderlineRequest) (*model.Orderline, error) {
 	orderID, err := uuid.Parse(req.OrderId)
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid order id: %s", err)
@@ -304,7 +304,7 @@ func UpdateOrderline(ctx context.Context, orderUsecase *usecase.OrderUsecase, re
 
 func DeleteOrderline(
 	ctx context.Context,
-	orderUsecase *usecase.OrderUsecase,
+	orderUsecase usecase.IOrderUsecase,
 	productClient pbProduct.ProductClient,
 	req *pbOrder.DeleteOrderlineRequest,
 ) error {
