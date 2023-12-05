@@ -192,8 +192,8 @@ func ChangeUserRole(ctx context.Context, userUsecase usecase.IUserUsecase, req *
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid user id: %s", err)
 	}
 
-	if req.Role == pbUser.UserRole_SUPERADMIN || req.Role == pbUser.UserRole_GUEST {
-		return nil, status.Errorf(codes.InvalidArgument, "Invalid role request: %s", err)
+	if req.Role >= pbUser.UserRole_SUPERADMIN || req.Role <= pbUser.UserRole_GUEST {
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid role request")
 	}
 
 	user, err := userUsecase.ChangeUserRole(ctx, userID, model.UserRoles(req.Role))

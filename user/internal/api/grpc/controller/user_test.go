@@ -92,7 +92,7 @@ func TestChangeUserRole(t *testing.T) {
 			},
 			mock:         func(usecase *mocks.MockIUserUsecase) {},
 			expectedUser: nil,
-			expectedErr:  status.Errorf(codes.InvalidArgument, "Invalid request: %s", fmt.Errorf("Key: 'User.Role' Error:Field validation for 'Role' failed on the 'oneof' tag")),
+			expectedErr:  status.Errorf(codes.InvalidArgument, "Invalid role request"),
 		},
 		{
 			name: "Got error when change user role in usecase",
