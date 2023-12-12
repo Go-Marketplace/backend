@@ -309,7 +309,7 @@ service Gateway {
             get: "/api/v1/user/{user_id}/products"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-            summary: "Get user product";
+            summary: "Get user products";
             operation_id: "getUserProducts";
             tags: "user";
         };

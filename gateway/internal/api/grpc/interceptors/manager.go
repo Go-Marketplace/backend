@@ -116,5 +116,9 @@ func (interceptor *interceptorManager) AuthRequest(
 		return nil, status.Error(codes.PermissionDenied, "Not permited")
 	}
 
+	md := metadata.Pairs("user_id", claim.ID)
+	md.Set("role", claim.Role.String())
+	ctx = metadata.NewOutgoingContext(ctx, md)
+
 	return handler(ctx, req)
 }

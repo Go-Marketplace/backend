@@ -3,6 +3,7 @@ package controller
 import (
 	"context"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/Go-Marketplace/backend/order/internal/api/grpc/dto"
@@ -11,15 +12,102 @@ import (
 	pbCart "github.com/Go-Marketplace/backend/proto/gen/cart"
 	pbOrder "github.com/Go-Marketplace/backend/proto/gen/order"
 	pbProduct "github.com/Go-Marketplace/backend/proto/gen/product"
+	pbUser "github.com/Go-Marketplace/backend/proto/gen/user"
 	"github.com/google/uuid"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 )
+
+func checkOrderAccessPermission(
+	ctx context.Context,
+	orderUsecase usecase.IOrderUsecase,
+	orderID uuid.UUID,
+) (bool, error) {
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return false, fmt.Errorf("failed to get metadata from incoming context")
+	}
+
+	roles := md.Get("role")
+	if len(roles) == 0 {
+		return false, fmt.Errorf("role did not set in metadata")
+	}
+
+	if roles[0] != pbUser.UserRole_USER.String() {
+		return true, nil
+	}
+
+	userIDs := md.Get("user_id")
+	if len(userIDs) == 0 {
+		return false, fmt.Errorf("user_id did not set in metadata")
+	}
+
+	order, err := orderUsecase.GetOrder(ctx, orderID)
+	if err != nil {
+		return false, fmt.Errorf("failed to get %v order", orderID)
+	}
+
+	if order == nil {
+		return false, fmt.Errorf("order not found")
+	}
+
+	log.Printf("Check Access Permissions for %s user\n", userIDs[0])
+
+	return userIDs[0] == order.UserID.String(), nil
+}
+
+func checkOrderlineAccessPermission(
+	ctx context.Context,
+	productClient pbProduct.ProductClient,
+	productID uuid.UUID,
+) (bool, error) {
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return false, fmt.Errorf("failed to get metadata from incoming context")
+	}
+
+	roles := md.Get("role")
+	if len(roles) == 0 {
+		return false, fmt.Errorf("role did not set in metadata")
+	}
+
+	if roles[0] != pbUser.UserRole_USER.String() {
+		return true, nil
+	}
+
+	userIDs := md.Get("user_id")
+	if len(userIDs) == 0 {
+		return false, fmt.Errorf("user_id did not set in metadata")
+	}
+
+	md = metadata.Pairs("role", pbUser.UserRole_ADMIN.String())
+	ctx = metadata.NewOutgoingContext(ctx, md)
+	productResp, err := productClient.GetProduct(ctx, &pbProduct.GetProductRequest{
+		ProductId: productID.String(),
+	})
+	if err != nil {
+		return false, fmt.Errorf("failed to get product: %s", err)
+	}
+
+	log.Printf("Check Access Permissions for %s user\n", userIDs[0])
+
+	return userIDs[0] == productResp.UserId, nil
+}
 
 func GetOrder(ctx context.Context, orderUsecase usecase.IOrderUsecase, req *pbOrder.GetOrderRequest) (*model.Order, error) {
 	orderID, err := uuid.Parse(req.OrderId)
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid order id: %s", err)
+	}
+
+	allow, err := checkOrderAccessPermission(ctx, orderUsecase, orderID)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to check order access permission: %s", err)
+	}
+
+	if !allow {
+		return nil, status.Errorf(codes.PermissionDenied, "Access denied")
 	}
 
 	order, err := orderUsecase.GetOrder(ctx, orderID)
@@ -59,6 +147,8 @@ func GetOrders(ctx context.Context, orderUsecase usecase.IOrderUsecase, req *pbO
 func getProducts(ctx context.Context, productClient pbProduct.ProductClient, productIDs []string) ([]*pbProduct.ProductResponse, error) {
 	products := make([]*pbProduct.ProductResponse, len(productIDs))
 	for i, productID := range productIDs {
+		md := metadata.Pairs("role", pbUser.UserRole_ADMIN.String())
+		ctx = metadata.NewOutgoingContext(ctx, md)
 		productResp, err := productClient.GetProduct(ctx, &pbProduct.GetProductRequest{
 			ProductId: productID,
 		})
@@ -86,6 +176,8 @@ func CreateOrder(
 	productClient pbProduct.ProductClient,
 	req *pbOrder.CreateOrderRequest,
 ) (*model.Order, error) {
+	md := metadata.Pairs("role", pbUser.UserRole_ADMIN.String())
+	ctx = metadata.NewOutgoingContext(ctx, md)
 	cartResp, err := cartClient.GetUserCart(ctx, &pbCart.GetUserCartRequest{
 		UserId: req.UserId,
 	})
@@ -179,6 +271,8 @@ func returnProducts(ctx context.Context, productClient pbProduct.ProductClient, 
 		}
 	}
 
+	md := metadata.Pairs("role", pbUser.UserRole_ADMIN.String())
+	ctx = metadata.NewOutgoingContext(ctx, md)
 	if _, err := productClient.UpdateProducts(ctx, &pbProduct.UpdateProductsRequest{
 		Products: updateProductRequests,
 	}); err != nil {
@@ -199,9 +293,22 @@ func DeleteOrder(
 		return status.Errorf(codes.InvalidArgument, "Invalid order id: %s", err)
 	}
 
+	allow, err := checkOrderAccessPermission(ctx, orderUsecase, orderID)
+	if err != nil {
+		return status.Errorf(codes.Internal, "failed to check order access permission: %s", err)
+	}
+
+	if !allow {
+		return status.Errorf(codes.PermissionDenied, "Access denied")
+	}
+
 	order, err := orderUsecase.GetOrder(ctx, orderID)
 	if err != nil {
 		return status.Errorf(codes.Internal, "Failed to get order: %s", err)
+	}
+
+	if order == nil {
+		return status.Errorf(codes.NotFound, "Order not found")
 	}
 
 	if err = orderUsecase.DeleteOrder(ctx, orderID); err != nil {
@@ -258,7 +365,12 @@ func DeleteUserOrders(
 	return nil
 }
 
-func GetOrderline(ctx context.Context, orderUsecase usecase.IOrderUsecase, req *pbOrder.GetOrderlineRequest) (*model.Orderline, error) {
+func GetOrderline(
+	ctx context.Context,
+	orderUsecase usecase.IOrderUsecase,
+	productClient pbProduct.ProductClient,
+	req *pbOrder.GetOrderlineRequest,
+) (*model.Orderline, error) {
 	orderID, err := uuid.Parse(req.OrderId)
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid order id: %s", err)
@@ -267,6 +379,15 @@ func GetOrderline(ctx context.Context, orderUsecase usecase.IOrderUsecase, req *
 	productID, err := uuid.Parse(req.ProductId)
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid product id: %s", err)
+	}
+
+	allow, err := checkOrderlineAccessPermission(ctx, productClient, productID)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to check orderline access permission: %s", err)
+	}
+
+	if !allow {
+		return nil, status.Errorf(codes.PermissionDenied, "Access denied")
 	}
 
 	orderline, err := orderUsecase.GetOrderline(ctx, orderID, productID)
@@ -274,10 +395,19 @@ func GetOrderline(ctx context.Context, orderUsecase usecase.IOrderUsecase, req *
 		return nil, status.Errorf(codes.Internal, "Failed to get orderline: %s", err)
 	}
 
+	if orderline == nil {
+		return nil, status.Errorf(codes.NotFound, "Orderline not found")
+	}
+
 	return orderline, nil
 }
 
-func UpdateOrderline(ctx context.Context, orderUsecase usecase.IOrderUsecase, req *pbOrder.UpdateOrderlineRequest) (*model.Orderline, error) {
+func UpdateOrderline(
+	ctx context.Context,
+	orderUsecase usecase.IOrderUsecase,
+	productClient pbProduct.ProductClient,
+	req *pbOrder.UpdateOrderlineRequest,
+) (*model.Orderline, error) {
 	orderID, err := uuid.Parse(req.OrderId)
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid order id: %s", err)
@@ -286,6 +416,15 @@ func UpdateOrderline(ctx context.Context, orderUsecase usecase.IOrderUsecase, re
 	productID, err := uuid.Parse(req.ProductId)
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid product id: %s", err)
+	}
+
+	allow, err := checkOrderlineAccessPermission(ctx, productClient, productID)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to check orderline access permission: %s", err)
+	}
+
+	if !allow {
+		return nil, status.Errorf(codes.PermissionDenied, "Access denied")
 	}
 
 	newOrderline := &model.Orderline{
@@ -297,6 +436,10 @@ func UpdateOrderline(ctx context.Context, orderUsecase usecase.IOrderUsecase, re
 	orderline, err := orderUsecase.UpdateOrderline(ctx, newOrderline)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Failed to update orderline: %s", err)
+	}
+
+	if orderline == nil {
+		return nil, status.Errorf(codes.NotFound, "Orderline not found")
 	}
 
 	return orderline, nil
@@ -318,9 +461,22 @@ func DeleteOrderline(
 		return status.Errorf(codes.InvalidArgument, "Invalid product id: %s", err)
 	}
 
+	allow, err := checkOrderlineAccessPermission(ctx, productClient, productID)
+	if err != nil {
+		return status.Errorf(codes.Internal, "failed to check orderline access permission: %s", err)
+	}
+
+	if !allow {
+		return status.Errorf(codes.PermissionDenied, "Access denied")
+	}
+
 	orderline, err := orderUsecase.GetOrderline(ctx, orderID, productID)
 	if err != nil {
 		return status.Errorf(codes.Internal, "Failed to get orderline: %s", err)
+	}
+
+	if orderline == nil {
+		return status.Errorf(codes.NotFound, "Orderline not found")
 	}
 
 	if err = orderUsecase.DeleteOrderline(ctx, orderID, productID); err != nil {

@@ -11,6 +11,8 @@ import (
 	"github.com/Go-Marketplace/backend/pkg/logger"
 	"github.com/Go-Marketplace/backend/proto/gen/cart"
 	pbProduct "github.com/Go-Marketplace/backend/proto/gen/product"
+	pbUser "github.com/Go-Marketplace/backend/proto/gen/user"
+	"google.golang.org/grpc/metadata"
 	"gopkg.in/tomb.v2"
 )
 
@@ -70,6 +72,8 @@ func (worker *cartTaskWorker) Run(ctx context.Context) {
 
 				for _, task := range tasks {
 					if task != nil {
+						md := metadata.Pairs("role", pbUser.UserRole_ADMIN.String())
+						ctx = metadata.NewOutgoingContext(ctx, md)
 						if err = controller.DeleteCartCartlines(
 							ctx,
 							worker.cartUsecase,

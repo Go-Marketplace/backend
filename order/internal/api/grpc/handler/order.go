@@ -93,7 +93,7 @@ func (router *orderRoutes) DeleteUserOrders(ctx context.Context, req *pbOrder.De
 }
 
 func (router *orderRoutes) GetOrderline(ctx context.Context, req *pbOrder.GetOrderlineRequest) (*pbOrder.OrderlineResponse, error) {
-	orderline, err := controller.GetOrderline(ctx, router.orderUsecase, req)
+	orderline, err := controller.GetOrderline(ctx, router.orderUsecase, router.productClient, req)
 	if err != nil {
 		return nil, err
 	}
@@ -102,7 +102,7 @@ func (router *orderRoutes) GetOrderline(ctx context.Context, req *pbOrder.GetOrd
 }
 
 func (router *orderRoutes) UpdateOrderline(ctx context.Context, req *pbOrder.UpdateOrderlineRequest) (*pbOrder.OrderlineResponse, error) {
-	orderline, err := controller.UpdateOrderline(ctx, router.orderUsecase, req)
+	orderline, err := controller.UpdateOrderline(ctx, router.orderUsecase, router.productClient, req)
 	if err != nil {
 		return nil, err
 	}

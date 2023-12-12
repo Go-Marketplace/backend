@@ -111,7 +111,7 @@ func updateProductQuery(product model.Product) sq.UpdateBuilder {
 		query = query.Set("moderated", product.Moderated)
 	}
 
-	query.Set("updated_at", time.Now())
+	query = query.Set("updated_at", time.Now())
 
 	query = query.Where(sq.Eq{
 		"product_id": product.ID,

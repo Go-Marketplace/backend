@@ -46,9 +46,11 @@ func NewProductUsecase(productRepo interfaces.ProductRepo, discountRepo interfac
 func (usecase *ProductUsecase) setProductsDiscount(ctx context.Context, products ...*model.Product) error {
 	var err error
 	for _, product := range products {
-		product.Discount, err = usecase.discountRepo.GetDiscount(ctx, product.ID)
-		if err != nil {
-			return err
+		if product != nil {
+			product.Discount, err = usecase.discountRepo.GetDiscount(ctx, product.ID)
+			if err != nil {
+				return err
+			}
 		}
 	}
 

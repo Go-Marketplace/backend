@@ -2,6 +2,8 @@ package controller
 
 import (
 	"context"
+	"fmt"
+	"log"
 	"time"
 
 	pbCart "github.com/Go-Marketplace/backend/proto/gen/cart"
@@ -13,8 +15,37 @@ import (
 	"github.com/Go-Marketplace/backend/user/internal/usecase"
 	"github.com/google/uuid"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 )
+
+func checkAccessPermission(
+	ctx context.Context,
+	requestUserID string,
+) (bool, error) {
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return false, fmt.Errorf("failed to get metadata from incoming context")
+	}
+
+	roles := md.Get("role")
+	if len(roles) == 0 {
+		return false, fmt.Errorf("role did not set in metadata")
+	}
+
+	if roles[0] != pbUser.UserRole_USER.String() {
+		return true, nil
+	}
+
+	userIDs := md.Get("user_id")
+	if len(userIDs) == 0 {
+		return false, fmt.Errorf("user_id did not set in metadata")
+	}
+
+	log.Printf("Check Access Permissions for %s user\n", userIDs[0])
+
+	return userIDs[0] == requestUserID, nil
+}
 
 func GetUser(ctx context.Context, userUsecase usecase.IUserUsecase, req *pbUser.GetUserRequest) (*model.User, error) {
 	userID, err := uuid.Parse(req.UserId)
@@ -87,6 +118,8 @@ func CreateUser(
 		return nil, status.Errorf(codes.Internal, "Failed to create user: %s", err)
 	}
 
+	md := metadata.Pairs("role", pbUser.UserRole_ADMIN.String())
+	ctx = metadata.NewOutgoingContext(ctx, md)
 	if _, err = cartClient.CreateCart(ctx, &pbCart.CreateCartRequest{
 		UserId: req.UserId,
 	}); err != nil {
@@ -100,6 +133,15 @@ func CreateUser(
 }
 
 func UpdateUser(ctx context.Context, userUsecase usecase.IUserUsecase, req *pbUser.UpdateUserRequest) (*model.User, error) {
+	allow, err := checkAccessPermission(ctx, req.UserId)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to check access permission: %s", err)
+	}
+
+	if !allow {
+		return nil, status.Errorf(codes.PermissionDenied, "Access denied")
+	}
+
 	userID, err := uuid.Parse(req.UserId)
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid id: %s", err)
@@ -138,6 +180,15 @@ func DeleteUser(
 	cartClient pbCart.CartClient,
 	req *pbUser.DeleteUserRequest,
 ) error {
+	allow, err := checkAccessPermission(ctx, req.UserId)
+	if err != nil {
+		return status.Errorf(codes.Internal, "failed to check access permission: %s", err)
+	}
+
+	if !allow {
+		return status.Errorf(codes.PermissionDenied, "Access denied")
+	}
+
 	userID, err := uuid.Parse(req.UserId)
 	if err != nil {
 		return status.Errorf(codes.InvalidArgument, "Invalid user id: %s", err)
@@ -156,6 +207,8 @@ func DeleteUser(
 		return status.Errorf(codes.Internal, "Failed to delete user: %s", err)
 	}
 
+	md := metadata.Pairs("role", pbUser.UserRole_ADMIN.String())
+	ctx = metadata.NewOutgoingContext(ctx, md)
 	if _, err = orderClient.DeleteUserOrders(ctx, &pbOrder.DeleteUserOrdersRequest{
 		UserId: req.UserId,
 	}); err != nil {

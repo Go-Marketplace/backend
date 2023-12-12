@@ -2,6 +2,8 @@ package controller
 
 import (
 	"context"
+	"fmt"
+	"log"
 	"time"
 
 	"github.com/Go-Marketplace/backend/product/internal"
@@ -10,10 +12,46 @@ import (
 	"github.com/Go-Marketplace/backend/product/internal/usecase"
 	pbCart "github.com/Go-Marketplace/backend/proto/gen/cart"
 	pbProduct "github.com/Go-Marketplace/backend/proto/gen/product"
+	pbUser "github.com/Go-Marketplace/backend/proto/gen/user"
 	"github.com/google/uuid"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 )
+
+func checkAccessPermission(
+	ctx context.Context,
+	productUsecase usecase.IProductUsecase,
+	productID uuid.UUID,
+) (bool, error) {
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return false, fmt.Errorf("failed to get metadata from incoming context")
+	}
+
+	roles := md.Get("role")
+	if len(roles) == 0 {
+		return false, fmt.Errorf("role did not set in metadata")
+	}
+
+	if roles[0] != pbUser.UserRole_USER.String() {
+		return true, nil
+	}
+
+	userIDs := md.Get("user_id")
+	if len(userIDs) == 0 {
+		return false, fmt.Errorf("user_id did not set in metadata")
+	}
+
+	product, err := productUsecase.GetProduct(ctx, productID)
+	if err != nil {
+		return false, fmt.Errorf("failed to get %v product", productID)
+	}
+
+	log.Printf("Check Access Permissions for %s user\n", userIDs[0])
+
+	return userIDs[0] == product.UserID.String(), nil
+}
 
 func GetProducts(ctx context.Context, productUsecase usecase.IProductUsecase, req *pbProduct.GetProductsRequest) ([]*model.Product, error) {
 	var err error
@@ -110,6 +148,15 @@ func UpdateProduct(ctx context.Context, productUsecase usecase.IProductUsecase, 
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid product id: %s", err)
 	}
 
+	allow, err := checkAccessPermission(ctx, productUsecase, productID)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Failed to check access permission: %s", err)
+	}
+
+	if !allow {
+		return nil, status.Errorf(codes.PermissionDenied, "Access denied")
+	}
+
 	newProduct := model.Product{
 		ID:          productID,
 		CategoryID:  internal.Unwrap(req.CategoryId),
@@ -126,6 +173,10 @@ func UpdateProduct(ctx context.Context, productUsecase usecase.IProductUsecase, 
 	product, err := productUsecase.UpdateProduct(ctx, newProduct)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Internal error: %s", err)
+	}
+
+	if product == nil {
+		return nil, status.Errorf(codes.NotFound, "Product not found")
 	}
 
 	return product, nil
@@ -191,10 +242,21 @@ func DeleteProduct(
 		return status.Errorf(codes.NotFound, "Product not found")
 	}
 
+	allow, err := checkAccessPermission(ctx, productUsecase, productID)
+	if err != nil {
+		return status.Errorf(codes.Internal, "Failed to check access permission: %s", err)
+	}
+
+	if !allow {
+		return status.Errorf(codes.PermissionDenied, "Access denied")
+	}
+
 	if err = productUsecase.DeleteProduct(ctx, productID); err != nil {
 		return status.Errorf(codes.Internal, "Internal error: %s", err)
 	}
 
+	md := metadata.Pairs("role", pbUser.UserRole_ADMIN.String())
+	ctx = metadata.NewOutgoingContext(ctx, md)
 	if _, err = cartClient.DeleteProductCartlines(ctx, &pbCart.DeleteProductCartlinesRequest{
 		ProductId: req.ProductId,
 	}); err != nil {
@@ -234,6 +296,8 @@ func DeleteUserProducts(
 	}
 
 	for _, product := range products {
+		md := metadata.Pairs("role", pbUser.UserRole_ADMIN.String())
+		ctx = metadata.NewOutgoingContext(ctx, md)
 		if _, err = cartClient.DeleteProductCartlines(ctx, &pbCart.DeleteProductCartlinesRequest{
 			ProductId: product.ID.String(),
 		}); err != nil {
@@ -311,6 +375,15 @@ func CreateDiscount(ctx context.Context, productUsecase usecase.IProductUsecase,
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid product id: %s", err)
 	}
 
+	allow, err := checkAccessPermission(ctx, productUsecase, productID)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Failed to check access permission: %s", err)
+	}
+
+	if !allow {
+		return nil, status.Errorf(codes.PermissionDenied, "Access denied")
+	}
+
 	discount := model.Discount{
 		ProductID: productID,
 		Percent:   req.Percent,
@@ -327,6 +400,10 @@ func CreateDiscount(ctx context.Context, productUsecase usecase.IProductUsecase,
 		return nil, status.Errorf(codes.Internal, "Internal error: %s", err)
 	}
 
+	if product == nil {
+		return nil, status.Errorf(codes.NotFound, "Product not found")
+	}
+
 	return product, nil
 }
 
@@ -338,6 +415,15 @@ func DeleteDiscount(ctx context.Context, productUsecase usecase.IProductUsecase,
 	productID, err := uuid.Parse(req.ProductId)
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid id: %s", err)
+	}
+
+	allow, err := checkAccessPermission(ctx, productUsecase, productID)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Failed to check access permission: %s", err)
+	}
+
+	if !allow {
+		return nil, status.Errorf(codes.PermissionDenied, "Access denied")
 	}
 
 	product, err := productUsecase.DeleteDiscount(ctx, productID)

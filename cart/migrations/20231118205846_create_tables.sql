@@ -29,12 +29,11 @@ CREATE TABLE IF NOT EXISTS cartlines (
     FOREIGN KEY (user_id) REFERENCES carts(user_id) ON DELETE CASCADE
 );
 
-INSERT INTO cartlines (user_id, product_id, name, quantity, created_at, updated_at)
+INSERT INTO cartlines (user_id, product_id, quantity, created_at, updated_at)
 VALUES
     (
         'efb5b1a0-2222-4106-a2bc-577bd4b287d1',
         'efb5b1a0-2222-4106-a2bc-577bd4b287d5',
-        'cartline',
         1,
         'now()',
         'now()'
@@ -42,7 +41,6 @@ VALUES
     (
         'efb5b1a0-2222-4106-a2bc-577bd4b287d1',
         'efb5b1a0-2222-4106-a2bc-577bd4b287d7',
-        'cartline2',
         10,
         'now()',
         'now()'

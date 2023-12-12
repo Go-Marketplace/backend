@@ -1025,7 +1025,7 @@
     },
     "/api/v1/user/{userId}/products": {
       "get": {
-        "summary": "Get user product",
+        "summary": "Get user products",
         "operationId": "getUserProducts",
         "responses": {
           "200": {
@@ -1130,9 +1130,6 @@
           "type": "string"
         },
         "productId": {
-          "type": "string"
-        },
-        "name": {
           "type": "string"
         },
         "quantity": {

@@ -3,20 +3,60 @@ package controller
 import (
 	"context"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/Go-Marketplace/backend/cart/internal/model"
 	"github.com/Go-Marketplace/backend/cart/internal/usecase"
 	pbCart "github.com/Go-Marketplace/backend/proto/gen/cart"
 	pbProduct "github.com/Go-Marketplace/backend/proto/gen/product"
+	pbUser "github.com/Go-Marketplace/backend/proto/gen/user"
 	"github.com/google/uuid"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 )
+
+func checkAccessPermission(
+	ctx context.Context,
+	requestUserID string,
+) (bool, error) {
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return false, fmt.Errorf("failed to get metadata from incoming context")
+	}
+
+	roles := md.Get("role")
+	if len(roles) == 0 {
+		return false, fmt.Errorf("role did not set in metadata")
+	}
+
+	if roles[0] != pbUser.UserRole_USER.String() {
+		return true, nil
+	}
+
+	userIDs := md.Get("user_id")
+	if len(userIDs) == 0 {
+		return false, fmt.Errorf("user_id did not set in metadata")
+	}
+
+	log.Printf("Check Access Permissions for %s user\n", userIDs[0])
+
+	return userIDs[0] == requestUserID, nil
+}
 
 func GetUserCart(ctx context.Context, cartUsecase usecase.ICartUsecase, req *pbCart.GetUserCartRequest) (*model.Cart, error) {
 	if req == nil {
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid request")
+	}
+
+	allow, err := checkAccessPermission(ctx, req.UserId)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Failed to check access permission: %s", err)
+	}
+
+	if !allow {
+		return nil, status.Errorf(codes.PermissionDenied, "Access denied")
 	}
 
 	userID, err := uuid.Parse(req.UserId)
@@ -74,10 +114,22 @@ func CreateCartline(
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid user id: %s", err)
 	}
 
+	allow, err := checkAccessPermission(ctx, req.UserId)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Failed to check access permission: %s", err)
+	}
+
+	if !allow {
+		return nil, status.Errorf(codes.PermissionDenied, "Access denied")
+	}
+
 	productID, err := uuid.Parse(req.ProductId)
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid product id: %s", err)
 	}
+
+	md := metadata.Pairs("role", pbUser.UserRole_ADMIN.String())
+	ctx = metadata.NewOutgoingContext(ctx, md)
 
 	productResp, err := productClient.GetProduct(ctx, &pbProduct.GetProductRequest{
 		ProductId: req.ProductId,
@@ -157,6 +209,8 @@ func returnProducts(ctx context.Context, productClient pbProduct.ProductClient, 
 		}
 	}
 
+	md := metadata.Pairs("role", pbUser.UserRole_ADMIN.String())
+	ctx = metadata.NewOutgoingContext(ctx, md)
 	if _, err = productClient.UpdateProducts(ctx, &pbProduct.UpdateProductsRequest{
 		Products: updateProductRequests,
 	}); err != nil {
@@ -179,6 +233,15 @@ func UpdateCartline(
 	userID, err := uuid.Parse(req.UserId)
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid user id: %s", err)
+	}
+
+	allow, err := checkAccessPermission(ctx, req.UserId)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Failed to check access permission: %s", err)
+	}
+
+	if !allow {
+		return nil, status.Errorf(codes.PermissionDenied, "Access denied")
 	}
 
 	productID, err := uuid.Parse(req.ProductId)
@@ -213,6 +276,8 @@ func UpdateCartline(
 	if req.Quantity != 0 {
 		diff := oldCartline.Quantity - req.Quantity
 
+		md := metadata.Pairs("role", pbUser.UserRole_ADMIN.String())
+		ctx = metadata.NewOutgoingContext(ctx, md)
 		productResp, err := productClient.GetProduct(ctx, &pbProduct.GetProductRequest{
 			ProductId: req.ProductId,
 		})
@@ -248,6 +313,15 @@ func DeleteCart(
 	userID, err := uuid.Parse(req.UserId)
 	if err != nil {
 		return status.Errorf(codes.InvalidArgument, "Invalid user id: %s", err)
+	}
+
+	allow, err := checkAccessPermission(ctx, req.UserId)
+	if err != nil {
+		return status.Errorf(codes.Internal, "Failed to check access permission: %s", err)
+	}
+
+	if !allow {
+		return status.Errorf(codes.PermissionDenied, "Access denied")
 	}
 
 	cart, err := cartUsecase.GetUserCart(ctx, userID)
@@ -289,6 +363,15 @@ func DeleteCartline(
 	userID, err := uuid.Parse(req.UserId)
 	if err != nil {
 		return status.Errorf(codes.InvalidArgument, "Invalid user id: %s", err)
+	}
+
+	allow, err := checkAccessPermission(ctx, req.UserId)
+	if err != nil {
+		return status.Errorf(codes.Internal, "Failed to check access permission: %s", err)
+	}
+
+	if !allow {
+		return status.Errorf(codes.PermissionDenied, "Access denied")
 	}
 
 	productID, err := uuid.Parse(req.ProductId)
@@ -341,6 +424,15 @@ func DeleteCartCartlines(
 	userID, err := uuid.Parse(req.UserId)
 	if err != nil {
 		return status.Errorf(codes.InvalidArgument, "Invalid user id: %s", err)
+	}
+
+	allow, err := checkAccessPermission(ctx, req.UserId)
+	if err != nil {
+		return status.Errorf(codes.Internal, "Failed to check access permission: %s", err)
+	}
+
+	if !allow {
+		return status.Errorf(codes.PermissionDenied, "Access denied")
 	}
 
 	cart, err := cartUsecase.GetUserCart(ctx, userID)
