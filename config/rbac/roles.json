@@ -40,16 +40,14 @@
     "ADMIN": [
         "ModerateProduct",
 
-        "GetCart",
-        "DeleteCart",
         "DeleteCartCartlines",
 
         "GetUserByEmail",
-        "GetUsers",
 
         "GetOrders"
     ],
     "SUPERADMIN": [
+        "GetUsers",
         "ChangeUserRole"
     ]
 }

@@ -19,6 +19,8 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+const maxCancellationTime = 24 * time.Hour
+
 func checkOrderAccessPermission(
 	ctx context.Context,
 	orderUsecase usecase.IOrderUsecase,
@@ -309,6 +311,10 @@ func DeleteOrder(
 
 	if order == nil {
 		return status.Errorf(codes.NotFound, "Order not found")
+	}
+
+	if time.Since(order.CreatedAt) > maxCancellationTime {
+		return status.Errorf(codes.Canceled, "Maximum order cancellation time has been exceeded")
 	}
 
 	if err = orderUsecase.DeleteOrder(ctx, orderID); err != nil {

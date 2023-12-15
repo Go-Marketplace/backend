@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	cartTTL = 5 * time.Minute
+	cartTTL = 24 * time.Hour
 )
 
 type ICartUsecase interface {

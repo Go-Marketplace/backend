@@ -15,7 +15,7 @@ postgres:
   pg_url: 'postgres://postgres:root@cart_postgres:5432/postgres?sslmode=disable'
 
 worker:
-  cart_ttl: 5m
+  cart_ttl: 24h
   cart_task_worker_interval: 1s
 
 logger:
